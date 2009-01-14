@@ -1,0 +1,12 @@
+[user]
+	name = Leif Walsh
+	email = leif.walsh@gmail.com
+[color]
+	branch = auto
+	diff = auto
+	interactive = auto
+	status = auto
+[merge]
+	tool = gvimdiff
+[core]
+	excludesfile = /home/leif/.gitignore

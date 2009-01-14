@@ -1,0 +1,13 @@
+# objects and archives
+*.o
+*.a
+
+# python byte-compiled files
+*.pyc
+
+# vim swap files
+.*.sw?
+
+# emacs turds
+*~
+#*#
