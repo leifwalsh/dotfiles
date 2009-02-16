@@ -2,6 +2,9 @@
 # Settings
 ################################################################################
 
+source /etc/profile
+source ~/.profile
+
 # History options.
 export HISTFILE=~/.zsh_history
 export HISTSIZE=5000
