@@ -48,7 +48,10 @@ alias -g N="> /dev/null 2>&1"
 alias -g V="| vim -"
 
 # Aliases.
-alias ls='ls --color=auto'
+if [ "$TERM"x != dumbx ]
+then
+    alias ls='ls --color=auto'
+fi
 alias lsd='ls -d'
 alias ll='ls -l'
 alias la='ls -a'
@@ -292,7 +295,12 @@ zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character t
 zstyle ':completion:*' matcher-list '' '' '' 'r:|[._-]=* r:|=*'
 zstyle :compinstall filename '/home/leif/.zshrc'
 
-setprompt
+if [ "$TERM"x != dumbx ]
+then
+    setprompt
+fi
 autoload -Uz compinit
 compinit
 # End of lines added by compinstall
+
+fortune
