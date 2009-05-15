@@ -2,8 +2,11 @@
 (setq load-path
       (cons "~/.emacs.d" load-path))
 
-(autoload 'js2-mode "js2" nil t)
-(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)); ~/.emacs
+(require 'tramp)
+(setq tramp-default-method "ssh")
+
+;;(autoload 'js2-mode "js2" nil t)
+;;(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)); ~/.emacs
 
 ;; syntax hilighting
 (global-font-lock-mode t)
@@ -30,12 +33,12 @@
  '(inhibit-startup-screen t)
  '(scroll-bar-mode nil)
  '(show-paren-mode t))
-(custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#3f3f3f" :foreground "#dcdccc" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 77 :width normal :foundry "apple" :family "Monaco")))))
+;;(custom-set-faces
+;;  ;; custom-set-faces was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;; '(default ((t (:inherit nil :stipple nil :background "#3f3f3f" :foreground "#dcdccc" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 98 :width normal :foundry "apple" :family "Monaco")))))
 
 ;; Thanks to slashdot for the following:
 
@@ -57,3 +60,5 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
 (global-set-key [home] 'dev-studio-beginning-of-line)
 
 (setq user-mail-address "leif.walsh@gmail.com")
+
+(load "its4")

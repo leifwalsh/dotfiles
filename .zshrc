@@ -295,9 +295,14 @@ zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character t
 zstyle ':completion:*' matcher-list '' '' '' 'r:|[._-]=* r:|=*'
 zstyle :compinstall filename '/home/leif/.zshrc'
 
+autoload -U promptinit
+promptinit
 if [ "$TERM"x != dumbx ]
 then
-    setprompt
+    #setprompt
+    prompt fire red blue green white white white
+else
+    prompt redhat
 fi
 autoload -Uz compinit
 compinit
