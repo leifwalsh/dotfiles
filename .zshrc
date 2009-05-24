@@ -299,8 +299,8 @@ autoload -U promptinit
 promptinit
 if [ "$TERM"x != dumbx ]
 then
-    #setprompt
-    prompt fire red blue green white white white
+    setprompt
+    #prompt fire red blue green white white white
 else
     prompt redhat
 fi
