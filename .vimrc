@@ -1,9 +1,10 @@
 source ~/.vim/vimrc-python.org
 let python_highlight_all=1
 
-set t_Co=256
-set background=dark
-colorscheme desert256
+if &term =~ '^\(xterm\|screen\)$' && $COLORTERM == 'gnome-terminal'
+	set t_Co=256
+endif
+colorscheme blue
 
 filetype on
 filetype plugin on
@@ -13,9 +14,10 @@ syntax on
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
-set noet
+set et
 set cindent
 set smarttab
+set ml
 
 autocmd BufRead *.vala set efm=%f:%l.%c-%[%^:]%#:\ %t%[%^:]%#:\ %m
 autocmd BufRead *.vapi set efm=%f:%l.%c-%[%^:]%#:\ %t%[%^:]%#:\ %m
