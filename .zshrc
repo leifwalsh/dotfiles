@@ -297,7 +297,7 @@ zstyle :compinstall filename '/home/leif/.zshrc'
 
 autoload -U promptinit
 promptinit
-if [ "$TERM"x != dumbx ]
+if [ "$TERM"x != dumbx -a "$TERM"x != linuxx ]
 then
     setprompt
     #prompt fire red blue green white white white
