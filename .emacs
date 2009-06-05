@@ -23,7 +23,7 @@
 
 ;; zenburn color scheme
 (load "zenburn")
-(color-theme-zenburn)
+;(color-theme-zenburn)
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
@@ -62,5 +62,12 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
 (global-set-key [home] 'dev-studio-beginning-of-line)
 
 (setq user-mail-address "leif.walsh@gmail.com")
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :stipple nil :background "#3f3f3f" :foreground "#dcdccc" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 77 :width normal :foundry "unknown" :family "Droid Sans Mono")))))
 
-(load "its4")
+(require 'ido)
+(ido-mode t)
