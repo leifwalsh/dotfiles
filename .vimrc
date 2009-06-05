@@ -4,7 +4,8 @@ let python_highlight_all=1
 if &term =~ '^\(xterm\|screen\)$' && $COLORTERM == 'gnome-terminal'
 	set t_Co=256
 endif
-colorscheme blue
+colorscheme desert256
+set background=dark
 
 filetype on
 filetype plugin on
