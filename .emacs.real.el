@@ -39,6 +39,7 @@
 
 ;; zenburn color scheme
 (require-if-available 'color-theme)
+(setq color-theme-is-global t)
 ;(load "zenburn")
 ;(color-theme-zenburn)
 (color-theme-hober)
