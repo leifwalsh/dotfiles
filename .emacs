@@ -62,5 +62,3 @@ This takes a numeric prefix argument; when not 1, it behaves exactly like
 (global-set-key [home] 'dev-studio-beginning-of-line)
 
 (setq user-mail-address "leif.walsh@gmail.com")
-
-(load "its4")
