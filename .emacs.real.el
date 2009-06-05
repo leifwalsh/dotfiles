@@ -1,3 +1,4 @@
+
 ;; First, define a function that loads libraries only if available
 (defun require-if-available (&rest args)
   "require symbols, load-library strings, 
@@ -38,9 +39,9 @@
 
 ;; zenburn color scheme
 (require-if-available 'color-theme)
-(load "zenburn")
-(color-theme-zenburn)
-;(color-theme-tty-dark)
+;(load "zenburn")
+;(color-theme-zenburn)
+(color-theme-hober)
 
 ;; syntax hilighting
 (global-font-lock-mode t)
