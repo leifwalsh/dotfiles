@@ -297,13 +297,22 @@ zstyle :compinstall filename '/home/leif/.zshrc'
 
 autoload -U promptinit
 promptinit
-if [ "$TERM"x != dumbx -a "$TERM"x != linuxx ]
+if [ "$TERM"x = "dumb"x ]
 then
-    setprompt
-    #prompt fire red blue green white white white
-else
+    # emacs
+    unsetopt zle
+    unsetopt prompt_cr
+    unsetopt prompt_subst
+    unfunction precmd
+    unfunction preexec
+    PS1='$ '
+elif [ "$TERM"x = "linux"x ]
+then
     prompt redhat
+else
+    setprompt
 fi
+
 autoload -Uz compinit
 compinit
 # End of lines added by compinstall
