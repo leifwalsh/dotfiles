@@ -35,8 +35,7 @@
 (setq user-mail-address "leif.walsh@gmail.com")
 
 ; add .emacs.d to load-path
-(setq load-path (cons (concat (getenv "HOME") "/" ".emacs.d")
-		      load-path))
+(add-to-list 'load-path (concat (getenv "HOME") "/" ".emacs.d"))
 
 ;; zenburn color scheme
 (require-if-available 'color-theme)
@@ -59,6 +58,13 @@
 ; Thanks to coffeemug of defmacro.org
 (require-if-available 'ido)
 (ido-mode t)
+
+(require-if-available 'auto-complete)
+(global-auto-complete-mode t)
+(require-if-available 'yasnippet)
+(yas/initialize)
+(yas/load-directory (concat (getenv "HOME") "/" ".emacs.d/snippets"))
+(load-library "init-python")
 
 ;; Thanks to slashdot for the following:
 
