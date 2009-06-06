@@ -21,4 +21,8 @@ if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
 
+if [ "$TERM"x != "linux"x -a "$TERM"x != "dumb"x ]
+then
+    export TERM=xterm-256color
+fi
 export PYTHONSTARTUP="$HOME/.pythonrc.py"
