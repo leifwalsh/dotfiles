@@ -317,3 +317,4 @@ autoload -Uz compinit
 compinit
 # End of lines added by compinstall
 
+fortune
