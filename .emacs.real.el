@@ -51,6 +51,8 @@
 (transient-mark-mode t)
 ;; match parentheses
 (show-paren-mode t)
+;; hide toolbar
+(tool-bar-mode -1)
 
 (require-if-available 'tramp)
 (setq tramp-default-method "ssh")
