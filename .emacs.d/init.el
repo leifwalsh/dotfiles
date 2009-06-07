@@ -5,7 +5,7 @@
 		     (file-name-directory
 		      (file-truename
 		       (concat (getenv "HOME") "/")))
-		     ".emacs.real.el")
+		     ".emacs.d/init.real.el")
   "My dot emacs file")
  
 (require 'bytecomp)
