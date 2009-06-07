@@ -10,4 +10,4 @@
 	tool = gvimdiff
 [core]
 	excludesfile = /home/leif/.gitignore
-	editor = emacs
+	editor = emacsclient
