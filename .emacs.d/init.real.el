@@ -24,3 +24,6 @@
 (load-library "load-plugins")
 (load-library "init-python")
 (load-library "dev-studio")
+
+;; start server for emacsclient
+(server-start)
