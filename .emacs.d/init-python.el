@@ -76,7 +76,7 @@
                       (append ac-sources '(ac-source-rope) ));'(ac-source-yasnippet)))
                  (set (make-local-variable 'ac-find-function) 'ac-python-find)
                  (set (make-local-variable 'ac-candidate-function) 'ac-python-candidate)
-                 (set (make-local-variable 'ac-auto-start) nil)))
+                 (set (make-local-variable 'ac-auto-start) t)))
 ;;Ryan's python specific tab completion
 (defun ryan-python-tab ()
   ; Try the following:

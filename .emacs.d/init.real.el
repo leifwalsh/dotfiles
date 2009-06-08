@@ -21,6 +21,7 @@
 ;; start Leif's config
 (load-library "set-color")
 (load-library "misc")
+(load-library "remaps")
 (load-library "load-plugins")
 (load-library "init-python")
 (load-library "dev-studio")

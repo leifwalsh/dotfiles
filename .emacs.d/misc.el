@@ -12,7 +12,9 @@
 (add-hook 'doc-view-mode-hook 'auto-revert-mode)
 ;; stop forcing me to spell out "yes"
 (fset 'yes-or-no-p 'y-or-n-p)
-;; quieter startup
-(setq inhibit-startup-message t)
-;; stop leaving backup~ turds scattered everywhere
-(setq backup-directory-alist '(("." . "~/.emacs-backups")))
+;; hilight current line (subtly)
+(global-hl-line-mode t)
+;; auto-fill in text mode
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+;; save session
+;(desktop-save-mode t)

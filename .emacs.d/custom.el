@@ -3,15 +3,24 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
+ ;; stop leaving backup~ turds scattered everywhere
+ '(backup-directory-alist '(("." . "~/.emacs-backups")))
  '(c-echo-syntactic-information-p t)
  '(column-number-mode t)
  '(display-battery-mode t)
  '(display-time-mode t)
+ '(fill-column 80)
+ ;; set title to buffer name
+ '(frame-title-format
+   (concat invocation-name "@" system-name ": %b [%IB]"))
+ ;; quieter startup
+ '(inhibit-startup-message t)
  '(inhibit-startup-screen t)
+ '(line-number-mode t)
  '(scroll-bar-mode nil)
  '(show-paren-mode t)
- '(user-mail-address "leif.walsh@gmail.com")
- '(fill-column 80))
+ '(show-trailing-whitespace t)
+ '(user-mail-address "leif.walsh@gmail.com"))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
