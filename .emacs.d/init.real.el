@@ -1,6 +1,6 @@
 ;; First, define a function that loads libraries only if available
 (defun require-if-available (&rest args)
-  "require symbols, load-library strings, 
+  "require symbols, load-library strings,
    fail silently if some aren't available"
   (let (lib)
     (condition-case err

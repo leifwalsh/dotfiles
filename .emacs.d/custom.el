@@ -13,6 +13,8 @@
  ;; set title to buffer name
  '(frame-title-format
    (concat invocation-name "@" system-name ": %b [%IB]"))
+ ;; equivalent to expandtab
+ '(indent-tabs-mode nil)
  ;; quieter startup
  '(inhibit-startup-message t)
  '(inhibit-startup-screen t)

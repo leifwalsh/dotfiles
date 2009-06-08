@@ -17,4 +17,4 @@
 ;; auto-fill in text mode
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 ;; save session
-;(desktop-save-mode t)
+;(desktop-save-mode t) ;; This kills Pymacs!
