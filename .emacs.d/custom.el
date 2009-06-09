@@ -5,6 +5,7 @@
   ;; If there is more than one, they won't work right.
  ;; stop leaving backup~ turds scattered everywhere
  '(backup-directory-alist '(("." . "~/.emacs-backups")))
+ '(c-basic-offset 4)
  '(c-echo-syntactic-information-p t)
  '(column-number-mode t)
  '(display-battery-mode t)
