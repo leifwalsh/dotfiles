@@ -9,14 +9,24 @@
   "My dot emacs file")
 
 (require 'bytecomp)
-(setq compiled-dot-emacs (byte-compile-dest-file dot-emacs))
 
-(if (or (not (file-exists-p compiled-dot-emacs))
-	(file-newer-than-file-p dot-emacs compiled-dot-emacs)
-        (equal (nth 4 (file-attributes dot-emacs)) (list 0 0)))
-    (load dot-emacs)
-  (load compiled-dot-emacs))
+(setq files-to-check '())
+(defun compile-changed-files ()
+  (mapcar (lambda (file)
+            (let ((compiled-file (byte-compile-dest-file file)))
+              (when (file-newer-than-file-p file compiled-file)
+                (byte-compile-file file))))
+          files-to-check))
+(add-hook 'kill-emacs-hook #'compile-changed-files)
 
-(add-hook 'kill-emacs-hook
-          '(lambda () (and (file-newer-than-file-p dot-emacs compiled-dot-emacs)
-                           (byte-compile-file dot-emacs))))
+(defun load-cached (file)
+  (interactive)
+  (let ((compiled-file (byte-compile-dest-file file)))
+    (if (or (not (file-exists-p compiled-file))
+            (file-newer-than-file-p file compiled-file)
+            (equal (nth 4 (file-attributes dot-emacs)) '(0 0)))
+        (load file)
+      (load compiled-file))
+    (push file files-to-check)))
+
+(load-cached dot-emacs)

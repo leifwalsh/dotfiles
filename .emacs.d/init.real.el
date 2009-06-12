@@ -17,14 +17,14 @@
 (add-to-list 'load-path
 	     (concat (getenv "HOME") "/.emacs.d/vendor"))
 
-(load-library "custom")
+(load-cached "custom.el")
 ;; start Leif's config
-(load-library "set-color")
-(load-library "misc")
-(load-library "remaps")
-(load-library "load-plugins")
-(load-library "init-python")
-(load-library "dev-studio")
+(load-cached "set-color.el")
+(load-cached "misc.el")
+(load-cached "remaps.el")
+(load-cached "load-plugins.el")
+(load-cached "init-python.el")
+(load-cached "dev-studio.el")
 
 ;; start server for emacsclient
 (server-start)
