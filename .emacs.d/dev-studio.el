@@ -9,3 +9,4 @@
     (move-beginning-of-line arg)))
 (global-set-key "\C-a" 'dev-studio-beginning-of-line)
 (global-set-key [home] 'dev-studio-beginning-of-line)
+(provide 'dev-studio)

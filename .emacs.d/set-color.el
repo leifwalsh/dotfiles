@@ -1,4 +1,5 @@
-(require-if-available 'color-theme)
+(require 'color-theme)
 (setq color-theme-is-global t)
-(load-cached "color-theme-sunburst.el")
+(require 'color-theme-sunburst)
 (color-theme-tm)
+(provide 'set-color)

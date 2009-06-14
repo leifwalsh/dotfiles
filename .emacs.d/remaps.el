@@ -11,11 +11,17 @@
 (defun do-tab-complete ()
   ;; Try autocomplete, if fail, indent.
   (interactive)
-  (if (eql (ac-start) nil)
-      (indent-for-tab-command)))
+  (if (active-minibuffer-window)
+      (minibuffer-complete)
+    (if (eql (ac-start) nil)
+        (indent-for-tab-command))))
 (global-set-key (kbd "TAB") 'do-tab-complete)
 (defun fullscreen ()
        (interactive)
        (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
 	    		 '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
 (global-set-key [(meta return)] 'fullscreen)
+;; compile with C-c C-c
+(global-set-key (kbd "C-c C-m") 'compile)
+
+(provide 'remaps)

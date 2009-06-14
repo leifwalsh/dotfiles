@@ -11,19 +11,19 @@
 	;(setq yas/after-exit-snippet-hook 'indent-according-to-mode)
 	))
 ;; TRAMP remote editing
-(require-if-available 'tramp)
+(require 'tramp)
 (setq tramp-default-method "ssh")
 ;; cscope integration
-(load-cached "xcscope.el")
+(require 'xcscope)
 ;; ido minibuffer completion
-(require-if-available 'ido)
+(require 'ido)
 (ido-mode t)
 (setq ido-enable-flex-matching t)
 ;; code completion
-(load-cached "auto-complete.el")
+(require 'auto-complete)
 (global-auto-complete-mode t)
 ;; code snippets
-(load-cached "yasnippet.el")
+(require 'yasnippet)
 (yas/initialize)
 (yas/load-directory (concat (getenv "HOME") "/" ".emacs.d/vendor/snippets"))
 ;; pymacs
@@ -36,5 +36,6 @@
 (pymacs-load "ropemacs" "rope-")
 (setq ropemacs-enable-autoimport t)
 ;; save session
-(require-if-available 'session)
+(require 'session)
 (add-hook 'after-init-hook 'session-initialize)
+(provide 'load-plugins)
