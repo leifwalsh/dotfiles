@@ -21,7 +21,14 @@
        (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
 	    		 '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
 (global-set-key [(meta return)] 'fullscreen)
-;; compile with C-c C-c
-(global-set-key (kbd "C-c C-m") 'compile)
+
+(defun c-like-keys (map)
+  (progn
+    (define-key map (kbd "C-c C-c") 'compile)))
+
+(add-hook 'c-mode-hook
+          (lambda () (c-like-keys c-mode-map)))
+(add-hook 'c++-mode-hook
+          (lambda () (c-like-keys c++-mode-map)))
 
 (provide 'remaps)

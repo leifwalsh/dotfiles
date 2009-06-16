@@ -15,6 +15,9 @@
 (setq tramp-default-method "ssh")
 ;; cscope integration
 (require 'xcscope)
+(add-to-list 'load-path
+             (concat (getenv "HOME") "/.emacs.d/vendor/git-emacs"))
+(require 'git-emacs)
 ;; ido minibuffer completion
 (require 'ido)
 (ido-mode t)
