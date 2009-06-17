@@ -9,8 +9,8 @@
        (cadr (find 'alpha (frame-parameters nil) :key #'car))
        100)
       (set-frame-parameter nil 'alpha '(100 100))
-    (set-frame-parameter nil 'alpha '(80 50))))
-(set-frame-parameter nil 'alpha '(80 50))
+    (set-frame-parameter nil 'alpha '(85 60))))
+(set-frame-parameter nil 'alpha '(85 60))
 (global-set-key (kbd "C-c C-t") 'toggle-transparency)
 
 (provide 'set-color)
