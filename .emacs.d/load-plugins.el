@@ -41,4 +41,6 @@
 ;; save session
 (require 'session)
 (add-hook 'after-init-hook 'session-initialize)
+(require 'haml-mode)
+(require 'sass-mode)
 (provide 'load-plugins)
