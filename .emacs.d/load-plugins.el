@@ -1,6 +1,6 @@
 ;; some custom python settings
 (autoload 'python-mode "python-mode" "Python Mode." t)
-(add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+(add-to-list 'auto-mode-alist '("\\.py\\'"      . python-mode))
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 (require 'python-mode)
 (add-hook 'python-mode-hook
@@ -43,4 +43,7 @@
 (add-hook 'after-init-hook 'session-initialize)
 (require 'haml-mode)
 (require 'sass-mode)
+(add-to-list 'load-path
+             (concat (getenv "HOME") "/.emacs.d/vendor/scala"))
+(require 'scala-mode-auto)
 (provide 'load-plugins)

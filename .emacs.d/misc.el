@@ -1,3 +1,7 @@
+;; Set underscore to word class for all modes
+(defun undumbify-underscores ()
+  (modify-syntax-entry ?_ "w"))
+(add-hook 'after-change-major-mode-hook 'undumbify-underscores)
 ;; syntax hilighting
 (global-font-lock-mode t)
 ;; max hilighting
