@@ -21,7 +21,8 @@
 ;; Set default list of servers to show
 (setq erc-server-history-list '("irc.foonetic.net"
                                 "irc.freenode.net"
-                                "irc.slashnet.org"))
+                                "irc.slashnet.org"
+                                "hex49.no-ip.org"))
 
 ;; List of channels to autojoin
 (require 'erc-join)
@@ -34,5 +35,10 @@
                                             "#kernel"))
 (add-to-list 'erc-autojoin-channels-alist '("slashnet.org"
                                             "#sbu"))
+(add-to-list 'erc-autojoin-channels-alist '("hex49.no-ip.org"
+                                            "#rethinkdb"))
+
+;; Try to auto-identify
+(erc-nickserv-identify-mode "both")
 
 (provide 'erc-config)
