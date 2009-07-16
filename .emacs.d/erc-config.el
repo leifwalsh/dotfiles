@@ -24,6 +24,7 @@
                                 "irc.slashnet.org"))
 
 ;; List of channels to autojoin
+(require 'erc-join)
 (add-to-list 'erc-autojoin-channels-alist '("foonetic.net"
                                             "#xkcd"))
 (add-to-list 'erc-autojoin-channels-alist '("freenode.net"
