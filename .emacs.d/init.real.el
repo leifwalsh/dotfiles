@@ -12,6 +12,7 @@
 (require 'init-python)
 (require 'remaps)
 (require 'dev-studio)
+(require 'erc-config)
 
 ;; start server for emacsclient
 (server-start)
