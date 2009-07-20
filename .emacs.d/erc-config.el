@@ -39,6 +39,33 @@
                                             "#rethinkdb"))
 
 ;; Try to auto-identify
-(erc-nickserv-identify-mode "both")
+(erc-nickserv-identify-mode 'autodetect)
+(add-to-list 'erc-nickserv-alist
+             '(hexagram49
+               "NickServ!NickServ@debian.services.local"
+               "If this is your nickname, type /msg NickServ IDENTIFY <password>"
+               "NickServ"
+               "IDENTIFY"
+               nil))
+
+(defun my-notify-erc (match-type nickuserhost message)
+  "Notify when a message is received."
+  (notify (format "%s in %s"
+                  ;; Username of sender
+                  (car (split-string nickuserhost "!"))
+                  ;; Channel
+                  (or (erc-default-target) "#unknown"))
+          ;; Remove duplicate spaces
+          (replace-regexp-in-string " +" " " message)
+          :icon "emacs-snapshot"
+          :timeout -1))
+
+(add-to-list 'erc-keywords "leif")
+(add-to-list 'erc-keywords "Leif")
+(add-to-list 'erc-keywords "adlai")
+(add-to-list 'erc-keywords "Adlai")
+(setq erc-current-nick-highlight-type 'all)
+(setq erc-keyword-highlight-type 'all)
+(add-hook 'erc-text-matched-hook 'my-notify-erc)
 
 (provide 'erc-config)

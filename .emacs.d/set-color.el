@@ -16,8 +16,11 @@
 ;; whitespace-mode helps you have shorter lines!  Yay!
 (setq whitespace-style '(lines-tail empty trailing))
 (defun turn-on-whitespace-mode ()
-  (if (not (string= major-mode "Man-mode"))
-      (whitespace-mode 1)))
+  (interactive)
+  (if (not (or (string= major-mode "Man-mode")
+               (string= major-mode "compilation-mode")))
+      (whitespace-mode 1)
+    (whitespace-mode 0)))
 (add-hook 'after-change-major-mode-hook 'turn-on-whitespace-mode)
 
 (provide 'set-color)
