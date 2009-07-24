@@ -60,6 +60,7 @@
           :icon "emacs-snapshot"
           :timeout -1))
 
+(setq erc-keywords '())
 (add-to-list 'erc-keywords "leif")
 (add-to-list 'erc-keywords "Leif")
 (add-to-list 'erc-keywords "adlai")
@@ -67,5 +68,7 @@
 (setq erc-current-nick-highlight-type 'all)
 (setq erc-keyword-highlight-type 'all)
 (add-hook 'erc-text-matched-hook 'my-notify-erc)
+
+(require 'erc-nicklist)
 
 (provide 'erc-config)
