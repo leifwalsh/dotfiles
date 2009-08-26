@@ -6,7 +6,9 @@
 (defun toggle-transparency ()
   (interactive)
   (if (/=
-       (cadr (find 'alpha (frame-parameters nil) :key #'car))
+       (let ((alpha-or-nil (cadr (find 'alpha (frame-parameters nil)
+                                       :key #'car))))
+         (if alpha-or-nil alpha-or-nil 100))
        100)
       (set-frame-parameter nil 'alpha '(100 100))
     (set-frame-parameter nil 'alpha '(85 60))))

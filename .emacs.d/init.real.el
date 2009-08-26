@@ -16,4 +16,4 @@
 (require 'erc-config)
 
 ;; start server for emacsclient
-(server-start)
+;;(server-start)
