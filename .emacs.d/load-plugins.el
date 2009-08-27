@@ -36,11 +36,8 @@
 (autoload 'pymacs-exec "pymacs" nil t)
 (autoload 'pymacs-load "pymacs" nil t)
 ;; ropemacs python refactoring
-(pymacs-load "ropemacs" "rope-")
-(setq ropemacs-enable-autoimport t)
-;; save session
-(require 'session)
-(add-hook 'after-init-hook 'session-initialize)
+;(pymacs-load "ropemacs" "rope-")
+;(setq ropemacs-enable-autoimport t)
 (require 'haml-mode)
 (require 'sass-mode)
 (add-to-list 'load-path

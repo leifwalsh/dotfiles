@@ -6,7 +6,6 @@
 
 (load-library "custom")
 ;; start Leif's config
-(require 'set-color)
 (require 'misc)
 (require 'load-plugins)
 (require 'init-python)
@@ -14,6 +13,7 @@
 (require 'dev-studio)
 (require 'notify)
 (require 'erc-config)
+(require 'set-color)
 
 ;; start server for emacsclient
-;;(server-start)
+(server-start)

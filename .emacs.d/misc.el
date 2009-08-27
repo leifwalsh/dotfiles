@@ -12,6 +12,8 @@
 (show-paren-mode t)
 ;; hide toolbar
 (tool-bar-mode -1)
+;; hide menubar
+(menu-bar-mode -1)
 ;; make DocView automatically reload a pdf when I recompile it
 (add-hook 'doc-view-mode-hook 'auto-revert-mode)
 ;; stop forcing me to spell out "yes"

@@ -69,9 +69,9 @@ alias aoeu='setxkbmap us'
 alias asdf='setxkbmap dvorak'
 
 # Debian specific aliases
-alias apt='sudo aptitude'
-alias apu='sudo aptitude update'
-alias api='sudo aptitude install'
+#alias apt='sudo aptitude'
+#alias apu='sudo aptitude update'
+#alias api='sudo aptitude install'
 
 ################################################################################
 # Prompt jazz

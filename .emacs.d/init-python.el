@@ -10,11 +10,11 @@
     (nreverse
      (dolist (element list value)
       (setq value (cons (format "%s%s" prefix element) value))))))
-(defvar ac-source-rope
-  '((candidates
-     . (lambda ()
-         (prefix-list-elements (rope-completions) ac-target))))
-  "Source for Rope")
+;(defvar ac-source-rope
+;  '((candidates
+;     . (lambda ()
+;         (prefix-list-elements (rope-completions) ac-target))))
+;  "Source for Rope")
 (defun ac-python-find ()
   "Python `ac-find-function'."
   (require 'thingatpt)
@@ -49,7 +49,7 @@
           (lambda ()
                  (auto-complete-mode 1)
                  (set (make-local-variable 'ac-sources)
-                      (append ac-sources '(ac-source-rope) ));'(ac-source-yasnippet)))
+                      ac-sources) ;(append ac-sources '(ac-source-rope) ));'(ac-source-yasnippet)))
                  (set (make-local-variable 'ac-find-function) 'ac-python-find)
                  (set (make-local-variable 'ac-candidate-function) 'ac-python-candidate)
                  (set (make-local-variable 'ac-auto-start) nil)))
