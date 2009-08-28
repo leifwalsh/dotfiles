@@ -26,3 +26,6 @@ au BufRead,BufNewFile *.vala setfiletype vala
 au BufRead,BufNewFile *.vapi setfiletype vala
 let vala_comment_strings=1
 let vala_space_errors=1
+
+" for latexsuite
+set grepprg=grep\ -nH\ $*

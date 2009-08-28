@@ -2,8 +2,8 @@
 # Settings
 ################################################################################
 
-source /etc/profile
-source ~/.profile
+. /etc/zsh/zprofile
+. ~/.profile
 
 # History options.
 export HISTFILE=~/.zsh_history
@@ -24,10 +24,127 @@ setopt completeinword # not just at the end
 setopt alwaystoend    # when complete from middle, move cursor
 setopt promptsubst    # do varaible fu in prompt
 setopt extendedglob   # Nice things like *~*.c globs all but .c files
+setopt correctall
 #setopt menucomplete   # Don't stop completing at ambiguities
 
 # Use emacs style editing
 bindkey -e
+
+# Fix moving/killing by words
+
+_my_extended_wordchars='*?_-.[]~=&;!#$%^(){}<>:@,\\';
+WORDCHARS=${_my_extended_wordchars}
+#'
+_my_extended_wordchars_space="${my_extended_wordchars} "
+_my_extended_wordchars_slash="${my_extended_wordchars}-/"
+
+# is the current position \-quoted ?
+function _is_quoted(){
+    test "${BUFFER[$CURSOR-1,CURSOR-1]}" = "\\"
+}
+
+_unquote-backward-delete-word(){
+    while  _is_quoted
+    do zle .backward-kill-word
+    done
+}
+
+_unquote-forward-delete-word(){
+    while  _is_quoted
+    do zle .kill-word
+    done
+}
+
+_unquote-backward-word(){
+    while  _is_quoted
+    do zle .backward-word
+    done
+}
+
+_unquote-forward-word(){
+    while _is_quoted
+    do zle .forward-word
+    done
+}
+
+_backward-delete-to-space() {
+    local WORDCHARS=${_my_extended_wordchars_slash}
+    zle .backward-kill-word
+    _unquote-backward-delete-word
+}
+
+_backward-delete-to-/ () {
+    local WORDCHARS=${_my_extended_wordchars}
+    zle .backward-kill-word
+    _unquote-backward-delete-word
+}
+
+_forward-delete-to-space() {
+    local WORDCHARS=${_my_extended_wordchars_slash}
+    zle .kill-word
+    _unquote-forward-delete-word
+}
+
+_forward-delete-to-/ () {
+    local WORDCHARS=${_my_extended_wordchars}
+    zle .kill-word
+    _unquote-forward-delete-word
+}
+
+_backward-to-space() {
+    local WORDCHARS=${_my_extended_wordchars_slash}
+    zle .backward-word
+    _unquote-backward-word
+}
+
+_forward-to-space() {
+    local WORDCHARS=${_my_extended_wordchars_slash}
+    zle .forward-word
+    _unquote-forward-word
+}
+
+_backward-to-/ () {
+    local WORDCHARS=${_my_extended_wordchars}
+    zle .backward-word
+    _unquote-backward-word
+}
+
+_forward-to-/ () {
+    local WORDCHARS=${_my_extended_wordchars}
+    zle .forward-word
+    _unquote-forward-word
+}
+
+zle -N _backward-delete-to-/
+zle -N _forward-delete-to-/
+zle -N _backward-delete-to-space
+zle -N _forward-delete-to-space
+zle -N _backward-to-/
+zle -N _forward-to-/
+zle -N _backward-to-space
+zle -N _forward-to-space
+#bindkey '^w'        _backward-delete-to-/
+#bindkey '^[^w'      _backward-delete-to-space
+#bindkey "^[^[[D"    _backward-to-/
+#bindkey "^[^[[C"    _forward-to-/
+
+#bindkey "^[b"       _backward-to-/
+bindkey "^[^b"      _backward-to-space
+
+#bindkey "^[f"       _forward-to-/
+bindkey "^[^f"      _forward-to-space
+
+#bindkey "\M\b"      _backward-delete-to-/
+#bindkey "^\b"       _backward-delete-to-/
+bindkey "^\b"        backward-kill-word
+bindkey "^[^\b"     _backward-delete-to-space
+
+bindkey "^[^d"      _forward-delete-to-space
+bindkey '[3~'     delete-char
+
+#bindkey "\M^?"      _forward-delete-to-/
+#bindkey "^^?"       _forward-delete-to-/
+#bindkey "^[^^?"     _forward-delete-to-space
 
 ################################################################################
 # Aliases
@@ -51,6 +168,7 @@ alias -g V="| vim -"
 if [ "$TERM"x != dumbx ]
 then
     alias ls='ls --color=auto'
+    alias grep='grep --color=auto'
 fi
 alias lsd='ls -d'
 alias ll='ls -l'
@@ -108,12 +226,12 @@ function hashcolor2 {
 #fi
 
 # Path for my goodies.
-export PATH=/sbin:/usr/sbin:/usr/local/sbin:/usr/X11R6/bin:~/bin:$PATH
+#export PATH=/sbin:/usr/sbin:/usr/local/sbin:/usr/X11R6/bin:~/bin:$PATH
 
 # Perforce
-if [[ -e $HOME/.p4config ]]; then
-	source ~/.bashrc
-fi
+#if [[ -e $HOME/.p4config ]]; then
+#	source ~/.bashrc
+#fi
 
 ################
 # Phil's ZSH prompt
@@ -283,23 +401,80 @@ $PR_CYAN$PR_SHIFT_IN$PR_HBAR$PR_SHIFT_OUT$PR_NO_COLOUR '
 # Completion
 ################################################################################
 
+# export proper variables for ls and completion
+eval $(dircolors /etc/DIR_COLORS)
+export ZLS_COLORS=${LS_COLORS}
+
+# complete!
+autoload -U compinit; compinit
+
+# load colorizing modules
+zmodload -a colors
+zmodload -a autocomplete
+zmodload -a complist
+
+# cache stuff
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path ~/.zsh/cache
+
+# add color
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+
+# rehashing function
+_force_rehash() {
+  (( CURRENT == 1 )) && rehash
+  return 1
+}
+
+# proper order
+zstyle ':completion:*' completer _force_rehash _complete _approximate
+zstyle -e ':completion:*:approximate:*' max-errors 'reply=( $(( ($#PREFIX + $#SUFFIX) / 3 )) )'
+# bold and underline sections
+zstyle ':completion:*:descriptions' format '%U%B%d%b%u'
+# mention errors
+zstyle ':completion:*:corrections' format "%U%B%d%b%u (errors %e})"
+zstyle ':completion:*:default' list-prompt '%S%M matches%s'
+zstyle ':completion:*' group-name ''
+# ignore same file
+zstyle ':completion:*:(rm|kill|killall|diff|tar|cat|zcat|ls|cp|mv|git):*' ignore-line yes
+# for manpages
+zstyle ':completion:*:manuals' separate-sections true
+zstyle ':completion:*:manuals.(^1*)' insert-sections true
+zstyle ':completion:*' menu select
+zstyle ':completion:*' verbose yes
+
+# load up ssh hosts
 [ -f ~/.ssh/config ] && : ${(A)ssh_config_hosts:=${${${${(@M)${(f)"$(<~/.ssh/config)"}:#Host *}#Host }:#*\**}:#*\?*}}
 [ -f ~/.ssh/known_hosts ] && : ${(A)ssh_known_hosts:=${${${(f)"$(<$HOME/.ssh/known_hosts)"}%%\ *}%%,*}}
 zstyle ':completion:*:*:*' hosts $ssh_config_hosts $ssh_known_hosts
+# colorize ssh hosts
+zstyle ':completion:*:*:*:*:hosts' list-colors '=*=36'
+zstyle ':completion:*:*:*:*:users' list-colors '=*=31'
+# ignore lots of system users
+zstyle ':completion:*:*:*:users' ignored-patterns \
+    adm apache aspnet bin cron daemon dhcp distcc games gdm haldaemon halt \
+    ident junkbust lp mail mailnull named news nfsnobody nobody nscd ntp \
+    operator pcap polkituser portage postgres postmaster pulse radvd \
+    rpc rpcuser rpm smmsp shutdown squid sshd sync uucp vcsa xfs backup bind \
+    dictd gnats identd irc man messagebus postfix proxy sys www-data
 
-# The following lines were added by compinstall
+# show current directory in the menu bar
+chpwd() {
+  [[ -t 1 ]] || return
+  case $TERM in
+    sun-cmd) print -Pn "\e]l%~\e\\"
+      ;;
+    *xterm*|rxvt*|(dt|k|E)term) print -Pn "\e]2;%~\a"
+      ;;
+  esac
+}
 
-zstyle ':completion:*' completer _expand _complete _correct _approximate
-zstyle ':completion:*' list-colors ''
-zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
-zstyle ':completion:*' matcher-list '' '' '' 'r:|[._-]=* r:|=*'
-zstyle :compinstall filename '/home/leif/.zshrc'
-
+# set a prompt
 autoload -U promptinit
 promptinit
 if [ "$TERM"x = "dumb"x ]
 then
-    # emacs
+    # emacs is dumb
     unsetopt zle
     unsetopt prompt_cr
     unsetopt prompt_subst
@@ -308,13 +483,14 @@ then
     PS1='$ '
 elif [ "$TERM"x = "linux"x ]
 then
-    prompt redhat
+    prompt gentoo
 else
-    setprompt
+    ## fancy prompt
+    # setprompt
+    ## regular prompt
+    prompt gentoo
 fi
 
-autoload -Uz compinit
-compinit
-# End of lines added by compinstall
+# done setting up
 
 fortune

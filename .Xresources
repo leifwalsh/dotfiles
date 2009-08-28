@@ -1,4 +1,4 @@
-Xft*dpi: 76
+Xft*dpi: 70
 
 URxvt*foreground: white
 URxvt*background: rgba:0000/0000/0f0f/cfcf
