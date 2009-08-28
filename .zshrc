@@ -432,7 +432,7 @@ zstyle -e ':completion:*:approximate:*' max-errors 'reply=( $(( ($#PREFIX + $#SU
 # bold and underline sections
 zstyle ':completion:*:descriptions' format '%U%B%d%b%u'
 # mention errors
-zstyle ':completion:*:corrections' format "%U%B%d%b%u (errors %e})"
+zstyle ':completion:*:corrections' format "%U%B%d%b%u (errors %e)"
 zstyle ':completion:*:default' list-prompt '%S%M matches%s'
 zstyle ':completion:*' group-name ''
 # ignore same file
