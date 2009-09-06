@@ -21,6 +21,8 @@ URxvt*color15: #eeeeec
 URxvt*depth: 32
 URxvt*hilightColor: white
 
+URxvt*iconFile: /usr/share/pixmaps/gnome-terminal.png
+
 URxvt*font: xft:Droid Sans Mono-13
 URxvt*italicFont: xft:Droid Sans Mono-13:italic:autohint=true
 URxvt*boldItalicFont: xft:Droid Sans Mono-13:bold:italic:autohint=true
