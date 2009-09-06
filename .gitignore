@@ -11,3 +11,8 @@
 # emacs turds
 *~
 \#*\#
+
+# tags and cscope files
+TAGS
+tags
+cscope.out
