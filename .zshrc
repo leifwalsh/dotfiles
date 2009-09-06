@@ -277,29 +277,21 @@ chpwd() {
   esac
 }
 
-# set a prompt
-autoload -U promptinit
-promptinit
-
 autoload -Uz vcs_info
-setopt prompt_subst
 zstyle ':vcs_info:*' enable git svn bzr hg
 zstyle ':vcs_info:*' check-for-changes true
 zstyle ':vcs_info:*' branchformat "%b:%r"
-# set a prompt
 zstyle ':vcs_info:*:prompt:*' unstagedstr '-'
 zstyle ':vcs_info:*:prompt:*' stagedstr '*'
-zstyle ':vcs_info:*:prompt:*' actionformats "%B%F{blue}%2~ [%f%F{red}%c%u%f%F{magenta}%b%f%F{blue}|%f%F{yellow}%a%f%F{blue}]"
-zstyle ':vcs_info:*:prompt:*' formats "%B%F{blue}%2~ [%f%F{red}%c%u%f%F{magenta}%b%f%F{blue}]"
+zstyle ':vcs_info:*:prompt:*' actionformats "%B%F{blue}%2~ [%f%F{red}%c%u%f%F{magenta}%b%f%F{blue}|%f%F{yellow}%a%f%F{blue}]%f%%b"
+zstyle ':vcs_info:*:prompt:*' formats "%B%F{blue}%2~ [%f%F{red}%c%u%f%F{magenta}%b%f%F{blue}]%f%%b"
 # no git stuff for anything in my homedir
-zstyle ':vcs_info:*:prompt:leif' actionformats "%B%F{blue}%2~"
-zstyle ':vcs_info:*:prompt:leif' formats "%B%F{blue}%2~"
-zstyle ':vcs_info:*:prompt:*' nvcsformats "%B%F{blue}%2~"
+zstyle ':vcs_info:*:prompt:leif' actionformats "%B%F{blue}%2~%f%%b"
+zstyle ':vcs_info:*:prompt:leif' formats "%B%F{blue}%2~%f%%b"
+zstyle ':vcs_info:*:prompt:*' nvcsformats "%B%F{blue}%2~%f%b"
 
 precmd () {
-    psvar=()
     vcs_info prompt
-    [[ -n $vcs_info_msg_0_ ]] && [[ $(readlink -f "$(git rev-parse --git-dir)/..") != "/home/leif" ]] && psvar[1]='$vcs_info_msg_0_'
 }
 
 if [ "$TERM"x = "dumb"x -o "$EMACS"x = "t"x ]
@@ -311,13 +303,9 @@ then
     unfunction precmd
     unfunction preexec
     PROMPT="%n@%m %2~ %# "
-#elif [ "$TERM"x = "linux"x ]
-#then
-#    prompt gentoo
 else
-    # %(1v. [%k%b%1v%B%F{blue}].)
-    PROMPT='%B%F{green}%n@%m%k ${vcs_info_msg_0_} %B%F{blue}%#%b%f%k '
-    RPROMPT="%B%(?..%F{blue}(%f%F{red}%?%f%F{blue}%)%f )%F{blue}[%f%F{yellow}%T%f%F{blue}]%k"
+    PROMPT='%B%F{green}%n@%m%f%b ${vcs_info_msg_0_} %B%F{blue}%#%f%b '
+    RPROMPT="%B%F{blue}%(?..(%f%F{red}%?%f%F{blue}%) )[%f%F{yellow}%T%f%F{blue}]%f%b"
 fi
 
 # done setting up
