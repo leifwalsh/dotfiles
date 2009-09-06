@@ -266,17 +266,6 @@ zstyle ':completion:*:*:*:users' ignored-patterns \
     rpc rpcuser rpm smmsp shutdown squid sshd sync uucp vcsa xfs backup bind \
     dictd gnats identd irc man messagebus postfix proxy sys www-data
 
-# show current directory in the menu bar
-chpwd() {
-  [[ -t 1 ]] || return
-  case $TERM in
-    sun-cmd) print -Pn "\e]l%~\e\\"
-      ;;
-    *xterm*|rxvt*|(dt|k|E)term) print -Pn "\e]2;%~\a"
-      ;;
-  esac
-}
-
 autoload -Uz vcs_info
 zstyle ':vcs_info:*' enable git svn bzr hg
 zstyle ':vcs_info:*' check-for-changes true
@@ -290,8 +279,26 @@ zstyle ':vcs_info:*:prompt:leif' actionformats "%B%F{blue}%2~%f%%b"
 zstyle ':vcs_info:*:prompt:leif' formats "%B%F{blue}%2~%f%%b"
 zstyle ':vcs_info:*:prompt:*' nvcsformats "%B%F{blue}%2~%f%b"
 
+# show current directory in the menu bar
+title () {
+    if [[ $TERM == "screen" ]]; then
+        print -nR $'\033k'$1$'\033'\\
+        print -nR $'\033]0;'$2$'\a'
+    elif [[ $TERM == "xterm" || $TERM = "xterm-256color" || $TERM == "rxvt" || $TERM == "rxvt-unicode" ]]; then
+        shift
+        print -nR $'\033]0;'$*$'\a'
+    fi
+}
+
 precmd () {
     vcs_info prompt
+    title zsh "${(%):-%m@%n %~}"
+}
+
+preexec () {
+    emulate -L zsh
+    local -a cmd; cmd=(${(z)1})
+    title zsh $cmd[1]:t "$cmd[2,-1]"
 }
 
 if [ "$TERM"x = "dumb"x -o "$EMACS"x = "t"x ]
