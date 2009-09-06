@@ -25,6 +25,8 @@ setopt alwaystoend    # when complete from middle, move cursor
 setopt promptsubst    # do varaible fu in prompt
 setopt extendedglob   # Nice things like *~*.c globs all but .c files
 setopt correctall
+setopt multios
+setopt list_ambiguous
 #setopt menucomplete   # Don't stop completing at ambiguities
 
 # Use emacs style editing
@@ -141,6 +143,8 @@ bindkey "^[^\b"     _backward-delete-to-space
 
 bindkey "^[^d"      _forward-delete-to-space
 bindkey '[3~'     delete-char
+bindkey '[7~'     beginning-of-line
+bindkey '[8~'     end-of-line
 
 #bindkey "\M^?"      _forward-delete-to-/
 #bindkey "^^?"       _forward-delete-to-/
@@ -215,6 +219,8 @@ zmodload -a colors
 zmodload -a autocomplete
 zmodload -a complist
 
+setopt dvorak
+
 # cache stuff
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache
@@ -276,16 +282,18 @@ autoload -U promptinit
 promptinit
 
 autoload -Uz vcs_info
-zstyle ':vcs_info:*' unstagedstr '*'
-zstyle ':vcs_info:*' stagedstr '-'
-zstyle ':vcs_info:*' actionformats '%c%u%b|%a'
-zstyle ':vcs_info:*' formats '%c%u%b'
-zstyle ':vcs_info:*' branchformat '%b:%r'
-zstyle ':vcs_info:*' enable git svn bzr hg
+setopt prompt_subst
+zstyle ':vcs_info:*:prompt:*' check-for-changes true
+zstyle ':vcs_info:*:prompt:*' unstagedstr '-'
+zstyle ':vcs_info:*:prompt:*' stagedstr '*'
+zstyle ':vcs_info:*:prompt:*' actionformats "%c%u%b(%a)"
+zstyle ':vcs_info:*:prompt:*' formats "%c%u%b"
+zstyle ':vcs_info:*:prompt:*' branchformat "%r:%b"
+zstyle ':vcs_info:*:prompt:*' enable git svn bzr hg
 
 precmd () {
     psvar=()
-    vcs_info
+    vcs_info prompt
     [[ -n $vcs_info_msg_0_ ]] && [[ $(readlink -f "$(git rev-parse --git-dir)/..") != "/home/leif" ]] && psvar[1]="$vcs_info_msg_0_"
 }
 
@@ -304,7 +312,8 @@ then
 else
     ## regular prompt
     # prompt gentoo
-    PROMPT="%B%F{green}%n@%m%k %B%F{blue}%1~%(1v. [%k%F{red}%1v%k%B%F{blue}] . )%# %b%f%k"
+    PROMPT="%B%F{green}%n@%m%k %B%F{blue}%1~%(1v. [%k%F{cyan}%1v%k%B%F{blue}].)%k %B%(?..%F{red}%?%f )%F{blue}%#%b%f%k "
+    RPROMPT="%B%F{blue}[%f%F{yellow}%T%f%F{blue}]%k"
 fi
 
 # done setting up
