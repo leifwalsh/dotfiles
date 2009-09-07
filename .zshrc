@@ -281,24 +281,42 @@ zstyle ':vcs_info:*:prompt:*' nvcsformats "%B%F{blue}%2~%f%b"
 
 # show current directory in the menu bar
 title () {
-    if [[ $TERM == "screen" ]]; then
-        print -nR $'\033k'$1$'\033'\\
-        print -nR $'\033]0;'$2$'\a'
-    elif [[ $TERM == "xterm" || $TERM = "xterm-256color" || $TERM == "rxvt" || $TERM == "rxvt-unicode" ]]; then
-        shift
-        print -nR $'\033]0;'$*$'\a'
-    fi
+    case $TERM in
+        screen*)
+            print -nR $'\033k'$1$'\033'\\; print -nR $'\033]0;'$2$'\a'
+            ;;
+        xterm*|rxvt*)
+            print -nR $'\033]0;'$2$'\a'
+            ;;
+    esac
 }
 
 precmd () {
     vcs_info prompt
-    title zsh "${(%):-%m@%n %~}"
+    title zsh "[$TERM] zsh: ${(%):-%m@%n %~}"
 }
 
 preexec () {
     emulate -L zsh
     local -a cmd; cmd=(${(z)1})
-    title zsh $cmd[1]:t "$cmd[2,-1]"
+
+    case $cmd[1] in
+        fg)
+            if (( $#cmd == 1)); then
+                cmd=(builtin jobs -l %+)
+            else
+                cmd=(builtin jobs -l ${(Q)cmd[2]})
+            fi;;
+        %*) cmd=(builtin jobs -l ${(Q)cmd[1]});;
+        sudo|exec) shift cmd;&
+        *) title $cmd[1]:t "[$TERM] zsh: $cmd[1]:t $cmd[2,-1]"
+            return;;
+    esac
+
+    local -A jt; jt=(${(kv)jobtexts})
+    $cmd >>(read num rest
+        cmd=(${(z)${(e):-\$jt$num}})
+        title $cmd[1]:t "[$TERM] zsh: $cmd[1]:t $cmd[2,-1]") 2>/dev/null
 }
 
 if [ "$TERM"x = "dumb"x -o "$EMACS"x = "t"x ]
@@ -311,7 +329,7 @@ then
     unfunction preexec
     PROMPT="%n@%m %2~ %# "
 else
-    PROMPT='%B%F{green}%n@%m%f%b ${vcs_info_msg_0_} %B%F{blue}%#%f%b '
+    PROMPT='%B%(#.%F{red}%m%f.%F{green}%n@%m%f)%b ${vcs_info_msg_0_} %B%F{blue}%#%f%b '
     RPROMPT="%B%F{blue}%(?..(%f%F{red}%?%f%F{blue}%) )[%f%F{yellow}%T%f%F{blue}]%f%b"
 fi
 
