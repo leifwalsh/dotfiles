@@ -1,3 +1,3 @@
 #!/bin/zsh
 
-uptime | sed 's/^.*average: //' | sed 's/,//g' | gawk '{ for (i=1; i<4; i+=1) { if ( i > 1 ) printf(" "); if ((( $i + 0 ) == $i ) && ($i > 3)) printf("\005{.R}%s\005{-}", $i); else if ((( $i + 0 ) == $i ) && ($i > 1.5)) printf("\005{.M}%s\005{-}", $i); else printf("\005{.B}%s\005{-}", $i); } }'
+for ((;;)) { gawk '{for (i=1; i<=3; i++) {if ((($i + 0) == $i) && ($i > 3.0)) printf("\005{+b .R}"); else if ((($i + 0) == $i) && ($i > 1.5)) printf("\005{+b .M}"); else printf("\005{+b .b}"); printf("%s\005{-}", $i); if (i < 3) printf(" "); else printf("\n"); } }' </proc/loadavg ; sleep 5 }

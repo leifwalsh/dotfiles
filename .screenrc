@@ -12,5 +12,5 @@ defutf8 on  # I guess this does too
 vbell off  # bells are stupid in general
 shell -$SHELL  # set the login shell
 
-backtick 1 5 5 parseuptime.sh  # this thing gives a colored load average
+backtick 1 0 0 parseuptime.sh  # this thing gives a colored load average
 caption always "%{= .b} %-Lw%{+b .B}%n*%f %t%{= .b}%+Lw %-=%{+b .G}%H %1` %{+b .B}<%{.Y}%c%{.B}>%{= dd}"
