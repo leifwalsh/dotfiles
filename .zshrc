@@ -11,6 +11,7 @@ export HISTSIZE=5000
 export SAVEHIST=5000
 setopt hist_ignore_dups # ignore same commands run twice+
 setopt appendhistory    # don't overwrite history 
+setopt sharehistory histappend # share history between open shells
 
 # Generic shell options.
 setopt nopromptcr     # don't add \n which overwrites cmds with no \n
@@ -24,10 +25,9 @@ setopt completeinword # not just at the end
 setopt alwaystoend    # when complete from middle, move cursor
 setopt promptsubst    # do varaible fu in prompt
 setopt extendedglob   # Nice things like *~*.c globs all but .c files
-setopt correctall
-setopt multios
-setopt list_ambiguous
-#setopt menucomplete   # Don't stop completing at ambiguities
+setopt correctall     # more correction
+setopt multios        # makes "foo <file1 <file2 >out1 >out2 |grep" possible
+setopt list_ambiguous # stop completing at ambiguities
 
 # Use emacs style editing
 bindkey -e
