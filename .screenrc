@@ -1,3 +1,4 @@
+escape 'z'
 blankerprg cmatrix -ablx  # blank the screen with the canonical blanking utility
 bindkey ^ab blanker  # bind C-a b and C-a C-b to the blank fn
 bindkey ^a^b blanker
@@ -14,4 +15,4 @@ shell -$SHELL  # set the login shell
 
 backtick 1 0 0 parseuptime.sh  # this thing gives a colored load average
 backtick 2 0 0 parsebat.sh  # this thing gives a colored battery percentage
-caption always "%{= .b} %-Lw%{+b .B}%n*%f %t%{= .b}%+Lw %-=%{+b .G}%H %2` %1` %{+b .B}<%{.Y}%c%{.B}>%{= dd}"
+caption always "%{= .b} %-Lw%{+b .B}%n*%f %t%{= .b}%+Lw %-=%{+b .G}%H %2` %1` %{+b .B}[%{.Y}%c%{.B}]%{= dd}"

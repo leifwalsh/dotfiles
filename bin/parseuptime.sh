@@ -1,3 +1,25 @@
 #!/bin/zsh
 
-for ((;;)) { gawk '{for (i=1; i<=3; i++) {if ((($i + 0) == $i) && ($i > 3.0)) printf("\005{+b .R}"); else if ((($i + 0) == $i) && ($i > 1.5)) printf("\005{+b .M}"); else printf("\005{+b .b}"); printf("%s\005{-}", $i); if (i < 3) printf(" "); else printf("\n"); } }' </proc/loadavg ; sleep 5 }
+for ((;;)) {
+    print -n "{+b .B}["
+    local i=1
+    for n in ${${(z)$(</proc/loadavg)}[0,3]}; do
+        if [[ $n -gt 3 ]]; then
+            print -n "{= .R}"
+        elif [[ $n -gt 1.5 ]]; then
+            print -n "{= .M}"
+        else
+            print -n "{= .b}"
+        fi
+
+        print -n "$n{-}"
+
+        if [[ $i -lt 3 ]]; then
+            print -n ' '
+        fi
+        (( i = i + 1 ))
+    done
+    print "]{-}"
+
+    sleep 5
+}

@@ -1,3 +1,35 @@
 #!/bin/zsh
 
-for ((;;)) { echo "100. * $(cat /sys/class/power_supply/BAT0/energy_now) / $(cat /sys/class/power_supply/BAT0/energy_full)" | gp -q | gawk '{ if ((($1 + 0) == $1) && ($1 > 50.0)) printf("\005{+b .G}"); else if ((($1 + 0) == $1) && ($1 > 25.0)) printf("\005{+b .Y}"); else printf("\005{+b .R}"); printf("%.02f%%\005{-}", $1); printf("\n"); }' ; sleep 5 }
+for ((;;)) {
+    local E_f=$(</sys/class/power_supply/BAT0/energy_full)
+    local E_n=$(</sys/class/power_supply/BAT0/energy_now)
+    local C_n=$(</sys/class/power_supply/BAT0/current_now)
+
+    (( PCT = 100. * E_n / E_f ))
+    (( H = E_n / C_n ))
+    (( M = ((1. * E_n / C_n) - H) * 60 ))
+
+    print -n "{+b .B}["
+
+    if [[ $PCT -gt 50.0 ]]; then
+        print -n "{= .G}"
+    elif [[ $PCT -gt 25.0 ]]; then
+        print -n "{= .Y}"
+    else
+        print -n "{= .R}"
+    fi
+
+    print -f "%.02f%%{-} " $PCT
+
+    if [[ $H -ge 1 ]]; then
+        print -n "{= .G}"
+    elif [[ $M -ge 30 ]]; then
+        print -n "{= .Y}"
+    else
+        print -n "{= .R}"
+    fi
+
+    print -f "%d:%02d{-}]{-}\n" $H $M
+
+    sleep 5
+}
