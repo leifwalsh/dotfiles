@@ -19,12 +19,12 @@ for ((;;)) {
 
         print -f "%.02f%%{-} " $PCT
 
-        local C_n=$(</sys/class/power_supply/BAT0/current_now)
-
-        (( H = E_n / C_n ))
-        (( M = ((1. * E_n / C_n) - H) * 60 ))
-
         if [[ $(</sys/class/power_supply/AC/online) -eq 0 ]]; then
+            local C_n=$(</sys/class/power_supply/BAT0/current_now)
+
+            (( H = E_n / C_n ))
+            (( M = ((1. * E_n / C_n) - H) * 60 ))
+
             if [[ $H -ge 1 ]]; then
                 print -n "{= .G}"
             elif [[ $M -ge 30 ]]; then
@@ -34,6 +34,11 @@ for ((;;)) {
             fi
             print -n "v"
         else
+            local C_n=$(</sys/class/power_supply/BAT0/current_now)
+
+            (( H = (E_f - E_n) / C_n ))
+            (( M = ((1. * (E_f - E_n) / C_n) - H) * 60 ))
+
             if [[ $H -ge 2 ]]; then
                 print -n "{= .R}"
             elif [[ $H -ge 1 ]]; then
