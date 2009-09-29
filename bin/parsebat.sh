@@ -32,14 +32,16 @@ for ((;;)) {
             else
                 print -n "{= .R}"
             fi
+            print -n "v"
         else
             if [[ $H -ge 2 ]]; then
                 print -n "{= .R}"
             elif [[ $H -ge 1 ]]; then
                 print -n "{= .Y}"
             else
-                print -n "{= .R}"
+                print -n "{= .G}"
             fi
+            print -n "^"
         fi
 
         print -f "%d:%02d{-}" $H $M
