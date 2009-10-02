@@ -6,10 +6,15 @@
 (add-hook 'python-mode-hook
       (lambda ()
 	(set-variable 'py-indent-offset 4)
-	;(set-variable 'py-smart-indentation nil)
-	;(define-key py-mode-map [tab] 'yas/expand)
-	;(setq yas/after-exit-snippet-hook 'indent-according-to-mode)
+	;(
+	;(
+	;(
 	))
+;; Clojure mode
+(add-to-list 'load-path
+             (concat (getenv "HOME") "/.emacs.d/vendor/clojure-mode"))
+(require 'clojure-mode)
+(add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
 ;; TRAMP remote editing
 (require 'tramp)
 (setq tramp-default-method "ssh")
@@ -28,7 +33,7 @@
 ;; code snippets
 (require 'yasnippet)
 (yas/initialize)
-(yas/load-directory (concat (getenv "HOME") "/" ".emacs.d/vendor/snippets"))
+(yas/load-directory (concat (getenv "HOME") "/.emacs.d/vendor/snippets"))
 ;; pymacs
 (autoload 'pymacs-apply "pymacs")
 (autoload 'pymacs-call "pymacs")
