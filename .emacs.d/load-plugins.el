@@ -14,15 +14,24 @@
 (add-to-list 'load-path
              (concat (getenv "HOME") "/.emacs.d/vendor/clojure-mode"))
 (require 'clojure-mode)
-(add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
+(add-to-list 'auto-mode-alist '("\\.clj$"       . clojure-mode))
 ;; TRAMP remote editing
 (require 'tramp)
 (setq tramp-default-method "ssh")
 ;; cscope integration
 (require 'xcscope)
+;; git integration
 (add-to-list 'load-path
              (concat (getenv "HOME") "/.emacs.d/vendor/git-emacs"))
 (require 'git-emacs)
+;; markdown mode
+(add-to-list 'load-path
+             (concat (getenv "HOME") "/.emacs.d/vendor/markdown-mode"))
+(require 'markdown-mode)
+(add-to-list 'auto-mode-alist
+             '("\\.md" . markdown-mode))
+;; runs python markdown implementation and allows for stdin
+(setq markdown-command "markdown-wrapper")
 ;; ido minibuffer completion
 (require 'ido)
 (ido-mode t)
