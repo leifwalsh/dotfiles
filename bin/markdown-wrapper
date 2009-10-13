@@ -38,8 +38,8 @@ end
 begin
   tf = Tempfile::new("mdtemp")
   written = if STDIN.tty? then 0 else tf.write STDIN.read end
+  $tpath = tf.path
   if written > 0
-    $tpath = tf.path
     $files << $tpath
   end
 ensure
