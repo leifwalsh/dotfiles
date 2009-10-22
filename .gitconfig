@@ -12,7 +12,7 @@
 [merge]
     tool = gvimdiff
 [core]
-    whitespace = trailing-space,space-before-tab,cr-at-eol 
+    whitespace = trailing-space,space-before-tab,cr-at-eol
     excludesfile = /home/leif/.gitignore
     editor = emacsclient
 [github]
