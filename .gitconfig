@@ -1,18 +1,24 @@
 [user]
-	name = Leif Walsh
-	email = leif.walsh@gmail.com
+    name = Leif Walsh
+    email = leif.walsh@gmail.com
+    editor = emacsclient
 [color]
-	branch = auto
-	diff = auto
-	interactive = auto
-	status = auto
+    branch = auto
+    diff = auto
+    interactive = auto
+    status = auto
+    ui = auto
+    pager = true
 [merge]
-	tool = gvimdiff
+    tool = gvimdiff
 [core]
-	excludesfile = /home/leif/.gitignore
-	editor = emacsclient
+    whitespace = trailing-space,space-before-tab,cr-at-eol 
+    excludesfile = /home/leif/.gitignore
+    editor = emacsclient
 [github]
-	user = adlaiff6
-	token = c821dd114baed39aab1bb20161cd8c8d
+    user = adlaiff6
+    token = c821dd114baed39aab1bb20161cd8c8d
 [push]
     default = matching
+[alias]
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
