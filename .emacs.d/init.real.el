@@ -13,6 +13,7 @@
 (require 'dev-studio)
 (require 'notify)
 (require 'erc-config)
+(require 'org-config)
 (require 'set-color)
 
 ;; start server for emacsclient
