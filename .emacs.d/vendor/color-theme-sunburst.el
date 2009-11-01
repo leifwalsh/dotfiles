@@ -16,7 +16,7 @@
      (border-glyph ((t (nil))))
      (buffers-tab ((t (:background "#111" :foreground "#ddd"))))
      (font-lock-builtin-face ((t (:foreground "#dd7b3b"))))
-     (font-lock-comment-face ((t (:foreground "#666" ))))
+     (font-lock-comment-face ((t (:foreground "#69b" ))))
      (font-lock-constant-face ((t (:foreground "#99cf50"))))
      (font-lock-doc-string-face ((t (:foreground "#9b859d"))))
      (font-lock-function-name-face ((t (:foreground "#e9c062" :bold t))))
