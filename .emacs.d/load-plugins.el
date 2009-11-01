@@ -39,6 +39,8 @@
 ;; code completion
 (require 'auto-complete)
 (global-auto-complete-mode t)
+;; flymake
+(require 'flymake)
 ;; code snippets
 (require 'yasnippet)
 (yas/initialize)
