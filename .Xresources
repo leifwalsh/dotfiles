@@ -1,7 +1,7 @@
 Xft*dpi: 70
 
 URxvt*foreground: white
-URxvt*background: rgba:0000/0000/0f0f/cfcf
+URxvt*background: rgba:0000/0000/0000/cccc
 URxvt*color0: #2e3436
 URxvt*color1: #cc0000
 URxvt*color2: #4e9a06
