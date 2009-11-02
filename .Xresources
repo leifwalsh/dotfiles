@@ -23,9 +23,9 @@ URxvt*hilightColor: white
 
 URxvt*iconFile: /usr/share/pixmaps/gnome-terminal.png
 
-URxvt*font: xft:Droid Sans Mono-13
-URxvt*italicFont: xft:Droid Sans Mono-13:italic:autohint=true
-URxvt*boldItalicFont: xft:Droid Sans Mono-13:bold:italic:autohint=true
+URxvt*font: xft:Deja Vu Sans Mono-13
+URxvt*italicFont: xft:Deja Vu Sans Mono-13:italic:autohint=true
+URxvt*boldItalicFont: xft:Deja Vu Sans Mono-13:bold:italic:autohint=true
 
 URxvt*scrollBar: false
 URxvt*saveLines: 8192
