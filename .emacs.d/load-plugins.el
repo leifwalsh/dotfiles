@@ -54,6 +54,9 @@
 ;; ropemacs python refactoring
 ;(pymacs-load "ropemacs" "rope-")
 ;(setq ropemacs-enable-autoimport t)
+;; javascript
+(autoload 'js2-mode "js2" nil t)
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 (require 'haml-mode)
 (require 'sass-mode)
 (add-to-list 'load-path

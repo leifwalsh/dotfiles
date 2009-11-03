@@ -13,6 +13,16 @@
           (setq lib (car args))
           (apply default-require args))
       (file-error  (progn (message "Couldn't load extension: %s" lib) nil)))))
+(setq default-autoload (symbol-function 'autoload))
+(defun autoload (&rest args)
+  "autoload stuff"
+  (interactive)
+  (let (lib)
+    (condition-case err
+        (progn
+          (setq lib (car args))
+          (apply default-autoload args))
+      (file-error (progn (message "Couldn't load extension: %s" lib) nil)))))
 
 (defun recompile-emacs-dir ()
   (byte-recompile-directory (concat (getenv "HOME") "/" ".emacs.d") 0))
