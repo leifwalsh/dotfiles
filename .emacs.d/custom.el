@@ -17,7 +17,7 @@
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(menu-bar-mode t)
- '(safe-local-variable-values (quote ((c-indentation-style . linux))))
+ '(safe-local-variable-values (quote ((js2-basic-offset . 4) (c-indentation-style . linux))))
  '(scroll-bar-mode nil)
  '(show-paren-mode t)
  '(show-trailing-whitespace t)
