@@ -50,7 +50,7 @@ for ((;;)) {
         fi
 
         print -f "%d:%02d{-}" $H $M
-        print -n "]{-}"
+        print -n "]{-} "
     fi
     print ""
     sleep 5
