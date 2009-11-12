@@ -30,6 +30,10 @@
 (require 'markdown-mode)
 (add-to-list 'auto-mode-alist
              '("\\.md" . markdown-mode))
+;; objective-j mode
+(add-to-list 'load-path
+             (concat (getenv "HOME") "/.emacs.d/vendor/cappuccino"))
+(require 'objj-mode)
 ;; runs python markdown implementation and allows for stdin
 (setq markdown-command "markdown-wrapper")
 ;; ido minibuffer completion
