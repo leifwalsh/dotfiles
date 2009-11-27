@@ -267,7 +267,7 @@ zstyle ':completion:*:*:*:users' ignored-patterns \
     dictd gnats identd irc man messagebus postfix proxy sys www-data
 
 autoload -Uz vcs_info
-zstyle ':vcs_info:*' enable git svn bzr hg
+zstyle ':vcs_info:*' enable git svn bzr hg darcs
 zstyle ':vcs_info:*' check-for-changes true
 zstyle ':vcs_info:*' branchformat "%b:%r"
 zstyle ':vcs_info:*:prompt:*' unstagedstr '-'
