@@ -39,3 +39,14 @@ URxvt.matcher.pattern.1: \\bwww\\.[\\w-]+\\.[\\w./?&@#-]*[\\w/-]
 
 Fig.latexfonts: true
 Fig.specialtext: true
+
+xterm*customization: -color
+xterm*background: black
+xterm*foreground: white
+xterm*FaceName: "Deja Vu Sans Mono"
+xterm*FaceSize: 13
+xterm*TermName: xterm-256color
+xterm*Utf8: 1
+xterm*MetaSendsEscape: true
+xterm*SaveLines: 8192
+xterm*TrimSelection: true

@@ -138,13 +138,34 @@ bindkey "^[^f"      _forward-to-space
 
 #bindkey "\M\b"      _backward-delete-to-/
 #bindkey "^\b"       _backward-delete-to-/
-bindkey "^\b"        backward-kill-word
-bindkey "^[^\b"     _backward-delete-to-space
+
+# C-Backspace and C-M-Backspace
+if [[ $TERM =~ "rxvt-*" ]]; then
+    bindkey "^\b"       backward-kill-word
+    bindkey "^[^\b"     _backward-delete-to-space
+else
+    bindkey ""        backward-kill-word
+    bindkey "\e"     _backward-delete-to-space
+fi
 
 bindkey "^[^d"      _forward-delete-to-space
-bindkey '[3~'     delete-char
-bindkey '[7~'     beginning-of-line
-bindkey '[8~'     end-of-line
+
+# Delete, Home, End, arrow keys (udlr)
+if [[ $TERM =~ "rxvt-*" ]]; then
+    bindkey '[3~'     delete-char
+    bindkey '[7~'     beginning-of-line
+    bindkey '[8~'     end-of-line
+else
+    bindkey '\2333~'    delete-char
+    bindkey '\2333;5~'  _forward-delete-to-/
+    bindkey '\2333;3~'  _forward-delete-to-/
+    bindkey '\233H'     beginning-of-line
+    bindkey '\233F'     end-of-line
+    bindkey '\233D'     backward-char
+    bindkey '\233C'     forward-char
+    bindkey '\233A'     up-history
+    bindkey '\233B'     down-history
+fi
 
 #bindkey "\M^?"      _forward-delete-to-/
 #bindkey "^^?"       _forward-delete-to-/
