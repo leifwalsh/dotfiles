@@ -95,7 +95,7 @@ if has("gui_running")
     hi Constant       gui=NONE   guifg=#ffcd8b   guibg=NONE
     hi String         gui=NONE   guifg=#ffcd8b   guibg=#404040
     hi Error          gui=NONE   guifg=#ffffff   guibg=#6e2e2e
-    hi Identifier     gui=NONE   guifg=#ff8bff   guibg=NONE
+    hi Identifier     gui=BOLD   guifg=#ffff8b   guibg=NONE
     hi Ignore         gui=NONE
     hi Number         gui=NONE   guifg=#f0ad6d   guibg=NONE
     hi PreProc        gui=NONE   guifg=#409090   guibg=NONE
@@ -103,7 +103,7 @@ if has("gui_running")
     hi SpecialChar    gui=NONE   guifg=#c080d0   guibg=#404040
     hi Statement      gui=NONE   guifg=#808bed   guibg=NONE
     hi Todo           gui=BOLD   guifg=#303030   guibg=#d0a060
-    hi Type           gui=NONE   guifg=#ff8bff   guibg=NONE
+    hi Type           gui=BOLD   guifg=#ffff8b   guibg=NONE
     hi Underlined     gui=BOLD   guifg=#df9f2d   guibg=NONE
     hi TaglistTagName gui=BOLD   guifg=#808bed   guibg=NONE
 
