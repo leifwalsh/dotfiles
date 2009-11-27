@@ -24,7 +24,9 @@
 
 (defun c-like-keys (map)
   (progn
-    (define-key map (kbd "C-c C-c") 'compile)))
+    (define-key map (kbd "C-c C-c") 'compile)
+    (define-key map (kbd "M-q") 'execute-extended-command)
+    (define-key map (kbd "M-x") 'c-fill-paragraph)))
 
 (add-hook 'c-mode-hook
           (lambda () (c-like-keys c-mode-map)))

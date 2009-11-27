@@ -1634,12 +1634,12 @@ handle the end-of-buffer error fired in it by calling
     (error (message (error-message-string err)))))
 
 ;; disable c-electric-* serial command in YAS fields
-(add-hook 'c-mode-common-hook
-          '(lambda ()
-	     (make-variable-buffer-local 'yas/keymap)
-             (dolist (k '(":" ">" ";" "<" "{" "}"))
-               (define-key yas/keymap
-                 k 'self-insert-command))))
+;; (add-hook 'c-mode-common-hook
+;;           '(lambda ()
+;; 	     (make-variable-buffer-local 'yas/keymap)
+;;              (dolist (k '(":" ">" ";" "<" "{" "}"))
+;;                (define-key yas/keymap
+;;                  k 'self-insert-command))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Contents of dropdown-list.el
