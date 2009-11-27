@@ -43,6 +43,22 @@ Fig.specialtext: true
 xterm*customization: -color
 xterm*background: black
 xterm*foreground: white
+xterm*Color0: #2e3436
+xterm*Color1: #cc0000
+xterm*Color2: #4e9a06
+xterm*Color3: #c4a000
+xterm*Color4: #3465a4
+xterm*Color5: #75507b
+xterm*Color6: #06989a
+xterm*Color7: #d3d7cf
+xterm*Color8: #555753
+xterm*Color9: #ef2929
+xterm*Color10: #8ae234
+xterm*Color11: #fce94f
+xterm*Color12: #729fcf
+xterm*Color13: #ad7fa8
+xterm*Color14: #34e2e2
+xterm*Color15: #eeeeec
 xterm*FaceName: "Deja Vu Sans Mono"
 xterm*FaceSize: 13
 xterm*TermName: xterm-256color
