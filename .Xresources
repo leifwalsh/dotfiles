@@ -66,4 +66,3 @@ xterm*Utf8: 1
 xterm*MetaSendsEscape: true
 xterm*SaveLines: 8192
 xterm*TrimSelection: true
-xterm*cursorColor: yellow
