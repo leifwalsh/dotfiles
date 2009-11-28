@@ -140,22 +140,18 @@ bindkey "^[^f"      _forward-to-space
 #bindkey "^\b"       _backward-delete-to-/
 
 # C-Backspace and C-M-Backspace
-if [[ $TERM =~ "rxvt-*" ]]; then
-    bindkey "^\b"       backward-kill-word
-    bindkey "^[^\b"     _backward-delete-to-space
-else
+if [[ $TERM =~ "xterm*" ]]; then
     bindkey ""        backward-kill-word
     bindkey "\e"     _backward-delete-to-space
+else
+    bindkey "^\b"       backward-kill-word
+    bindkey "^[^\b"     _backward-delete-to-space
 fi
 
 bindkey "^[^d"      _forward-delete-to-space
 
 # Delete, Home, End, arrow keys (udlr)
-if [[ $TERM =~ "rxvt-*" ]]; then
-    bindkey '[3~'     delete-char
-    bindkey '[7~'     beginning-of-line
-    bindkey '[8~'     end-of-line
-else
+if [[ $TERM =~ "xterm*" ]]; then
     bindkey '\2333~'    delete-char
     bindkey '\2333;5~'  _forward-delete-to-/
     bindkey '\2333;3~'  _forward-delete-to-/
@@ -165,6 +161,10 @@ else
     bindkey '\233C'     forward-char
     bindkey '\233A'     up-history
     bindkey '\233B'     down-history
+else
+    bindkey '[3~'     delete-char
+    bindkey '[7~'     beginning-of-line
+    bindkey '[8~'     end-of-line
 fi
 
 #bindkey "\M^?"      _forward-delete-to-/
@@ -218,7 +218,7 @@ alias asdf='setxkbmap dvorak'
 
 setopt extended_glob
 preexec () {
-    if [[ "$TERM" == "screen" ]]; then
+    if [[ "$TERM" =~ "screen" ]]; then
     local CMD=${1[(wr)^(*=*|sudo|-*)]}
     echo -n "\ek$CMD\e\\"
     fi
@@ -340,8 +340,7 @@ preexec () {
         title $cmd[1]:t "[${TERM%-*}] zsh: $cmd[1]:t $cmd[2,-1]") 2>/dev/null
 }
 
-if [ "$TERM"x = "dumb"x -o "$EMACS"x = "t"x ]
-then
+if [[ $TERM =~ "dumb*" -o $EMACS = "t" ]]; then
     # emacs is dumb
     unsetopt zle
     unsetopt prompt_cr
