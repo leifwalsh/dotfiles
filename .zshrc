@@ -340,7 +340,7 @@ preexec () {
         title $cmd[1]:t "[${TERM%-*}] zsh: $cmd[1]:t $cmd[2,-1]") 2>/dev/null
 }
 
-if [[ $TERM =~ "dumb*" -o $EMACS = "t" ]]; then
+if [[ $TERM == "dumb" && $EMACS == "t" ]]; then
     # emacs is dumb
     unsetopt zle
     unsetopt prompt_cr
