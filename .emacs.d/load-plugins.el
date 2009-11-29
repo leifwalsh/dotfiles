@@ -29,13 +29,17 @@
              (concat (getenv "HOME") "/.emacs.d/vendor/markdown-mode"))
 (require 'markdown-mode)
 (add-to-list 'auto-mode-alist
-             '("\\.md" . markdown-mode))
+             '("\\.md"                          . markdown-mode))
+(add-to-list 'auto-mode-alist
+             '("\\.markdown"                    . markdown-mode))
+;; runs python markdown implementation and allows for stdin
+(setq markdown-command "markdown-wrapper")
+;; add flyspell to markdown-mode
+(add-hook 'markdown-mode-hook #'(lambda () (flyspell-mode t)))
 ;; objective-j mode
 (add-to-list 'load-path
              (concat (getenv "HOME") "/.emacs.d/vendor/cappuccino"))
 (require 'objj-mode)
-;; runs python markdown implementation and allows for stdin
-(setq markdown-command "markdown-wrapper")
 ;; ido minibuffer completion
 (require 'ido)
 (ido-mode t)
