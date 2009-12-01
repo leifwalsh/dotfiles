@@ -156,7 +156,9 @@ if [[ $TERM =~ "xterm*" ]]; then
     bindkey '\2333;5~'  _forward-delete-to-/
     bindkey '\2333;3~'  _forward-delete-to-/
     bindkey '\233H'     beginning-of-line
+    bindkey '[H'      beginning-of-line
     bindkey '\233F'     end-of-line
+    bindkey '[F'      end-of-line
     bindkey '\233D'     backward-char
     bindkey '\233C'     forward-char
     bindkey '\233A'     up-history
