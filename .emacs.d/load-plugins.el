@@ -10,6 +10,8 @@
 	;(
 	;(
 	))
+;; remember-el
+(require 'remember)
 ;; Clojure mode
 (add-to-list 'load-path
              (concat (getenv "HOME") "/.emacs.d/vendor/clojure-mode"))
