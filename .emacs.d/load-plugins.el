@@ -37,7 +37,7 @@
 (add-to-list 'auto-mode-alist
              '("\\.markdown"                    . markdown-mode))
 ;; runs python markdown implementation and allows for stdin
-(setq markdown-command "markdown-wrapper")
+(setq markdown-command "maruku")
 ;; add flyspell to markdown-mode
 (add-hook 'markdown-mode-hook #'(lambda () (flyspell-mode t)))
 ;; objective-j mode
