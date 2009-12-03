@@ -23,7 +23,7 @@ for ((;;)) {
             local C_n=$(</sys/class/power_supply/BAT0/current_now)
 
             (( H = E_n / C_n ))
-            (( M = ((1. * E_n / C_n) - H) * 60 ))
+            (( M = (60 * (E_n - (H * C_n))) / C_n ))
 
             if [[ $H -ge 1 ]]; then
                 print -n "{= .G}"
@@ -37,7 +37,7 @@ for ((;;)) {
             local C_n=$(</sys/class/power_supply/BAT0/current_now)
 
             (( H = (E_f - E_n) / C_n ))
-            (( M = ((1. * (E_f - E_n) / C_n) - H) * 60 ))
+            (( M = (60 * ((E_f - E_n) - (H * C_n))) / C_n ))
 
             if [[ $H -ge 2 ]]; then
                 print -n "{= .R}"
