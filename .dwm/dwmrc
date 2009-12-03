@@ -1,0 +1,45 @@
+#!/bin/sh
+
+while true; do
+    STR=""
+    i=1
+    for piece in $(cat /proc/loadavg); do
+        if [[ $i -gt 3 ]]; then
+            break
+        fi
+        (( i = i + 1 ))
+        STR="${STR}$(printf "$piece ")"
+    done
+
+    if [[ ( -d /sys/class/power_supply/BAT0 ) &&
+        ( $(cat /sys/class/power_supply/BAT0/present) -eq 1 ) ]]; then
+        E_f=$(cat /sys/class/power_supply/BAT0/energy_full)
+        E_n=$(cat /sys/class/power_supply/BAT0/energy_now)
+        (( PCT = 100 * E_n / E_f ))
+
+        STR="${STR}$(printf "[%.02f%% " $PCT)"
+
+        if [[ $(</sys/class/power_supply/AC/online) -eq 0 ]]; then
+            C_n=$(</sys/class/power_supply/BAT0/current_now)
+
+            (( H = E_n / C_n ))
+            (( M = (60 * (E_n - (H * C_n))) / C_n ))
+
+            STR="${STR}$(printf "v")"
+        else
+            local C_n=$(</sys/class/power_supply/BAT0/current_now)
+
+            (( H = (E_f - E_n) / C_n ))
+            (( M = (60 * ((E_f - E_n) - (H * C_n))) / C_n ))
+
+            STR="${STR}$(printf "^")"
+        fi
+
+        STR="${STR}$(printf "%d:%02d] " $H $M)"
+    fi
+
+    STR="${STR}$(printf "$(date)\n")"
+
+    xsetroot -name "${STR}"
+    sleep 1
+done
