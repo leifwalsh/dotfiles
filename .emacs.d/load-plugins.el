@@ -10,6 +10,9 @@
 	;(
 	;(
 	))
+;; uniquify
+(require 'uniquify)
+(setq uniquify-buffer-name-style "reverse")
 ;; remember-el
 (require 'remember)
 (define-key global-map "\C-cr" 'org-remember)
