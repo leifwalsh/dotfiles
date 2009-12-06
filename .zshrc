@@ -140,7 +140,7 @@ bindkey "^[^f"      _forward-to-space
 #bindkey "^\b"       _backward-delete-to-/
 
 # C-Backspace and C-M-Backspace
-if [[ $TERM =~ "xterm*" ]]; then
+if [[ $TERM =~ "(xterm|screen)*" ]]; then
     bindkey ""        backward-kill-word
     bindkey "\e"     _backward-delete-to-space
 else
@@ -151,7 +151,7 @@ fi
 bindkey "^[^d"      _forward-delete-to-space
 
 # Delete, Home, End, arrow keys (udlr)
-if [[ $TERM =~ "xterm*" ]]; then
+if [[ $TERM =~ "(xterm|screen)*" ]]; then
     bindkey '\2333~'    delete-char
     bindkey '\2333;5~'  _forward-delete-to-/
     bindkey '\2333;3~'  _forward-delete-to-/

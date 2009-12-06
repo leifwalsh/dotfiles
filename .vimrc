@@ -5,8 +5,8 @@ if &term =~ '^\(xterm\|screen\)$' && $COLORTERM == 'gnome-terminal'
 	set t_Co=256
 endif
 set guifont=DejaVu\ Sans\ Mono\ 13
-let g:inkpot_black_background = 1
-colorscheme inkpot
+"let g:inkpot_black_background = 1
+colorscheme zenburn
 
 filetype on
 filetype plugin on

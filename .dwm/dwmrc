@@ -1,5 +1,18 @@
 #!/bin/sh
 
+PIDFILE="${HOME}/.dwm/dwmrc.pid"
+PID=$$
+
+xrdb -merge ${HOME}/.Xresources
+setxkbmap -model pc105 -layout us -variant dvorak -option ctrl:nocaps,compose:ralt
+
+if [[ -f "${PIDFILE}" ]]; then
+    kill $(cat "${PIDFILE}")
+    rm "${PIDFILE}"
+fi
+
+echo "${PID}" >"${PIDFILE}"
+
 while true; do
     STR=""
     i=1
