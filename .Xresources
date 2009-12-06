@@ -41,24 +41,45 @@ Fig.latexfonts: true
 Fig.specialtext: true
 
 xterm*customization: -color
-xterm*background: black
-xterm*foreground: white
-! xterm*Color0: #2e3436
-xterm*Color1: #cc0000
-! xterm*Color2: #4e9a06
-xterm*Color3: #c4a000
-xterm*Color4: #3465a4
-xterm*Color5: #75507b
-! xterm*Color6: #06989a
-! xterm*Color7: #d3d7cf
-! xterm*Color8: #555753
-xterm*Color9: #ef2929
-! xterm*Color10: #8ae234
-xterm*Color11: #fce94f
-xterm*Color12: #729fcf
-xterm*Color13: #ad7fa8
-! xterm*Color14: #34e2e2
-! xterm*Color15: #eeeeec
+/** tango-ish colors
+ * xterm*background: black
+ * xterm*foreground: white
+ * ! xterm*Color0: #2e3436
+ * xterm*Color1: #cc0000
+ * ! xterm*Color2: #4e9a06
+ * xterm*Color3: #c4a000
+ * xterm*Color4: #3465a4
+ * xterm*Color5: #75507b
+ * ! xterm*Color6: #06989a
+ * ! xterm*Color7: #d3d7cf
+ * ! xterm*Color8: #555753
+ * xterm*Color9: #ef2929
+ * ! xterm*Color10: #8ae234
+ * xterm*Color11: #fce94f
+ * xterm*Color12: #729fcf
+ * xterm*Color13: #ad7fa8
+ * ! xterm*Color14: #34e2e2
+ * ! xterm*Color15: #eeeeec
+ */
+/** zenburn colors */
+xterm*background: #3f3f3f
+xterm*foreground: #dcdccc
+xterm*Color0: #3f3f3f
+xterm*Color1: #705050
+xterm*Color2: #60b48a
+xterm*Color3: #dfaf8f
+xterm*Color4: #506070
+xterm*Color5: #dc8cc3
+xterm*Color6: #8cd0d3
+xterm*Color7: #dcdccc
+xterm*Color8: #709080
+xterm*Color9: #dca3a3
+xterm*Color10: #c3bf9f
+xterm*Color11: #f0dfaf
+xterm*Color12: #94bff3
+xterm*Color13: #ec93d3
+xterm*Color14: #93e0e3
+xterm*Color15: #ffffff
 xterm*FaceName: "Deja Vu Sans Mono"
 xterm*FaceSize: 13
 xterm*TermName: xterm-256color

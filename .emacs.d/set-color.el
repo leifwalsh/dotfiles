@@ -1,7 +1,9 @@
 (require 'color-theme)
 (setq color-theme-is-global t)
-(require 'color-theme-sunburst)
-(color-theme-tm)
+;;(require 'color-theme-sunburst)
+;;(color-theme-tm)
+(require 'color-theme-zenburn)
+(color-theme-zenburn)
 
 (defun toggle-transparency ()
   (interactive)
