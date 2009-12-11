@@ -17,6 +17,9 @@
 (require 'remember)
 (define-key global-map "\C-cr" 'org-remember)
 (define-key global-map "\C-c\C-r" 'org-remember)
+;; folding
+(load "folding" 'nomessage 'noerror)
+(folding-mode-add-find-file-hook)
 ;; Clojure mode
 (add-to-list 'load-path
              (concat (getenv "HOME") "/.emacs.d/vendor/clojure-mode"))
