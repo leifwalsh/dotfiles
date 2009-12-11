@@ -34,5 +34,7 @@
           (lambda () (c-like-keys c++-mode-map)))
 (add-hook 'objc-mode-hook
           (lambda () (c-like-keys objc-mode-map)))
+(add-hook 'java-mode-hook
+          (lambda () (c-like-keys java-mode-map)))
 
 (provide 'remaps)
