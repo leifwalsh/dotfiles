@@ -87,3 +87,7 @@ xterm*Utf8: 1
 xterm*MetaSendsEscape: true
 xterm*SaveLines: 8192
 xterm*TrimSelection: true
+xterm*On2Clicks: regex [-_.A-Za-z0-9]+
+xterm*On3Clicks: regex [-_/:=+?&@.A-Za-z0-9]+
+xterm*On4Clicks: regex [^ ]+
+xterm*On5Clicks: line
