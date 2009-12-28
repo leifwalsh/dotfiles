@@ -18,8 +18,9 @@
 (define-key global-map "\C-cr" 'org-remember)
 (define-key global-map "\C-c\C-r" 'org-remember)
 ;; folding
-(load "folding" 'nomessage 'noerror)
+(require 'folding)
 (folding-mode-add-find-file-hook)
+(folding-add-to-marks-list 'lua-mode "-- {{{" "-- }}}" nil)
 ;; Clojure mode
 (add-to-list 'load-path
              (concat (getenv "HOME") "/.emacs.d/vendor/clojure-mode"))

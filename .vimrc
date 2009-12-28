@@ -1,9 +1,9 @@
 source ~/.vim/vimrc-python.org
 let python_highlight_all=1
 
-if &term =~ '^\(xterm\|screen\)$' && $COLORTERM == 'gnome-terminal'
+"if &term =~ '^\(xterm\|screen\)$' && $COLORTERM == 'gnome-terminal'
 	set t_Co=256
-endif
+"endif
 set guifont=DejaVu\ Sans\ Mono\ 13
 "let g:inkpot_black_background = 1
 colorscheme zenburn

@@ -1,5 +1,24 @@
 Xft*dpi: 70
 
+URxvt.background: #3f3f3f
+URxvt.foreground: #dcdccc
+URxvt.color0: #3f3f3f
+URxvt.color1: #705050
+URxvt.color2: #60b48a
+URxvt.color3: #dfaf8f
+URxvt.color4: #506070
+URxvt.color5: #dc8cc3
+URxvt.color6: #8cd0d3
+URxvt.color7: #dcdccc
+URxvt.color8: #709080
+URxvt.color9: #dca3a3
+URxvt.color10: #c3bf9f
+URxvt.color11: #f0dfaf
+URxvt.color12: #94bff3
+URxvt.color13: #ec93d3
+URxvt.color14: #93e0e3
+URxvt.color15: #ffffff
+/*
 URxvt.foreground: white
 URxvt.background: rgba:0000/0000/0000/cccc
 URxvt.color0: #2e3436
@@ -18,15 +37,16 @@ URxvt.color12: #729fcf
 URxvt.color13: #ad7fa8
 URxvt.color14: #34e2e2
 URxvt.color15: #eeeeec
-URxvt.depth: 32
 URxvt.hilightColor: white
+*/
+URxvt.depth: 32
 
 URxvt.iconFile: /usr/share/pixmaps/gnome-terminal.png
 
-URxvt.font: xft:DejaVu Sans Mono-13:autohint=true,xft:Bitstream Vera Sans Mono-13:autohint=true
-URxvt.boldFont: xft:DejaVu Sans Mono-13:bold:autohint=true,xft:Bitstream Vera Sans Mono-13:bold:autohint=true
-URxvt.italicFont: xft:DejaVu Sans Mono-13:italic:autohint=true,xft:Bitstream Vera Sans Mono-13:italic:autohint=true
-URxvt.boldItalicFont: xft:DejaVu Sans Mono-13:bold:italic:autohint=true,xft:Bitstream Vera Sans Mono-13:bold:italic:autohint=true
+URxvt.font: xft:Deja Vu Sans Mono-13:autohint=true,xft:Bitstream Vera Sans Mono-13:autohint=true
+URxvt.boldFont: xft:Deja Vu Sans Mono-13:bold:autohint=true,xft:Bitstream Vera Sans Mono-13:bold:autohint=true
+URxvt.italicFont: xft:Deja Vu Sans Mono-13:italic:autohint=true,xft:Bitstream Vera Sans Mono-13:italic:autohint=true
+URxvt.boldItalicFont: xft:Deja Vu Sans Mono-13:bold:italic:autohint=true,xft:Bitstream Vera Sans Mono-13:bold:italic:autohint=true
 
 URxvt.scrollBar: false
 URxvt.saveLines: 8192
@@ -64,30 +84,30 @@ xterm*customization: -color
 /** zenburn colors */
 xterm*background: #3f3f3f
 xterm*foreground: #dcdccc
-xterm*Color0: #3f3f3f
-xterm*Color1: #705050
-xterm*Color2: #60b48a
-xterm*Color3: #dfaf8f
-xterm*Color4: #506070
-xterm*Color5: #dc8cc3
-xterm*Color6: #8cd0d3
-xterm*Color7: #dcdccc
-xterm*Color8: #709080
-xterm*Color9: #dca3a3
-xterm*Color10: #c3bf9f
-xterm*Color11: #f0dfaf
-xterm*Color12: #94bff3
-xterm*Color13: #ec93d3
-xterm*Color14: #93e0e3
-xterm*Color15: #ffffff
-xterm*FaceName: "Deja Vu Sans Mono"
-xterm*FaceSize: 13
-xterm*TermName: xterm-256color
-xterm*Utf8: 1
-xterm*MetaSendsEscape: true
-xterm*SaveLines: 8192
-xterm*TrimSelection: true
-xterm*On2Clicks: regex [-_.A-Za-z0-9]+
-xterm*On3Clicks: regex [-_/:=+?&@.A-Za-z0-9]+
-xterm*On4Clicks: regex [^ ]+
-xterm*On5Clicks: line
+XTerm*vt100.color0: #3f3f3f
+XTerm*vt100.color1: #705050
+XTerm*vt100.color2: #60b48a
+XTerm*vt100.color3: #dfaf8f
+XTerm*vt100.color4: #506070
+XTerm*vt100.color5: #dc8cc3
+XTerm*vt100.color6: #8cd0d3
+XTerm*vt100.color7: #dcdccc
+XTerm*vt100.color8: #709080
+XTerm*vt100.color9: #dca3a3
+XTerm*vt100.color10: #c3bf9f
+XTerm*vt100.color11: #f0dfaf
+XTerm*vt100.color12: #94bff3
+XTerm*vt100.color13: #ec93d3
+XTerm*vt100.color14: #93e0e3
+XTerm*vt100.color15: #ffffff
+XTerm*vt100.faceName: "Deja Vu Sans Mono"
+XTerm*vt100.faceSize: 13
+XTerm.termName: xterm-256color
+XTerm*vt100.utf8: 1
+XTerm*vt100.metaSendsEscape: true
+XTerm*vt100.saveLines: 8192
+XTerm*vt100.trimSelection: true
+XTerm*vt100.on2Clicks: regex [-_.A-Za-z0-9]+
+XTerm*vt100.on3Clicks: regex [-_/:=+?&@.A-Za-z0-9]+
+XTerm*vt100.on4Clicks: regex [^ ]+
+XTerm*vt100.on5Clicks: line

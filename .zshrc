@@ -140,18 +140,24 @@ bindkey "^[^f"      _forward-to-space
 #bindkey "^\b"       _backward-delete-to-/
 
 # C-Backspace and C-M-Backspace
-if [[ $TERM =~ "(xterm|screen)*" ]]; then
-    bindkey ""        backward-kill-word
-    bindkey "\e"     _backward-delete-to-space
-else
+if [[ $TERM =~ "(rxvt-unicode|linux|screen)" ]]; then
     bindkey "^\b"       backward-kill-word
     bindkey "^[^\b"     _backward-delete-to-space
+else
+    bindkey ""        backward-kill-word
+    bindkey "\e"     _backward-delete-to-space
 fi
 
 bindkey "^[^d"      _forward-delete-to-space
 
 # Delete, Home, End, arrow keys (udlr)
-if [[ $TERM =~ "(xterm|screen)*" ]]; then
+if [[ $TERM =~ "(rxvt-unicode|linux|screen)" ]]; then
+    bindkey '[3~'     delete-char
+    bindkey '[7~'     beginning-of-line
+    bindkey '[8~'     end-of-line
+    bindkey '[1~'     beginning-of-line
+    bindkey '[4~'     end-of-line
+else
     bindkey '\2333~'    delete-char
     bindkey '\2333;5~'  _forward-delete-to-/
     bindkey '\2333;3~'  _forward-delete-to-/
@@ -163,10 +169,6 @@ if [[ $TERM =~ "(xterm|screen)*" ]]; then
     bindkey '\233C'     forward-char
     bindkey '\233A'     up-history
     bindkey '\233B'     down-history
-else
-    bindkey '[3~'     delete-char
-    bindkey '[7~'     beginning-of-line
-    bindkey '[8~'     end-of-line
 fi
 
 #bindkey "\M^?"      _forward-delete-to-/
