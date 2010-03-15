@@ -10,6 +10,12 @@
 	;(
 	;(
 	))
+;; processing-mode
+(add-to-list 'load-path
+             (concat (getenv "HOME") "/.emacs.d/vendor/processing-emacs"))
+(require 'processing-mode)
+(add-to-list 'auto-mode-alist '("\\.pde$"       . processing-mode))
+(setq processing-location (concat (getenv "HOME") "/src/processing-1.1/processing"))
 ;; uniquify
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'reverse)
@@ -35,6 +41,8 @@
 (add-to-list 'load-path
              (concat (getenv "HOME") "/.emacs.d/vendor/git-emacs"))
 (require 'git-emacs)
+;; bzr integration
+(require 'bzr-mode)
 ;; markdown mode
 (add-to-list 'load-path
              (concat (getenv "HOME") "/.emacs.d/vendor/markdown-mode"))

@@ -7,3 +7,6 @@
 [submodule ".emacs.d/vendor/markdown-mode"]
 	path = .emacs.d/vendor/markdown-mode
 	url = git://jblevins.org/git/markdown-mode.git
+[submodule ".emacs.d/vendor/processing-emacs"]
+	path = .emacs.d/vendor/processing-emacs
+	url = git://github.com/omouse/processing-emacs.git
