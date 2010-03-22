@@ -362,4 +362,4 @@ fi
 
 # done setting up
 
-fortune
+#fortune

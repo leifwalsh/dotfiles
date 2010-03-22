@@ -43,10 +43,10 @@ URxvt.depth: 32
 
 URxvt.iconFile: /usr/share/pixmaps/gnome-terminal.png
 
-URxvt.font: xft:Deja Vu Sans Mono-13:autohint=true,xft:Bitstream Vera Sans Mono-13:autohint=true
-URxvt.boldFont: xft:Deja Vu Sans Mono-13:bold:autohint=true,xft:Bitstream Vera Sans Mono-13:bold:autohint=true
-URxvt.italicFont: xft:Deja Vu Sans Mono-13:italic:autohint=true,xft:Bitstream Vera Sans Mono-13:italic:autohint=true
-URxvt.boldItalicFont: xft:Deja Vu Sans Mono-13:bold:italic:autohint=true,xft:Bitstream Vera Sans Mono-13:bold:italic:autohint=true
+URxvt.font: xft:Anonymous Pro-15:autohint=true,xft:Deja Vu Sans Mono-13:antialias=true:autohint=true,xft:Bitstream Vera Sans Mono-13:antialias=true:autohint=true
+URxvt.boldFont: xft:Anonymous Pro-15:bold:autohint=true,xft:Deja Vu Sans Mono-13:bold:antialias=true:autohint=true,xft:Bitstream Vera Sans Mono-13:bold:antialias=true:autohint=true
+URxvt.italicFont: xft:Anonymous Pro-15:italic:autohint=true,xft:Deja Vu Sans Mono-13:italic:antialias=true:autohint=true,xft:Bitstream Vera Sans Mono-13:italic:antialias=true:autohint=true
+URxvt.boldItalicFont: xft:Anonymous Pro-15:bold:italic:autohint=true,xft:Deja Vu Sans Mono-13:bold:italic:antialias=true:autohint=true,xft:Bitstream Vera Sans Mono-13:bold:italic:antialias=true:autohint=true
 
 URxvt.scrollBar: false
 URxvt.saveLines: 8192
@@ -64,23 +64,24 @@ xterm*customization: -color
 /** tango-ish colors
  * xterm*background: black
  * xterm*foreground: white
- * ! xterm*Color0: #2e3436
- * xterm*Color1: #cc0000
- * ! xterm*Color2: #4e9a06
- * xterm*Color3: #c4a000
- * xterm*Color4: #3465a4
- * xterm*Color5: #75507b
- * ! xterm*Color6: #06989a
- * ! xterm*Color7: #d3d7cf
- * ! xterm*Color8: #555753
- * xterm*Color9: #ef2929
- * ! xterm*Color10: #8ae234
- * xterm*Color11: #fce94f
- * xterm*Color12: #729fcf
- * xterm*Color13: #ad7fa8
- * ! xterm*Color14: #34e2e2
- * ! xterm*Color15: #eeeeec
+ * ! XTerm*vt100.color0: #2e3436
+ * XTerm*vt100.color1: #cc0000
+ * ! XTerm*vt100.color2: #4e9a06
+ * XTerm*vt100.color3: #c4a000
+ * XTerm*vt100.color4: #3465a4
+ * XTerm*vt100.color5: #75507b
+ * ! XTerm*vt100.color6: #06989a
+ * ! XTerm*vt100.color7: #d3d7cf
+ * ! XTerm*vt100.color8: #555753
+ * XTerm*vt100.color9: #ef2929
+ * ! XTerm*vt100.color10: #8ae234
+ * XTerm*vt100.color11: #fce94f
+ * XTerm*vt100.color12: #729fcf
+ * XTerm*vt100.color13: #ad7fa8
+ * ! XTerm*vt100.color14: #34e2e2
+ * ! XTerm*vt100.color15: #eeeeec
  */
+
 /** zenburn colors */
 xterm*background: #3f3f3f
 xterm*foreground: #dcdccc
@@ -100,8 +101,8 @@ XTerm*vt100.color12: #94bff3
 XTerm*vt100.color13: #ec93d3
 XTerm*vt100.color14: #93e0e3
 XTerm*vt100.color15: #ffffff
-XTerm*vt100.faceName: "Deja Vu Sans Mono"
-XTerm*vt100.faceSize: 13
+XTerm*vt100.faceName: "Anonymous Pro"
+XTerm*vt100.faceSize: 15
 XTerm.termName: xterm-256color
 XTerm*vt100.utf8: 1
 XTerm*vt100.metaSendsEscape: true
@@ -111,3 +112,5 @@ XTerm*vt100.on2Clicks: regex [-_.A-Za-z0-9]+
 XTerm*vt100.on3Clicks: regex [-_/:=+?&@.A-Za-z0-9]+
 XTerm*vt100.on4Clicks: regex [^ ]+
 XTerm*vt100.on5Clicks: line
+
+Xcursor.theme: Neutral_Plus
