@@ -22,4 +22,4 @@
     default = matching
 [alias]
     lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
-	empty-branch = !sh -c 'git symbolic-ref HEAD refs/heads/$1 && rm .git/index && git clean -fdx' -
+    empty-branch = !sh -c 'git symbolic-ref HEAD refs/heads/$1 && rm .git/index && git clean -fdx' -

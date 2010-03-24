@@ -1,6 +1,7 @@
 Xft*dpi: 70
 
-URxvt.background: #3f3f3f
+/*
+URxvt.background: rgba:2c2c/0000/1e1e/cccc
 URxvt.foreground: #dcdccc
 URxvt.color0: #3f3f3f
 URxvt.color1: #705050
@@ -18,9 +19,9 @@ URxvt.color12: #94bff3
 URxvt.color13: #ec93d3
 URxvt.color14: #93e0e3
 URxvt.color15: #ffffff
-/*
+*/
 URxvt.foreground: white
-URxvt.background: rgba:0000/0000/0000/cccc
+URxvt.background: rgba:2c2c/0000/1e1e/cccc
 URxvt.color0: #2e3436
 URxvt.color1: #cc0000
 URxvt.color2: #4e9a06
@@ -38,15 +39,14 @@ URxvt.color13: #ad7fa8
 URxvt.color14: #34e2e2
 URxvt.color15: #eeeeec
 URxvt.hilightColor: white
-*/
 URxvt.depth: 32
 
 URxvt.iconFile: /usr/share/pixmaps/gnome-terminal.png
 
-URxvt.font: xft:Anonymous Pro-15:autohint=true,xft:Deja Vu Sans Mono-13:antialias=true:autohint=true,xft:Bitstream Vera Sans Mono-13:antialias=true:autohint=true
-URxvt.boldFont: xft:Anonymous Pro-15:bold:autohint=true,xft:Deja Vu Sans Mono-13:bold:antialias=true:autohint=true,xft:Bitstream Vera Sans Mono-13:bold:antialias=true:autohint=true
-URxvt.italicFont: xft:Anonymous Pro-15:italic:autohint=true,xft:Deja Vu Sans Mono-13:italic:antialias=true:autohint=true,xft:Bitstream Vera Sans Mono-13:italic:antialias=true:autohint=true
-URxvt.boldItalicFont: xft:Anonymous Pro-15:bold:italic:autohint=true,xft:Deja Vu Sans Mono-13:bold:italic:antialias=true:autohint=true,xft:Bitstream Vera Sans Mono-13:bold:italic:antialias=true:autohint=true
+URxvt.font: xft:Droid Sans Mono-13:antialias=true:autohint=true,xft:Deja Vu Sans Mono-13:antialias=true:autohint=true,xft:Anonymous Pro-11:autohint=true,xft:Bitstream Vera Sans Mono-13:antialias=true:autohint=true
+URxvt.boldFont: xft:Droid Sans Mono-13:bold:antialias=true:autohint=true,xft:Deja Vu Sans Mono-13:bold:antialias=true:autohint=true,xft:Anonymous Pro-11:bold:autohint=true,xft:Bitstream Vera Sans Mono-13:bold:antialias=true:autohint=true
+URxvt.italicFont: xft:Droid Sans Mono-13:italic:antialias=true:autohint=true,xft:Deja Vu Sans Mono-13:italic:antialias=true:autohint=true,xft:Anonymous Pro-11:italic:autohint=true,xft:Bitstream Vera Sans Mono-13:italic:antialias=true:autohint=true
+URxvt.boldItalicFont: xft:Droid Sans Mono-13:bold:italic:antialias=true:autohint=true,xft:Deja Vu Sans Mono-13:bold:italic:antialias=true:autohint=true,xft:Anonymous Pro-11:bold:italic:autohint=true,xft:Bitstream Vera Sans Mono-13:bold:italic:antialias=true:autohint=true
 
 URxvt.scrollBar: false
 URxvt.saveLines: 8192
@@ -102,7 +102,7 @@ XTerm*vt100.color13: #ec93d3
 XTerm*vt100.color14: #93e0e3
 XTerm*vt100.color15: #ffffff
 XTerm*vt100.faceName: "Anonymous Pro"
-XTerm*vt100.faceSize: 15
+XTerm*vt100.faceSize: 11
 XTerm.termName: xterm-256color
 XTerm*vt100.utf8: 1
 XTerm*vt100.metaSendsEscape: true

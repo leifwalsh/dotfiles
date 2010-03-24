@@ -69,9 +69,9 @@
 ;; flymake
 (require 'flymake)
 ;; code snippets
-(require 'yasnippet)
-(yas/initialize)
-(yas/load-directory (concat (getenv "HOME") "/.emacs.d/vendor/snippets"))
+;(require 'yasnippet)
+;(yas/initialize)
+;(yas/load-directory (concat (getenv "HOME") "/.emacs.d/vendor/snippets"))
 ;; pymacs
 (autoload 'pymacs-apply "pymacs")
 (autoload 'pymacs-call "pymacs")

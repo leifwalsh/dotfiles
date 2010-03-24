@@ -1,4 +1,4 @@
-(require 'site-gentoo)
+;(require 'site-gentoo)
 (require 'bytecomp)
 
 ;; First, define a function that loads libraries only if available

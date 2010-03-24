@@ -144,8 +144,8 @@ if [[ $TERM =~ "(rxvt-unicode|linux|screen)" ]]; then
     bindkey "^\b"       backward-kill-word
     bindkey "^[^\b"     _backward-delete-to-space
 else
-    bindkey ""        backward-kill-word
-    bindkey "\e"     _backward-delete-to-space
+    #bindkey ""    backward-kill-word  # no C-Backspace on gnome-terminal?
+    bindkey "\e"      _backward-delete-to-space
 fi
 
 bindkey "^[^d"      _forward-delete-to-space
@@ -233,7 +233,10 @@ preexec () {
 ################################################################################
 
 # export proper variables for ls and completion
-eval $(dircolors /etc/DIR_COLORS)
+if [[ -f /etc/DIR_COLORS ]]
+then
+  eval $(dircolors /etc/DIR_COLORS)
+fi
 export ZLS_COLORS=${LS_COLORS}
 
 # complete!
