@@ -5,8 +5,9 @@ let python_highlight_all=1
 	set t_Co=256
 "endif
 set guifont=DejaVu\ Sans\ Mono\ 13
+set background=dark
 "let g:inkpot_black_background = 1
-colorscheme zenburn
+"colorscheme zenburn
 
 filetype on
 filetype plugin on
