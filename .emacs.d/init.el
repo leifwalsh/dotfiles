@@ -367,10 +367,34 @@
 
 ;;{{{ swank-clojure
 
+(let*
+    ;; these weren't loading properly so I ripped them from swank-clojure.el:
+    ((swank-clojure-jar-home "~/.swank-clojure/")
+     (swank-clojure-default-classpath
+      (lambda ()
+        (append
+         (when (file-directory-p "~/.clojure")
+           (directory-files "~/.clojure" t ".jar$"))
+         (when (file-directory-p swank-clojure-jar-home)
+           (directory-files swank-clojure-jar-home t ".jar$"))))))
+  (setq swank-clojure-jar-path (expand-file-name "~/.clojure/clojure.jar")
+        swank-clojure-classpath
+        (cons
+         (expand-file-name
+          "~/.clojure/swank-clojure_src")
+         (funcall swank-clojure-default-classpath))
+        swank-clojure-extra-classpaths (list
+                                        (expand-file-name
+                                         "~/.clojure/swank-clojure_src")
+                                        (expand-file-name
+                                         "~/.clojure/clojure-contrib.jar"))))
+
 (require 'swank-clojure)
-(setq swank-clojure-classpath (cons "/home/leif/git/swank-clojure/src/swank"
-                                    (swank-clojure-default-classpath))
-      swank-clojure-jar-home "~/.swank-clojure/")
+
+(eval-after-load "slime"
+  '(progn (slime-setup '(slime-repl))))
+(require 'slime-repl)
+(slime-setup)
 
 ;;}}}
 
