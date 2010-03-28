@@ -394,6 +394,7 @@
 (eval-after-load "slime"
   '(progn (slime-setup '(slime-repl))))
 (require 'slime-repl)
+(add-to-list 'slime-lisp-implementations '(sbcl ("sbcl")))
 (slime-setup)
 
 ;;}}}
