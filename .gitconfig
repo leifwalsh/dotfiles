@@ -1,7 +1,7 @@
 [user]
     name = Leif Walsh
     email = leif.walsh@gmail.com
-    editor = emacsclient
+    editor = emacsclient -c
 [color]
     branch = auto
     diff = auto
