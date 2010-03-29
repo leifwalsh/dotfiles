@@ -1,6 +1,7 @@
 ;;{{{ load-path
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/git-emacs"))
 
 ;;}}}
 
@@ -249,7 +250,7 @@
 
 ;;{{{ git
 
-;; check out magit, maybe reinstall git-emacs
+(require 'git-emacs-autoloads)
 
 ;;}}}
 
@@ -348,8 +349,7 @@
              '("freenode.net"
                "#lisp"
                "#haskell"
-               "#c"
-               "#kernel"))
+               "#clojure"))
 (erc-nickserv-identify-mode 'autodetect)
 
 ;;}}}
@@ -376,18 +376,14 @@
          (when (file-directory-p "~/.clojure")
            (directory-files "~/.clojure" t ".jar$"))
          (when (file-directory-p swank-clojure-jar-home)
-           (directory-files swank-clojure-jar-home t ".jar$"))))))
+           (directory-files swank-clojure-jar-home t ".jar$")))))
+     (my-swank-clojure-classpaths (cons
+                                   (expand-file-name
+                                    "~/.clojure/swank-clojure_src")
+                                   (funcall swank-clojure-default-classpath))))
   (setq swank-clojure-jar-path (expand-file-name "~/.clojure/clojure.jar")
-        swank-clojure-classpath
-        (cons
-         (expand-file-name
-          "~/.clojure/swank-clojure_src")
-         (funcall swank-clojure-default-classpath))
-        swank-clojure-extra-classpaths (list
-                                        (expand-file-name
-                                         "~/.clojure/swank-clojure_src")
-                                        (expand-file-name
-                                         "~/.clojure/clojure-contrib.jar"))))
+        swank-clojure-classpath my-swank-clojure-classpaths
+        swank-clojure-extra-classpaths my-swank-clojure-classpaths))
 
 (require 'swank-clojure)
 
