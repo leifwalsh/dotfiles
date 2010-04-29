@@ -122,7 +122,7 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#3f3f3f" :foreground "#dcdccc" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 96 :width normal :foundry "unknown" :family "Droid Sans Mono"))))
+ '(default ((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 96 :width normal :foundry "unknown" :family "DejaVu Sans Mono"))))
  '(erc-input-face ((t (:foreground "cyan"))))
  '(erc-my-nick-face ((t (:foreground "cyan" :weight bold)))))
 
@@ -351,6 +351,65 @@
                "#haskell"
                "#clojure"))
 (erc-nickserv-identify-mode 'autodetect)
+
+;;}}}
+
+;;{{{ notify
+
+(defun erc-xml-escape
+  (s)
+  (setq s (replace-regexp-in-string
+           "'" "&apos;" 
+           (replace-regexp-in-string
+            "\"" "&quot;"
+            (replace-regexp-in-string
+             "&" "&amp;" 
+             (replace-regexp-in-string
+              "<" "&lt;"
+              (replace-regexp-in-string
+               ">" "&gt;" s)))))))
+
+(defun erc-osd-display
+  (id msg &optional delay vattrib hattrib font) 
+  "Display a message msg using OSD. Currently requires gnome-osd-client"
+  (unless vattrib (setq vattrib "top"))
+  (unless hattrib (setq hattrib "right"))
+  (unless delay (setq delay 5000))
+  (unless font (setq font "Arial 12"))
+  (save-window-excursion
+    (shell-command
+     (format
+      "gnome-osd-client -f \"<message id='%s' osd_fake_translucent_bg='off' osd_font='%s' animations='on' hide_timeout='%d' osd_vposition='%s' osd_halignment='%s'>%s</message>\""
+      id
+      font
+      delay
+      vattrib
+      hattrib
+      (erc-xml-escape msg)))))
+
+(defun erc-notify-osd
+  (matched-type nick msg)
+  (interactive)
+  "Hook to add into erc-text-matched-hook in order to remind the user that a message from erc has come their way."
+  (when (and (string= matched-type "current-nick")
+             (string-match "\\([^:]*\\).*:\\(.*\\)" msg))
+    (let ((text (match-string 2 msg))
+          (from (erc-extract-nick nick)))
+      (when text
+	(let ((maxlength 128))
+	  (if (> (length msg)
+                 maxlength)
+	      (setq msg (concat (substring msg 0 20)
+                                ".. *snip* .. "
+                                (substring msg (- 30))
+                                "."))))
+	(setq msg (concat from " : " msg))
+	(rgr/osd-display (format "%s:%d"
+                                 from
+                                 (% (nth 1 (current-time)) 3))
+                         msg 6000 "top" "center" "Tahoma 23")))))
+
+(add-hook 'erc-text-matched-hook 'erc-notify-osd)
 
 ;;}}}
 
