@@ -6,7 +6,10 @@
                       (nnimap-address "imap.gmail.com")
                       (nnimap-server-port 993)
                       (nnimap-stream ssl)
-                      (nnir-search-engine imap)))
+                      (nnir-search-engine imap)
+                      (nnimap-authinfo-file "~/.authinfo")))
+
+(setq gnus-ignored-newsgroups "")
 
 (setq message-send-mail-function 'smtpmail-send-it
       smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
@@ -22,3 +25,6 @@
   (turn-on-auto-fill))
 
 (add-hook 'message-mode-hook 'message-mode-setup)
+
+(setq mail-signature '(progn
+                        (insert "\n\n-- \nCheers,\nLeif\n\n")))
