@@ -383,7 +383,7 @@
   (interactive)
   "Hook to add into erc-text-matched-hook in order to remind the user that a message from erc has come their way."
   (when (string= matched-type "current-nick")
-    (erc-osd-display nick msg)))
+    (erc-osd-display (erc-extract-nick nick) msg)))
 
 (add-hook 'erc-text-matched-hook 'erc-notify-osd)
 
@@ -427,6 +427,23 @@
 (require 'slime-repl)
 (add-to-list 'slime-lisp-implementations '(sbcl ("sbcl")))
 (slime-setup)
+
+;;}}}
+
+;;{{{ EasyPG
+
+(require 'epa-file)
+(epa-file-enable)
+
+;;}}}
+
+;;{{{ Gnus plugins
+
+;;{{{ searching (nnir)
+
+(require 'nnir)
+
+;;}}}
 
 ;;}}}
 
