@@ -2,6 +2,7 @@
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/git-emacs"))
+(add-to-list 'load-path (expand-file-name "~/svn/scala-mode"))
 
 ;;}}}
 
@@ -218,6 +219,12 @@
 (add-hook 'python-mode-hook
 	  (lambda ()
 	    (set-variable 'py-indent-offset 4)))
+
+;;}}}
+
+;;{{{ scala-mode
+
+(require 'scala-mode-auto)
 
 ;;}}}
 
@@ -444,6 +451,23 @@
 (require 'nnir)
 
 ;;}}}
+
+;;}}}
+
+;;{{{ Mew
+
+(autoload 'mew "mew" nil t)
+(autoload 'mew-send "mew" nil t)
+(autoload 'mew-user-agent-compose "mew" nil t)
+(if (boundp 'mail-user-agent)
+    (setq mail-user-agent 'mew-user-agent))
+(if (fboundp 'define-mail-user-agent)
+    (define-mail-user-agent
+      'mew-user-agent
+      'mew-user-agent-compose
+      'mew-draft-send-message
+      'mew-draft-kill
+      'mew-send-hook))
 
 ;;}}}
 
