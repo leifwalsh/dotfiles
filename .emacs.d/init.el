@@ -417,11 +417,13 @@
         (append
          (when (file-directory-p "~/.clojure")
            (directory-files "~/.clojure" t ".jar$"))
+         (when (file-directory-p "~/.clojure/ext")
+           (directory-files "~/.clojure/ext" t ".jar$"))
          (when (file-directory-p swank-clojure-jar-home)
            (directory-files swank-clojure-jar-home t ".jar$")))))
      (my-swank-clojure-classpaths (cons
                                    (expand-file-name
-                                    "~/.clojure/swank-clojure_src")
+                                    "~/.clojure/ext/swank-clojure_src")
                                    (funcall swank-clojure-default-classpath))))
   (setq swank-clojure-jar-path (expand-file-name "~/.clojure/clojure.jar")
         swank-clojure-classpath my-swank-clojure-classpaths
