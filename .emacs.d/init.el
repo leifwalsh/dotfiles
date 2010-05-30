@@ -211,6 +211,12 @@
 
 ;;{{{ plugins
 
+;;{{{ haskell-mode
+
+(require 'inf-haskell)
+
+;;}}}
+
 ;;{{{ python-mode
 
 (autoload 'python-mode "python-mode" "Python Mode." t)
