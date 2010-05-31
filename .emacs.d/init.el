@@ -459,7 +459,8 @@
 ;;{{{ clojure-mode
 
 ;; already autoloaded by elpa
-(add-hook 'clojure-mode-hook (paren-face-add-support lisp-font-lock-keywords-2))
+(add-hook 'clojure-mode-hook (paren-face-add-support
+                              clojure-font-lock-keywords))
 
 ;;}}}
 
