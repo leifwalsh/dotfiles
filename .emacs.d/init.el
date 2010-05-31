@@ -157,6 +157,9 @@
 (defun undumbify-underscores ()
   (modify-syntax-entry ?_ "w"))
 (add-hook 'after-change-major-mode-hook 'undumbify-underscores)
+;; change default browser
+(setq browse-url-generic-program (executable-find "xdg-open")
+      browse-url-browser-function 'browse-url-generic)
 
 ;;}}}
 
@@ -295,7 +298,6 @@
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-eldoc-mode)
-(add-hook 'slime-repl-mode-hook 'turn-on-eldoc-mode)
 
 ;;}}}
 
@@ -507,6 +509,7 @@
             )))
 
 (add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
+(add-hook 'slime-repl-mode-hook 'tweak-clojure-syntax)
 
 ;;}}}
 
