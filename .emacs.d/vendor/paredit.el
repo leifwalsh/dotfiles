@@ -471,7 +471,7 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                 ("hello-\n|  world"
                  "hello-|world"))
    ("C-c C-M-l" paredit-recentre-on-sexp)
-   ("M-q"       paredit-reindent-defun)
+   ("M-x"       paredit-reindent-defun)
    ))
        nil)                             ; end of PROGN
 
