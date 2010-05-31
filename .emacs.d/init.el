@@ -213,6 +213,9 @@
 
 ;;{{{ haskell-mode
 
+(load "/home/leif/darcs/haskellmode-emacs/haskell-site-file.el")
+(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 (require 'inf-haskell)
 
 ;;}}}
@@ -260,6 +263,34 @@
 (require 'xcscope)
 
 ;;}}}
+
+;;{{{ compile
+
+(require 'compile)
+(setq mode-compile-always-save-buffer-p t
+      compilation-window-height 12
+      compilation-finish-function
+      (lambda (buf str)
+        (unless (string-match "exited abnormally" str)
+          (run-at-time
+           "2 sec" nil 'delete-windows-on
+           (get-buffer-create "*compilation*"))
+          (message "No compilation errors!"))))
+(global-set-key [f12] 'compile)
+
+;;}}}
+
+;;{{{ pretty-mode
+
+;(require 'pretty-mode)
+;(global-pretty-mode 1)
+
+;;}}}
+
+;;{{{ parenface
+
+(require 'parenface)
+(set-face-foreground 'paren-face "#777")
 
 ;;{{{ git
 
@@ -410,6 +441,25 @@
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
 (setq org-log-done t)
+
+;;}}}
+
+;;{{{ paredit
+
+;; already autoloaded by elpa
+(defun lisp-enable-paredit-hook () (paredit-mode 1))
+(add-hook 'clojure-mode-hook 'lisp-enable-paredit-hook)
+(add-hook 'scheme-mode-hook 'lisp-enable-paredit-hook)
+(add-hook 'lisp-mode-hook 'lisp-enable-paredit-hook)
+(add-hook 'emacs-lisp-mode-hook 'lisp-enable-paredit-hook)
+(add-hook 'lisp-interaction-mode-hook 'lisp-enable-paredit-hook)
+
+;;}}}
+
+;;{{{ clojure-mode
+
+;; already autoloaded by elpa
+(add-hook 'clojure-mode-hook (paren-face-add-support lisp-font-lock-keywords-2))
 
 ;;}}}
 
