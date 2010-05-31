@@ -295,6 +295,7 @@
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'slime-repl-mode-hook 'turn-on-eldoc-mode)
 
 ;;}}}
 
@@ -469,6 +470,7 @@
 (add-hook 'lisp-mode-hook 'lisp-enable-paredit-hook)
 (add-hook 'emacs-lisp-mode-hook 'lisp-enable-paredit-hook)
 (add-hook 'lisp-interaction-mode-hook 'lisp-enable-paredit-hook)
+(add-hook 'slime-repl-mode-hook 'lisp-enable-paredit-hook)
 
 ;;}}}
 
