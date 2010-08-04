@@ -1,18 +1,9 @@
 escape 'z'
-blankerprg cmatrix -ablx  # blank the screen with the canonical blanking utility
-bindkey ^ab blanker  # bind C-a b and C-a C-b to the blank fn
-bindkey ^a^b blanker
 hardcopydir ~/.screen  # save hard copies to this dir
 altscreen on  # vim doesn't blow away the buffer
 defflow off  # stop trapping C-s because that's annoying as hell
-termcapinfo rxvt*|xterm* ti@:te@  # fix scrolling somehow (terminfo is crazy)
-terminfo rxvt*|xterm* ti@:te@
-term screen-256color  # set an awesome $TERM
 setenv LC_CTYPE en_US.UTF-8  # dunno but this sounds cool
 defutf8 on  # I guess this does too
 vbell off  # bells are stupid in general
-shell -$SHELL  # set the login shell
+#shell -$SHELL  # set the login shell
 
-backtick 1 0 0 parseuptime.sh  # this thing gives a colored load average
-backtick 2 0 0 parsebat.sh  # this thing gives a colored battery percentage
-caption always "%{= .b} %-Lw%{+b .B}%n*%f %t%{= .b}%+Lw %-=%{+b .G}%H %2`%1` %{+b .B}[%{.Y}%c%{.B}]%{= dd} "

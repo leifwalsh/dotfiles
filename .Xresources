@@ -43,10 +43,10 @@ URxvt.depth: 32
 
 URxvt.iconFile: /usr/share/pixmaps/gnome-terminal.png
 
-URxvt.font: xft:Droid Sans Mono-13:antialias=true:autohint=true,xft:Deja Vu Sans Mono-13:antialias=true:autohint=true,xft:Anonymous Pro-11:autohint=true,xft:Bitstream Vera Sans Mono-13:antialias=true:autohint=true
-URxvt.boldFont: xft:Droid Sans Mono-13:bold:antialias=true:autohint=true,xft:Deja Vu Sans Mono-13:bold:antialias=true:autohint=true,xft:Anonymous Pro-11:bold:autohint=true,xft:Bitstream Vera Sans Mono-13:bold:antialias=true:autohint=true
-URxvt.italicFont: xft:Droid Sans Mono-13:italic:antialias=true:autohint=true,xft:Deja Vu Sans Mono-13:italic:antialias=true:autohint=true,xft:Anonymous Pro-11:italic:autohint=true,xft:Bitstream Vera Sans Mono-13:italic:antialias=true:autohint=true
-URxvt.boldItalicFont: xft:Droid Sans Mono-13:bold:italic:antialias=true:autohint=true,xft:Deja Vu Sans Mono-13:bold:italic:antialias=true:autohint=true,xft:Anonymous Pro-11:bold:italic:autohint=true,xft:Bitstream Vera Sans Mono-13:bold:italic:antialias=true:autohint=true
+URxvt.font: xft:Deja Vu Sans Mono-13:antialias=true:autohint=true,xft:Anonymous Pro-11:autohint=true,xft:Bitstream Vera Sans Mono-13:antialias=true:autohint=true
+URxvt.boldFont: xft:Deja Vu Sans Mono-13:bold:antialias=true:autohint=true,xft:Anonymous Pro-11:bold:autohint=true,xft:Bitstream Vera Sans Mono-13:bold:antialias=true:autohint=true
+URxvt.italicFont: xft:Deja Vu Sans Mono-13:italic:antialias=true:autohint=true,xft:Anonymous Pro-11:italic:autohint=true,xft:Bitstream Vera Sans Mono-13:italic:antialias=true:autohint=true
+URxvt.boldItalicFont: xft:Deja Vu Sans Mono-13:bold:italic:antialias=true:autohint=true,xft:Anonymous Pro-11:bold:italic:autohint=true,xft:Bitstream Vera Sans Mono-13:bold:italic:antialias=true:autohint=true
 
 URxvt.scrollBar: false
 URxvt.saveLines: 8192

@@ -283,13 +283,6 @@
 
 ;;}}}
 
-;;{{{ pretty-mode
-
-;(require 'pretty-mode)
-;(global-pretty-mode 1)
-
-;;}}}
-
 ;;{{{ eldoc
 
 (add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
@@ -427,7 +420,9 @@
              (replace-regexp-in-string
               "<" "&lt;"
               (replace-regexp-in-string
-               ">" "&gt;" s)))))))
+               ">" "&gt;"
+               (replace-regexp-in-string
+                "~A" " " s))))))))
 
 (defun erc-osd-display
   (id msg)
@@ -542,6 +537,13 @@
 (require 'slime-repl)
 (add-to-list 'slime-lisp-implementations '(sbcl ("sbcl")))
 (slime-setup)
+
+;;}}}
+
+;;{{{ pretty-mode
+
+;(require 'pretty-mode)
+;(global-pretty-mode 1)
 
 ;;}}}
 

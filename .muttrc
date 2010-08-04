@@ -1,0 +1,23 @@
+set imap_user = "leif.walsh@gmail.com"
+set imap_pass = `gpg --decrypt ~/.muttpasswd.gpg`
+
+set smtp_url = "smtp://leif.walsh@smtp.gmail.com:587/"
+set smtp_pass = `gpg --decrypt ~/.muttpasswd.gpg`
+set from = "leif.walsh@gmail.com"
+set realname = "Leif Walsh"
+
+set folder = "imaps://imap.gmail.com:993"
+set spoolfile = "+INBOX"
+set postponed="+[Gmail]/Drafts"
+
+set header_cache=~/.mutt/cache/headers
+set message_cachedir=~/.mutt/cache/bodies
+set certificate_file=~/.mutt/certificates
+
+set move = no
+
+set sort = 'threads'
+set sort_aux = 'last-date-received'
+set imap_check_subscribed
+
+source ~/.mutt/gpg.rc

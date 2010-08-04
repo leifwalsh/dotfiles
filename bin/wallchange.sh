@@ -10,10 +10,10 @@ fi
 
 echo "${PID}" >"${PIDFILE}"
 
-WALLDIR=${HOME}/.walls
+WALLDIRS=(${HOME}/.walls /usr/share/backgrounds)
 
 while (( 1 )) {
     gconftool-2 --set /desktop/gnome/background/picture_filename --type string \
-        ${WALLDIR}/$(ls -1 ${WALLDIR} | shuf | head -n1)
+        $(find ${WALLDIRS} -type f | shuf | head -n1)
     sleep 5m
 }
