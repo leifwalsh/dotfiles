@@ -1,7 +1,8 @@
-;;{{{ load-path
-
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/git-emacs"))
+(add-to-list 'load-path (expand-file-name "~/git/clojure-mode"))
+(add-to-list 'load-path (expand-file-name "~/git/swank-clojure"))
+(add-to-list 'load-path (expand-file-name "~/git/slime"))
 (add-to-list 'load-path (expand-file-name "~/svn/scala-mode"))
 
 ;;}}}
@@ -345,8 +346,7 @@
 
 ;;{{{ js2
 
-(autoload 'js2-mode "js2" nil t)
-(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+(require 'js2-mode-autoloads)
 
 ;;}}}
 
@@ -477,6 +477,7 @@
 ;(add-hook 'clojure-mode-hook (paren-face-add-support
 ;                              clojure-font-lock-keywords))
 
+(require 'clojure-mode)
 (defmacro defclojureface (name color desc &optional others)
   `(defface ,name
      '((((class color)) (:foreground ,color ,@others))) ,desc :group 'faces))
@@ -509,6 +510,25 @@
 ;;}}}
 
 ;;{{{ swank-clojure
+
+;;;;; swank-clojure
+;;;(add-to-list 'load-path "~/opt/swank-clojure/src/emacs")
+;;;
+;;;(setq swank-clojure-jar-path "~/.clojure/clojure.jar"
+;;;      swank-clojure-extra-classpaths (list
+;;;                           "~/opt/swank-clojure/src/main/clojure"
+;;;                                               "~/.clojure/clojure-contrib.jar"))
+;;;
+;;;                                               (require 'swank-clojure-autoload)
+;;;
+;;;                                               ;; slime
+;;;                                               (eval-after-load "slime" 
+;;;                                                 '(progn (slime-setup '(slime-repl))))
+;;;
+;;;                                                 (add-to-list 'load-path "~/opt/slime")
+;;;                                                 (require 'slime)
+;;;                                                 (slime-setup) 
+;;{{{ load-path
 
 (let*
     ;; these weren't loading properly so I ripped them from swank-clojure.el:
