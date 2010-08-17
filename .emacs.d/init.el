@@ -174,7 +174,7 @@
 ;; apropos(-symbol) is apparently better than apropos-command
 (global-set-key (kbd "\C-ha") 'apropos)
 ;; sort of equivalent to cindent for vim
-(global-set-key (kbd "RET") 'align-newline-and-indent)
+(global-set-key (kbd "RET") 'newline-and-indent)
 
 (defun fullscreen ()
   (interactive)
