@@ -146,8 +146,9 @@ if [[ $TERM =~ "(rxvt-unicode|linux|screen)" ]]; then
     bindkey "^[^\b"     _backward-delete-to-space
 else
     #bindkey ""    backward-kill-word  # no C-Backspace on gnome-terminal?
-    bindkey "\e"      _backward-delete-to-/
-    bindkey "" _backward-delete-to-/
+    #bindkey "\e"      _backward-delete-to-/
+    bindkey "^" _backward-delete-to-/
+    bindkey "" backward-delete-char
 fi
 
 bindkey "^[^d"      _forward-delete-to-/
