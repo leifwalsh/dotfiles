@@ -131,25 +131,26 @@ zle -N _forward-to-space
 #bindkey "^[^[[D"    _backward-to-/
 #bindkey "^[^[[C"    _forward-to-/
 
-#bindkey "^[b"       _backward-to-/
-bindkey "^[^b"      _backward-to-space
+bindkey "^[^b"       _backward-to-/
+#bindkey "^[^b"      _backward-to-space
 
-#bindkey "^[f"       _forward-to-/
-bindkey "^[^f"      _forward-to-space
+bindkey "^[^f"       _forward-to-/
+#bindkey "^[^f"      _forward-to-space
 
 #bindkey "\M\b"      _backward-delete-to-/
 #bindkey "^\b"       _backward-delete-to-/
 
 # C-Backspace and C-M-Backspace
 if [[ $TERM =~ "(rxvt-unicode|linux|screen)" ]]; then
-    bindkey "^\b"       backward-kill-word
+    bindkey "^\b"       _backward-delete-to-/
     bindkey "^[^\b"     _backward-delete-to-space
 else
     #bindkey ""    backward-kill-word  # no C-Backspace on gnome-terminal?
-    bindkey "\e"      _backward-delete-to-space
+    bindkey "\e"      _backward-delete-to-/
+    bindkey "" _backward-delete-to-/
 fi
 
-bindkey "^[^d"      _forward-delete-to-space
+bindkey "^[^d"      _forward-delete-to-/
 
 # Delete, Home, End, arrow keys (udlr)
 if [[ $TERM =~ "(rxvt-unicode|linux|screen)" ]]; then
@@ -367,3 +368,4 @@ fi
 # done setting up
 
 #fortune
+
