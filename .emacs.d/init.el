@@ -346,7 +346,7 @@
 
 ;;{{{ js2
 
-(require 'js2-mode-autoloads)
+(load "js2-mode-autoloads")
 
 ;;}}}
 
@@ -574,30 +574,80 @@
 
 ;;}}}
 
-;;{{{ Gnus plugins
+;;{{{ gnus
 
-;;{{{ searching (nnir)
+(autoload 'gnus "gnus" "Gnus news & mail" t)
 
-(require 'nnir)
+(setq user-mail-address "leif.walsh@gmail.com"
+      user-full-name "Leif Walsh")
+
+(eval-after-load "gnus"
+  '(progn
+     (add-to-list 'gnus-secondary-select-methods
+                  '(nnimap "gmail"
+                           (nnimap-address "imap.gmail.com")
+                           (nnimap-server-port 993)
+                           (nnimap-stream ssl)))
+
+     (setq message-send-mail-function 'smtpmail-send-it
+           smtpmail-starttls-credentials '(("smtp.gmail.com" 25 nil nil))
+           smtpmail-auth-credentials '(("smtp.gmail.com" 25
+                                        "leif.walsh@gmail.com" nil))
+           smtpmail-default-smtp-server "smtp.gmail.com"
+           smtpmail-smtp-server "smtp.gmail.com"
+           smtpmail-smtp-service 25
+           smtpmail-local-domain "gmail.com")))
 
 ;;}}}
 
+;;{{{ wanderlust
+
+(autoload 'wl "wl" "Wanderlust" t)
+(autoload 'wl-other-frame "wl" "Wanderlust on new frame." t)
+(autoload 'wl-draft "wl-draft" "Write draft with Wanderlust." t)
+
+;;{{{ IMAP
+
+(setq elmo-imap4-default-server "imap.gmail.com"
+      elmo-imap4-default-user "leif.walsh@gmail.com"
+      elmo-imap4-default-authenticate-type 'login
+      elmo-imap4-default-port '993
+      elmo-imap4-default-stream-type 'ssl
+
+      elmo-imap4-use-modified-utf7 t)
+
 ;;}}}
 
-;;{{{ Mew
+;;{{{ SMTP
 
-(autoload 'mew "mew" nil t)
-(autoload 'mew-send "mew" nil t)
-(autoload 'mew-user-agent-compose "mew" nil t)
+(setq wl-smtp-connection-type 'starttls
+      wl-smtp-posting-port 587
+      wl-smtp-authenticate-type "login"
+      wl-smtp-posting-user "leif.walsh"
+      wl-smtp-posting-server "smtp.gmail.com"
+      wl-local-domain "gmail.com"
+
+      wl-default-folder "%inbox"
+      wl-default-spec "%"
+      wl-draft-folder "%[Gmail]/Drafts"
+      wl-trash-folder "%[Gmail]/Trash"
+
+      wl-folder-check-async t
+
+      elmo-imap4-use-modified-utf7 t)
+
+;;}}}
+
+(autoload 'wl-user-agent-compose "wl-draft" nil t)
 (if (boundp 'mail-user-agent)
-    (setq mail-user-agent 'mew-user-agent))
+    (setq mail-user-agent 'wl-user-agent))
 (if (fboundp 'define-mail-user-agent)
     (define-mail-user-agent
-      'mew-user-agent
-      'mew-user-agent-compose
-      'mew-draft-send-message
-      'mew-draft-kill
-      'mew-send-hook))
+      'wl-user-agent
+      'wl-user-agent-compose
+      'wl-draft-send
+      'wl-draft-kill
+      'mail-send-hook))
 
 ;;}}}
 
