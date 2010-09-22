@@ -1,33 +1,51 @@
+set nocompatible
+
 source ~/.vim/vimrc-python.org
 let python_highlight_all=1
 
-"if &term =~ '^\(xterm\|screen\)$' && $COLORTERM == 'gnome-terminal'
-	set t_Co=256
-"endif
-set guifont=DejaVu\ Sans\ Mono\ 13
-set background=dark
-"let g:inkpot_black_background = 1
-"colorscheme zenburn
-
-filetype on
-filetype plugin on
-filetype indent on
-syntax on
-
+set nowrap
 set tabstop=4
-set softtabstop=4
-set shiftwidth=4
-set et
+set backspace=indent,eol,start
+
+set autoindent
 set cindent
+set copyindent
+set shiftwidth=4
+set softtabstop=4
+set shiftround
+set showmatch
+set ignorecase
+set smartcase
 set smarttab
+set hlsearch
+set incsearch
+set expandtab
 set ml
 
-autocmd BufRead *.vala set efm=%f:%l.%c-%[%^:]%#:\ %t%[%^:]%#:\ %m
-autocmd BufRead *.vapi set efm=%f:%l.%c-%[%^:]%#:\ %t%[%^:]%#:\ %m
-au BufRead,BufNewFile *.vala setfiletype vala
-au BufRead,BufNewFile *.vapi setfiletype vala
-let vala_comment_strings=1
-let vala_space_errors=1
+set history=5000
+set undolevels=5000
+set wildignore=*.swp,*.bak,*.pyc,*.class
+set title
+set visualbell
+set noerrorbells
+
+set nobackup
+
+filetype on
+filetype plugin indent on
+
+let vimclojure#NailgunClient = "/home/leif/bin/ng"
+
+set background=dark
+if &t_Co >= 88
+    colorscheme zenburn
+endif
+if &t_Co >= 256 || has("gui_running")
+    colorscheme mustang
+endif
+if &t_Co > 2 || has("gui_running")
+    syntax on
+endif
 
 " load the types.vim highlighting file, if it exists
 autocmd BufRead,BufNewFile *.[ch] let fname = expand('<afile>:p:h') . '/types.vim'
