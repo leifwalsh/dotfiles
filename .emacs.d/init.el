@@ -117,6 +117,7 @@
  '(scroll-bar-mode nil)
  '(show-paren-mode t)
  '(show-trailing-whitespace t)
+ '(slime-net-coding-system (quote utf-8-unix))
  '(tooltip-mode nil)
  '(user-mail-address "leif.walsh@gmail.com"))
 (custom-set-faces

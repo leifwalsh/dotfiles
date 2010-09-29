@@ -1,8 +1,10 @@
+set my_gmail_password = `gpg --decrypt ~/.muttpasswd.gpg`
+
 set imap_user = "leif.walsh@gmail.com"
-set imap_pass = `gpg --decrypt ~/.muttpasswd.gpg`
+set imap_pass = $my_gmail_password
 
 set smtp_url = "smtp://leif.walsh@smtp.gmail.com:587/"
-set smtp_pass = `gpg --decrypt ~/.muttpasswd.gpg`
+set smtp_pass = $my_gmail_password
 set from = "leif.walsh@gmail.com"
 set realname = "Leif Walsh"
 
@@ -16,8 +18,11 @@ set certificate_file=~/.mutt/certificates
 
 set move = no
 
+set smart_wrap = yes
 set sort = 'threads'
 set sort_aux = 'last-date-received'
 set imap_check_subscribed
 
-source ~/.mutt/gpg.rc
+set timeout = 60
+set mail_check = 5
+#source ~/.mutt/gpg.rc
