@@ -20,14 +20,14 @@ user-id=leif.walsh@gmail.com
 user-domain=gmail.com
 
 # List of SMTP servers for sending mail. If blank: Unix Alpine uses sendmail.
-smtp-server=smtp.gmail.com:587/tls/user=leif.walsh@gmail.com
+smtp-server=smtp.gmail.com:587/user=leif.walsh@gmail.com
 
 # NNTP server for posting news. Also sets news-collections for news reading.
 nntp-server=
 
 # Path of (local or remote) INBOX, e.g. ={mail.somewhere.edu}inbox
 # Normal Unix default is the local INBOX (usually /usr/spool/mail/$USER).
-inbox-path={imap.gmail.com:993/ssl/novalidate-cert/user=leif.walsh@gmail.com}INBOX
+inbox-path={imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}INBOX
 
 # List of folder pairs; the first indicates a folder to archive, and the
 # second indicates the folder read messages in the first should
@@ -46,7 +46,7 @@ default-fcc=""
 # Over-rides default path for saved-msg folder, e.g. =saved-messages (using 1st
 # folder collection dir) or ={host2}saved-mail or ="" (to suppress saving).
 # Default: saved-messages (Unix) or SAVEMAIL.MTX (PC) in default collection.
-default-saved-msg-folder={imap.gmail.com/ssl/user=leif.walsh@gmail.com}[Gmail]/Trash
+default-saved-msg-folder=
 
 # Over-rides default path for postponed messages folder, e.g. =pm (which uses
 # first folder collection dir) or ={host4}pm (using home dir on host4).
@@ -60,7 +60,7 @@ read-message-folder=
 form-letter-folder=
 
 # If set, specifies where trash is moved to in Web Alpine.
-trash-folder={imap.gmail.com/ssl/user=leif.walsh@gmail.com}[Gmail]/Trash
+trash-folder=
 
 # Contains the actual signature contents as opposed to the signature filename.
 # If defined, this overrides the signature-file. Default is undefined.
@@ -88,7 +88,7 @@ feature-list=enable-incoming-folders,
 	warn-if-blank-to-and-cc-and-newsgroups,
 	combined-folder-display,
 	enable-incoming-folders-checking,
-	incoming-checking-includes-total,
+	no-incoming-checking-includes-total,
 	thread-sorts-by-arrival,
 	enable-msg-view-addresses,
 	enable-msg-view-attachments,
@@ -100,7 +100,9 @@ feature-list=enable-incoming-folders,
 	enable-newmail-short-text-in-icon,
 	enable-suspend,
 	no-enable-rules-under-take,
-	suppress-asterisks-in-password-prompt
+	suppress-asterisks-in-password-prompt,
+	no-enable-sigdashes,
+	strip-from-sigdashes-on-reply
 
 # Alpine executes these keys upon startup (e.g. to view msg 13: i,j,1,3,CR,v)
 initial-keystroke-list=
@@ -216,7 +218,7 @@ reply-indent-string=
 reply-leadin=
 
 # Specifies the string to replace quotes with when viewing a message.
-quote-replace-string=
+quote-replace-string=>
 
 # When these characters appear in the middle of a word in the composer
 # the forward word function will stop at the first text following (as happens
@@ -234,11 +236,13 @@ use-only-domain-name=
 
 # This variable takes a list of programs that message text is piped into
 # after MIME decoding, prior to display.
-display-filters=
+display-filters=_LEADING("-----BEGIN PGP SIGNED MESSAGE")_ /home/leif/.gnupg/checksig,
+	_LEADING("-----BEGIN PGP MESSAGE")_ /home/leif/.gnupg/checksig
 
 # This defines a program that message text is piped into before MIME
 # encoding, prior to sending
-sending-filters=
+sending-filters=/home/leif/.gnupg/sign,
+	/home/leif/.gnupg/encrypt
 
 # A list of alternate addresses the user is known by
 alt-addresses=adlaiff6@gmail.com,
@@ -369,12 +373,13 @@ newmail-window-width=
 
 # List of incoming msg folders besides INBOX, e.g. ={host2}inbox, {host3}inbox
 # Syntax: optnl-label {optnl-imap-host-name}folder-path
-incoming-folders=Facebook "{imap.gmail.com:993/ssl/novalidate-cert/user=leif.walsh@gmail.com}Facebook",
-	Quora "{imap.gmail.com:993/ssl/novalidate-cert/user=leif.walsh@gmail.com}Quora",
-	RethinkDB "{imap.gmail.com:993/ssl/novalidate-cert/user=leif.walsh@gmail.com}RethinkDB",
-	Sparky-Webmail "{imap.gmail.com:993/ssl/novalidate-cert/user=leif.walsh@gmail.com}Sparky-Webmail",
-	FreeBSD-Questions "{imap.gmail.com:993/ssl/novalidate-cert/user=leif.walsh@gmail.com}FreeBSD-questions",
-	FreeBSD-STABLE "{imap.gmail.com:993/ssl/novalidate-cert/user=leif.walsh@gmail.com}FreeBSD-STABLE"
+incoming-folders=Old-Inbox "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}Old-Inbox",
+	Facebook "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}Facebook",
+	Quora "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}Quora",
+	Scala-user {imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}Scala-user,
+	RethinkDB "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}RethinkDB",
+	FreeBSD-Questions "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}FreeBSD-questions",
+	FreeBSD-STABLE "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}FreeBSD-STABLE"
 
 # List of directories where saved-message folders may be. First one is
 # the default for Saves. Example: Main {host1}mail/[], Desktop mail\[]
@@ -398,7 +403,7 @@ address-book=.addressbook,
 global-address-book=
 
 # Set by Alpine; controls beginning-of-month sent-mail pruning.
-last-time-prune-questioned=110.9
+last-time-prune-questioned=110.10
 
 # Set by Alpine; controls display of "new version" message.
 last-version-used=6.00
@@ -536,8 +541,8 @@ current-indexline-style=
 titlebar-color-style=default
 
 # Choose: black, blue, green, cyan, red, magenta, yellow, or white.
-normal-foreground-color=
-normal-background-color=
+normal-foreground-color=255,255,255
+normal-background-color=000,000,000
 reverse-foreground-color=
 reverse-background-color=
 title-foreground-color=
@@ -552,18 +557,18 @@ keyname-foreground-color=
 keyname-background-color=
 selectable-item-foreground-color=
 selectable-item-background-color=
-meta-message-foreground-color=
-meta-message-background-color=
-quote1-foreground-color=
-quote1-background-color=
-quote2-foreground-color=
-quote2-background-color=
-quote3-foreground-color=
-quote3-background-color=
+meta-message-foreground-color=175,175,135
+meta-message-background-color=000,000,000
+quote1-foreground-color=000,175,255
+quote1-background-color=000,000,000
+quote2-foreground-color=000,255,095
+quote2-background-color=000,000,000
+quote3-foreground-color=255,000,255
+quote3-background-color=000,000,000
 incoming-unseen-foreground-color=
 incoming-unseen-background-color=
-signature-foreground-color=
-signature-background-color=
+signature-foreground-color=000,000,255
+signature-background-color=000,000,000
 prompt-foreground-color=
 prompt-background-color=
 header-general-foreground-color=
@@ -598,7 +603,8 @@ index-opening-foreground-color=
 index-opening-background-color=
 
 # When viewing messages, these are the header colors
-viewer-hdr-colors=
+viewer-hdr-colors=/HDR=From/FG=255\x2C255\x2C000/BG=000\x2C000\x2C000,
+	/HDR=Subject/FG=255\x2C255\x2C000/BG=000\x2C000\x2C000
 
 # Colors used to display keywords in the index
 keyword-colors=

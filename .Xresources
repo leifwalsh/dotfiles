@@ -2,9 +2,29 @@ Xft.dpi: 96
 Xft.antialias: 1
 Xft.hinting: 1
 Xft.hintstyle: hintslight
+Xft.lcdfilter: lcddefault
+Xft.rgba: rgb
 
-/*
-URxvt.background: rgba:2c2c/0000/1e1e/cccc
+URxvt.iconFile: /usr/share/pixmaps/gnome-terminal.png
+
+URxvt.font: xft:Cousine-10:antialias=true:autohint=true,xft:Deja Vu Sans Mono-10:antialias=true:autohint=true,xft:Anonymous Pro-10:autohint=true,xft:Bitstream Vera Sans Mono-10:antialias=true:autohint=true
+URxvt.boldFont: xft:Cousine-10:bold:antialias=true:autohint=true,xft:Deja Vu Sans Mono-10:bold:antialias=true:autohint=true,xft:Anonymous Pro-10:bold:autohint=true,xft:Bitstream Vera Sans Mono-10:bold:antialias=true:autohint=true
+URxvt.italicFont: xft:Cousine-10:italic:antialias=true:autohint=true,xft:Deja Vu Sans Mono-10:italic:antialias=true:autohint=true,xft:Anonymous Pro-10:italic:autohint=true,xft:Bitstream Vera Sans Mono-10:italic:antialias=true:autohint=true
+URxvt.boldItalicFont: xft:Cousine-10:bold:italic:antialias=true:autohint=true,xft:Deja Vu Sans Mono-10:bold:italic:antialias=true:autohint=true,xft:Anonymous Pro-10:bold:italic:autohint=true,xft:Bitstream Vera Sans Mono-10:bold:italic:antialias=true:autohint=true
+URxvt.letterSpace: -2
+
+URxvt.scrollBar: false
+URxvt.saveLines: 8192
+URxvt.secondaryScroll: true
+
+URxvt.perl-ext: default,matcher
+URxvt.urlLauncher: xdg-open
+URxvt.matcher.button: 1
+URxvt.matcher.pattern.1: \\bwww\\.[\\w-]+\\.[\\w./?&@#-]*[\\w/-]
+
+URxvt.depth: 32
+
+URxvt.background: rgba:3f3f/3f3f/3f3f/eeee
 URxvt.foreground: #dcdccc
 URxvt.color0: #3f3f3f
 URxvt.color1: #705050
@@ -22,7 +42,7 @@ URxvt.color12: #94bff3
 URxvt.color13: #ec93d3
 URxvt.color14: #93e0e3
 URxvt.color15: #ffffff
-*/
+/*
 URxvt.foreground: white
 URxvt.background: rgba:2c2c/0000/1e1e/cccc
 URxvt.color0: #2e3436
@@ -42,24 +62,7 @@ URxvt.color13: #ad7fa8
 URxvt.color14: #34e2e2
 URxvt.color15: #eeeeec
 URxvt.hilightColor: white
-URxvt.depth: 32
-
-URxvt.iconFile: /usr/share/pixmaps/gnome-terminal.png
-
-URxvt.font: xft:Deja Vu Sans Mono-10:antialias=true:autohint=true,xft:Anonymous Pro-10:autohint=true,xft:Bitstream Vera Sans Mono-10:antialias=true:autohint=true
-URxvt.boldFont: xft:Deja Vu Sans Mono-10:bold:antialias=true:autohint=true,xft:Anonymous Pro-10:bold:autohint=true,xft:Bitstream Vera Sans Mono-10:bold:antialias=true:autohint=true
-URxvt.italicFont: xft:Deja Vu Sans Mono-10:italic:antialias=true:autohint=true,xft:Anonymous Pro-10:italic:autohint=true,xft:Bitstream Vera Sans Mono-10:italic:antialias=true:autohint=true
-URxvt.boldItalicFont: xft:Deja Vu Sans Mono-10:bold:italic:antialias=true:autohint=true,xft:Anonymous Pro-10:bold:italic:autohint=true,xft:Bitstream Vera Sans Mono-10:bold:italic:antialias=true:autohint=true
-URxvt.letterSpace: -1
-
-URxvt.scrollBar: false
-URxvt.saveLines: 8192
-URxvt.secondaryScroll: true
-
-URxvt.perl-ext: default,matcher
-URxvt.urlLauncher: xdg-open
-URxvt.matcher.button: 1
-URxvt.matcher.pattern.1: \\bwww\\.[\\w-]+\\.[\\w./?&@#-]*[\\w/-]
+*/
 
 Fig.latexfonts: true
 Fig.specialtext: true

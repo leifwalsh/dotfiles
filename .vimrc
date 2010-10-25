@@ -41,7 +41,7 @@ if &t_Co >= 88
     colorscheme zenburn
 endif
 if &t_Co >= 256 || has("gui_running")
-    colorscheme mustang
+    colorscheme zenburn
 endif
 if &t_Co > 2 || has("gui_running")
     syntax on
