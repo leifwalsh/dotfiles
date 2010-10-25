@@ -1,3 +1,5 @@
+;;{{{ load-path
+
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/git-emacs"))
 (add-to-list 'load-path (expand-file-name "~/git/clojure-mode"))
@@ -55,8 +57,8 @@
 
 (require 'color-theme)
 (setq color-theme-is-global t)
-(require 'color-theme-sunburst)
-(color-theme-tm)
+;; (require 'color-theme-sunburst)
+(color-theme-zenburn)
 
 ;;}}}
 
@@ -68,24 +70,9 @@
    nil 'alpha
    (if (= 100
           (or (cadr (find 'alpha (frame-parameters nil) :key #'car)) 100))
-       '(85 85)
+       '(93 93)
      '(100 100))))
 (global-set-key (kbd "C-c C-t") 'toggle-transparency)
-
-;;}}}
-
-;;{{{ whitespace mode
-
-;; ;; whitespace-mode helps you have shorter lines!  Yay!
-;; (setq whitespace-style '(lines-tail empty trailing))
-;; (defun turn-on-whitespace-mode ()
-;;   (interactive)
-;;   (unless (or (string= major-mode "Man-mode")
-;; 	      (string= major-mode "compilation-mode")
-;; 	      (string= major-mode "Fundamental-mode"))
-;;       (whitespace-mode 1)
-;;     (whitespace-mode 0)))
-;; (add-hook 'after-change-major-mode-hook 'turn-on-whitespace-mode)
 
 ;;}}}
 
@@ -108,11 +95,12 @@
  '(column-number-mode t)
  '(display-battery-mode t)
  '(display-time-mode t)
- '(fill-column 80)
+ '(fill-column 74)
  '(frame-title-format (concat invocation-name "@" system-name ": %b [%IB]") t)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
- '(menu-bar-mode nil)
+ '(menu-bar-mode -1)
+ '(message-fill-column 74)
  '(safe-local-variable-values (quote ((js2-basic-offset . 4) (c-indentation-style . linux))))
  '(scroll-bar-mode nil)
  '(show-paren-mode t)
@@ -125,7 +113,7 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 96 :width normal :foundry "unknown" :family "DejaVu Sans Mono"))))
+ '(default ((t (:inherit nil :stipple nil :background "#3f3f3f" :foreground "#dcdccc" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 98 :width normal :foundry "unknown" :family "Cousine"))))
  '(erc-input-face ((t (:foreground "cyan"))))
  '(erc-my-nick-face ((t (:foreground "cyan" :weight bold)))))
 
@@ -155,6 +143,7 @@
 (global-hl-line-mode t)
 ;; auto-fill in text mode
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
+(add-hook 'mail-mode-hook 'turn-on-auto-fill)
 ;; Set underscore to word class for all modes
 (defun undumbify-underscores ()
   (modify-syntax-entry ?_ "w"))
@@ -209,6 +198,12 @@
     (move-beginning-of-line arg)))
 (global-set-key "\C-a" #'dev-studio-beginning-of-line)
 (global-set-key [home] #'dev-studio-beginning-of-line)
+
+;;}}}
+
+;;{{{ filetypes
+
+(add-to-list 'auto-mode-alist '("^/tmp/pico\\." . mail-mode))
 
 ;;}}}
 
@@ -309,39 +304,11 @@
 
 ;;}}}
 
-;;{{{ markdown
-
-;; maybe reinstall markdown-mode
-;(require 'markdown-mode)
-;(add-to-list 'auto-mode-alist
-;             '("\\.md"                          . markdown-mode))
-;(add-to-list 'auto-mode-alist
-;             '("\\.markdown"                    . markdown-mode))
-;; runs python markdown implementation and allows for stdin
-;(setq markdown-command "maruku")
-;; add flyspell to markdown-mode
-;(add-hook 'markdown-mode-hook #'(lambda () (flyspell-mode t)))
-
-;;}}}
-
 ;;{{{ ido
 
 (require 'ido)
 (ido-mode t)
 (setq ido-enable-flex-matching t)
-
-;;}}}
-
-;;{{{ auto-complete
-
-;(require 'auto-complete)
-;(global-auto-complete-mode t)
-
-;;}}}
-
-;;{{{ flymake
-
-;(require 'flymake)
 
 ;;}}}
 
@@ -355,12 +322,6 @@
 
 (require 'haml-mode)
 (require 'sass-mode)
-
-;;}}}
-
-;;{{{ scala
-
-;(require 'scala-mode-auto)
 
 ;;}}}
 
@@ -474,10 +435,6 @@
 
 ;;{{{ clojure-mode
 
-;; already autoloaded by elpa
-;(add-hook 'clojure-mode-hook (paren-face-add-support
-;                              clojure-font-lock-keywords))
-
 (require 'clojure-mode)
 (defmacro defclojureface (name color desc &optional others)
   `(defface ,name
@@ -512,59 +469,23 @@
 
 ;;{{{ swank-clojure
 
-;;;;; swank-clojure
-;;;(add-to-list 'load-path "~/opt/swank-clojure/src/emacs")
-;;;
-;;;(setq swank-clojure-jar-path "~/.clojure/clojure.jar"
-;;;      swank-clojure-extra-classpaths (list
-;;;                           "~/opt/swank-clojure/src/main/clojure"
-;;;                                               "~/.clojure/clojure-contrib.jar"))
-;;;
-;;;                                               (require 'swank-clojure-autoload)
-;;;
-;;;                                               ;; slime
-;;;                                               (eval-after-load "slime" 
-;;;                                                 '(progn (slime-setup '(slime-repl))))
-;;;
-;;;                                                 (add-to-list 'load-path "~/opt/slime")
-;;;                                                 (require 'slime)
-;;;                                                 (slime-setup) 
-;;{{{ load-path
-
-(let*
-    ;; these weren't loading properly so I ripped them from swank-clojure.el:
-    ((swank-clojure-jar-home "~/.swank-clojure/")
-     (swank-clojure-default-classpath
-      (lambda ()
-        (append
-         (when (file-directory-p "~/.clojure")
-           (directory-files "~/.clojure" t ".jar$"))
-         (when (file-directory-p "~/.clojure/ext")
-           (directory-files "~/.clojure/ext" t ".jar$"))
-         (when (file-directory-p swank-clojure-jar-home)
-           (directory-files swank-clojure-jar-home t ".jar$")))))
-     (my-swank-clojure-classpaths (cons
-                                   (expand-file-name
-                                    "~/.clojure/ext/swank-clojure_src")
-                                   (funcall swank-clojure-default-classpath))))
+(let
+    ((clojure-jars (append
+                    (when (file-directory-p "~/.clojure")
+                      (directory-files "~/.clojure" t ".jar$"))
+                    (when (file-directory-p "~/.clojure/ext")
+                      (directory-files "~/.clojure/ext" t ".jar$")))))
   (setq swank-clojure-jar-path (expand-file-name "~/.clojure/clojure.jar")
-        swank-clojure-classpath my-swank-clojure-classpaths
-        swank-clojure-extra-classpaths my-swank-clojure-classpaths))
+        swank-clojure-classpath clojure-jars
+        swank-clojure-extra-classpaths clojure-jars))
 
 (require 'swank-clojure)
 
 (eval-after-load "slime"
-  '(progn (slime-setup '(slime-repl))))
-(require 'slime-repl)
-(add-to-list 'slime-lisp-implementations '(sbcl ("sbcl")))
-(slime-setup)
-
-;;}}}
-
-;;{{{ pretty-mode
-
-;(require 'pretty-mode)
-;(global-pretty-mode 1)
+  '(progn
+     (add-to-list 'slime-lisp-implementations '(sbcl ("sbcl")))
+     (slime-setup '(slime-repl))))
+(load (expand-file-name "~/git/slime/slime-autoloads.el"))
 
 ;;}}}
 
@@ -572,83 +493,6 @@
 
 (require 'epa-file)
 (epa-file-enable)
-
-;;}}}
-
-;;{{{ gnus
-
-(autoload 'gnus "gnus" "Gnus news & mail" t)
-
-(setq user-mail-address "leif.walsh@gmail.com"
-      user-full-name "Leif Walsh")
-
-(eval-after-load "gnus"
-  '(progn
-     (add-to-list 'gnus-secondary-select-methods
-                  '(nnimap "gmail"
-                           (nnimap-address "imap.gmail.com")
-                           (nnimap-server-port 993)
-                           (nnimap-stream ssl)))
-
-     (setq message-send-mail-function 'smtpmail-send-it
-           smtpmail-starttls-credentials '(("smtp.gmail.com" 25 nil nil))
-           smtpmail-auth-credentials '(("smtp.gmail.com" 25
-                                        "leif.walsh@gmail.com" nil))
-           smtpmail-default-smtp-server "smtp.gmail.com"
-           smtpmail-smtp-server "smtp.gmail.com"
-           smtpmail-smtp-service 25
-           smtpmail-local-domain "gmail.com")))
-
-;;}}}
-
-;;{{{ wanderlust
-
-(autoload 'wl "wl" "Wanderlust" t)
-(autoload 'wl-other-frame "wl" "Wanderlust on new frame." t)
-(autoload 'wl-draft "wl-draft" "Write draft with Wanderlust." t)
-
-;;{{{ IMAP
-
-(setq elmo-imap4-default-server "imap.gmail.com"
-      elmo-imap4-default-user "leif.walsh@gmail.com"
-      elmo-imap4-default-authenticate-type 'login
-      elmo-imap4-default-port '993
-      elmo-imap4-default-stream-type 'ssl
-
-      elmo-imap4-use-modified-utf7 t)
-
-;;}}}
-
-;;{{{ SMTP
-
-(setq wl-smtp-connection-type 'starttls
-      wl-smtp-posting-port 587
-      wl-smtp-authenticate-type "login"
-      wl-smtp-posting-user "leif.walsh"
-      wl-smtp-posting-server "smtp.gmail.com"
-      wl-local-domain "gmail.com"
-
-      wl-default-folder "%inbox"
-      wl-default-spec "%"
-      wl-draft-folder "%[Gmail]/Drafts"
-      wl-trash-folder "%[Gmail]/Trash"
-
-      wl-folder-check-async t
-
-      elmo-imap4-use-modified-utf7 t)
-
-;;}}}
-
-(autoload 'wl-user-agent-compose "wl-draft" nil t)
-(if (boundp 'mail-user-agent)
-    (setq mail-user-agent 'wl-user-agent))
-(if (fboundp 'define-mail-user-agent)
-    (define-mail-user-agent
-      'wl-user-agent
-      'wl-user-agent-compose
-      'wl-draft-send
-      'wl-draft-kill
-      'mail-send-hook))
 
 ;;}}}
 
