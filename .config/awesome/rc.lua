@@ -345,6 +345,7 @@ client.add_signal("unfocus", function(c) c.border_color = beautiful.border_norma
 awful.util.spawn_with_shell("pgrep -f '^gnome-settings-daemon$' || gnome-settings-daemon")
 awful.util.spawn_with_shell("pgrep -f '^nm-applet$' || nm-applet")
 awful.util.spawn_with_shell("pgrep -f '^gnome-power-manager$' || gnome-power-manager")
+awful.util.spanw_with_shell("pgrep -f '^xflux' || xflux -z 11776")
 awful.util.spawn_with_shell("/home/leif/bin/edaemon.sh")
 awful.util.spawn_with_shell("/home/leif/bin/wallchange-awesome.sh")
 awful.util.spawn_with_shell("/home/leif/bin/alpine-notify.sh")
