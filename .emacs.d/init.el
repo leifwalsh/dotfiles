@@ -223,6 +223,8 @@
 (add-hook 'LaTeX-mode-hook 'flyspell-mode)
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'mail-mode-hook 'flyspell-mode)
+(add-hook 'outline-mode-hook 'flyspell-mode)
+(add-hook 'org-mode-hook 'flyspell-mode)
 
 ;;}}}
 
