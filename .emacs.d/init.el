@@ -2,9 +2,15 @@
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/git-emacs"))
+;; git://github.com/jochu/clojure-mode.git
 (add-to-list 'load-path (expand-file-name "~/git/clojure-mode"))
+;; git://github.com/jochu/swank-clojure.git
 (add-to-list 'load-path (expand-file-name "~/git/swank-clojure"))
+;; git://git.boinkor.net/slime.git
 (add-to-list 'load-path (expand-file-name "~/git/slime"))
+;; git://github.com/tcrayford/clojure-refactoring.git
+(add-to-list 'load-path (expand-file-name "~/git/clojure-refactoring"))
+;; http://lampsvn.epfl.ch/svn-repos/scala/scala-tool-support/trunk/src/emacs
 (add-to-list 'load-path (expand-file-name "~/svn/scala-mode"))
 
 ;;}}}
@@ -464,6 +470,12 @@
 
 (add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
 (add-hook 'slime-repl-mode-hook 'tweak-clojure-syntax)
+
+;;}}}
+
+;;{{{ clojure-refactoring-mode
+
+(require 'clojure-refactoring-mode)
 
 ;;}}}
 
