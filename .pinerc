@@ -403,7 +403,7 @@ address-book=.addressbook,
 global-address-book=
 
 # Set by Alpine; controls beginning-of-month sent-mail pruning.
-last-time-prune-questioned=110.10
+last-time-prune-questioned=110.11
 
 # Set by Alpine; controls display of "new version" message.
 last-version-used=6.00
@@ -514,10 +514,10 @@ personal-print-command=
 personal-print-category=
 
 # Patterns and their actions are stored here.
-patterns-roles=
+patterns-roles=LIT:pattern="/NICK=cc-me/COMM=Add myself to CC:\\n/FLDTYPE=EMAIL" action="/ROLE=1/CSTM=Bcc: leif.walsh@gmail.com/RTYPE=NC/FTYPE=NC/CTYPE=NC"
 
 # Patterns and their actions are stored here.
-patterns-filters2=
+patterns-filters2=LIT:pattern="/NICK=cc-me-not-new/COMM=Remove the \\042new\\042 flag from any messages I CC myself (for threading)\\n/FROM=rlwalsh@ic.sunysb.edu,adlaiff6@gmail.com,leif.walsh@gmail.com/FLDTYPE=EMAIL/FOLDER=INBOX/STATN=YES" action="/FILTER=2/NOKILL=1/STATN=CLR"
 
 # Patterns and their actions are stored here.
 patterns-scores2=
