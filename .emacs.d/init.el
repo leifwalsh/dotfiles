@@ -217,6 +217,15 @@
 
 ;;{{{ plugins
 
+;;{{{ flyspell-mode
+
+(setq flyspell-sort-corrections nil)
+(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+(add-hook 'text-mode-hook 'flyspell-mode)
+(add-hook 'mail-mode-hook 'flyspell-mode)
+
+;;}}}
+
 ;;{{{ haskell-mode
 
 (load "/home/leif/darcs/haskellmode-emacs/haskell-site-file.el")
