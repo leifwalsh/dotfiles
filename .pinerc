@@ -20,14 +20,16 @@ user-id=leif.walsh@gmail.com
 user-domain=gmail.com
 
 # List of SMTP servers for sending mail. If blank: Unix Alpine uses sendmail.
-smtp-server=smtp.gmail.com:587/user=leif.walsh@gmail.com
+smtp-server=
+#smtp-server=smtp.gmail.com:587/user=leif.walsh@gmail.com
 
 # NNTP server for posting news. Also sets news-collections for news reading.
 nntp-server=
 
 # Path of (local or remote) INBOX, e.g. ={mail.somewhere.edu}inbox
 # Normal Unix default is the local INBOX (usually /usr/spool/mail/$USER).
-inbox-path={imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}INBOX
+inbox-path={localhost.localdomain/novalidate-cert}INBOX
+#inbox-path={imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}INBOX
 
 # List of folder pairs; the first indicates a folder to archive, and the
 # second indicates the folder read messages in the first should
@@ -51,7 +53,8 @@ default-saved-msg-folder=
 # Over-rides default path for postponed messages folder, e.g. =pm (which uses
 # first folder collection dir) or ={host4}pm (using home dir on host4).
 # Default: postponed-msgs (Unix) or POSTPOND.MTX (PC) in default fldr coltn.
-postponed-folder={imap.gmail.com/ssl/user=leif.walsh@gmail.com}Drafts
+postponed-folder={localhost.localdomain/novalidate-cert}Drafts
+#postponed-folder={imap.gmail.com/ssl/user=leif.walsh@gmail.com}Drafts
 
 # If set, specifies where already-read messages will be moved upon quitting.
 read-message-folder=
@@ -373,18 +376,27 @@ newmail-window-width=
 
 # List of incoming msg folders besides INBOX, e.g. ={host2}inbox, {host3}inbox
 # Syntax: optnl-label {optnl-imap-host-name}folder-path
-incoming-folders=Old-Inbox "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}Old-Inbox",
-	Facebook "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}Facebook",
-	Quora "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}Quora",
-	Scala-user {imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}Scala-user,
-	RethinkDB "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}RethinkDB",
-	FreeBSD-Questions "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}FreeBSD-questions",
-	FreeBSD-STABLE "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}FreeBSD-STABLE"
+incoming-folders=Old-Inbox "{localhost.localdomain/novalidate-cert}Old-Inbox",
+	Facebook "{localhost.localdomain/novalidate-cert}Facebook",
+	Quora "{localhost.localdomain/novalidate-cert}Quora",
+        Clojure "{localhost.localdomain/novalidate-cert}Clojure",
+	Scala-user "{localhost.localdomain/novalidate-cert}Scala-user",
+	RethinkDB "{localhost.localdomain/novalidate-cert}RethinkDB",
+	FreeBSD-Questions "{localhost.localdomain/novalidate-cert}FreeBSD-questions",
+	FreeBSD-STABLE "{localhost.localdomain/novalidate-cert}FreeBSD-STABLE"
+# incoming-folders=Old-Inbox "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}Old-Inbox",
+# 	Facebook "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}Facebook",
+# 	Quora "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}Quora",
+# 	Scala-user {imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}Scala-user,
+# 	RethinkDB "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}RethinkDB",
+# 	FreeBSD-Questions "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}FreeBSD-questions",
+# 	FreeBSD-STABLE "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}FreeBSD-STABLE"
 
 # List of directories where saved-message folders may be. First one is
 # the default for Saves. Example: Main {host1}mail/[], Desktop mail\[]
 # Syntax: optnl-label {optnl-imap-hostname}optnl-directory-path[]
-folder-collections=Gmail {imap.gmail.com/ssl/user=leif.walsh@gmail.com}[]
+folder-collections=Gmail {localhost.localdomain/novalidate-cert}[]
+#folder-collections=Gmail {imap.gmail.com/ssl/user=leif.walsh@gmail.com}[]
 
 # List, only needed if nntp-server not set, or news is on a different host
 # than used for NNTP posting. Examples: News *[] or News *{host3/nntp}[]
