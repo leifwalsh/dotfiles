@@ -9,7 +9,7 @@
 -- {{{ Main
 theme = {}
 theme.confdir = awful.util.getdir("config")
-theme.wallpaper_cmd = { "awsetbg /usr/share/awesome/themes/zenburn/zenburn-background.png" }
+theme.wallpaper_cmd = { "awsetbg /home/leif/Downloads/770px-GAto.jpg" }
 -- }}}
 
 -- {{{ Styles

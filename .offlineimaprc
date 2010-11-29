@@ -68,7 +68,7 @@ maxsyncaccounts = 3
 
 # ui = Curses.Blinkenlights, TTY.TTYUI,
 #      Noninteractive.Basic, Noninteractive.Quiet
-ui = Noninteractive.Quiet
+ui = Noninteractive.Basic
 
 # If you try to synchronize messages to a read-only folder,
 # OfflineIMAP will generate a warning.  If you want to suppress these

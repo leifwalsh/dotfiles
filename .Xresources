@@ -5,6 +5,8 @@ Xft.hintstyle: hintslight
 Xft.lcdfilter: lcddefault
 Xft.rgba: rgb
 
+URxvt.termName: rxvt-256color
+
 URxvt.iconFile: /usr/share/pixmaps/gnome-terminal.png
 
 URxvt.font: xft:Cousine-10:antialias=true:autohint=true,xft:Deja Vu Sans Mono-10:antialias=true:autohint=true,xft:Anonymous Pro-10:autohint=true,xft:Bitstream Vera Sans Mono-10:antialias=true:autohint=true

@@ -6,4 +6,4 @@ setenv LC_CTYPE en_US.UTF-8  # dunno but this sounds cool
 defutf8 on  # I guess this does too
 vbell off  # bells are stupid in general
 #shell -$SHELL  # set the login shell
-
+termcapinfo xterm-color|xterm-16color|xterm-88color|xterm-256color|rxvt* 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'

@@ -16,3 +16,11 @@
 TAGS
 tags
 cscope.out
+
+# latex generated files
+*.aux
+*.log
+*.dvi
+*.ps
+*.pdf
+*.eps
