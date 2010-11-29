@@ -372,7 +372,8 @@
 (setq erc-nick "Adlai")
 (setq erc-server-history-list
       '("irc.foonetic.net"
-        "irc.freenode.net"))
+        "irc.freenode.net"
+        "localhost"))
 (require 'erc-join)
 (add-to-list 'erc-autojoin-channels-alist
              '("foonetic.net"
@@ -409,7 +410,7 @@
   (save-window-excursion
     (shell-command
      (format
-      "notify-send -i emacs23 \"%s\" \"%s\""
+      "notify-send -i emacs23 's' 's'"
       id (erc-xml-escape msg)))))
 
 (defun erc-notify-osd
