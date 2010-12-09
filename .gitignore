@@ -19,6 +19,8 @@ cscope.out
 
 # latex generated files
 *.aux
+*.bbl
+*.blg
 *.log
 *.dvi
 *.ps

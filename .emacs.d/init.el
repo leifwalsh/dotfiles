@@ -192,6 +192,8 @@
           (lambda () (c-like-keys objc-mode-map)))
 (add-hook 'java-mode-hook
           (lambda () (c-like-keys java-mode-map)))
+(add-hook 'tuareg-mode-hook
+          (lambda () (c-like-keys tuareg-mode-map)))
 
 (defun dev-studio-beginning-of-line (arg)
   "Moves to beginning-of-line, or from there to the first non-whitespace
@@ -244,7 +246,23 @@
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 (add-hook 'python-mode-hook
 	  (lambda ()
-	    (set-variable 'py-indent-offset 4)))
+	    (set-variable 'py-indent-offset 4)
+            (set (make-variable-buffer-local 'beginning-of-defun-function)
+                  'py-beginning-of-def-or-class)
+            (setq outline-regexp "def\\|class ")
+            (flymake-mode 1)))
+
+(when (load "flymake" t)
+  (defun flymake-pylint-init ()
+    (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                       'flymake-create-temp-inplace))
+           (local-file (file-relative-name
+                        temp-file
+                        (file-name-directory buffer-file-name))))
+      (list "epylint" (list local-file))))
+  
+  (add-to-list 'flymake-allowed-file-name-masks
+               '("\\.py\\'" flymake-pylint-init)))
 
 ;;}}}
 
@@ -410,7 +428,7 @@
   (save-window-excursion
     (shell-command
      (format
-      "notify-send -i emacs23 's' 's'"
+      "notify-send -i emacs23 '%s' '%s'"
       id (erc-xml-escape msg)))))
 
 (defun erc-notify-osd
@@ -510,6 +528,22 @@
      (add-to-list 'slime-lisp-implementations '(sbcl ("sbcl")))
      (slime-setup '(slime-repl))))
 (load (expand-file-name "~/git/slime/slime-autoloads.el"))
+
+;;}}}
+
+;;{{{ tuareg-mode (ocaml)
+
+(autoload 'tuareg-mode "tuareg" "Major mode for editing Caml code" t)
+(autoload 'camldebug "camldebug" "Run the Caml debugger" t)
+(autoload 'tuareg-imenu-set-imenu "tuareg-imenu"
+  "Configuration of imenu for tuareg" t)
+
+(add-hook 'tuareg-mode-hook 'tuareg-imenu-set-imenu)
+
+(setq auto-mode-alist
+      (append '(("\\.ml[ily]?$" . tuareg-mode)
+                ("\\.topml$" . tuareg-mode))
+              auto-mode-alist))
 
 ;;}}}
 

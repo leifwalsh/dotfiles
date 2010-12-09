@@ -5,7 +5,7 @@ Xft.hintstyle: hintslight
 Xft.lcdfilter: lcddefault
 Xft.rgba: rgb
 
-URxvt.termName: rxvt-256color
+/*URxvt.termName: rxvt-256color*/
 
 URxvt.iconFile: /usr/share/pixmaps/gnome-terminal.png
 

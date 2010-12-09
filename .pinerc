@@ -379,7 +379,7 @@ newmail-window-width=
 incoming-folders=Old-Inbox "{localhost.localdomain/novalidate-cert}Old-Inbox",
 	Facebook "{localhost.localdomain/novalidate-cert}Facebook",
 	Quora "{localhost.localdomain/novalidate-cert}Quora",
-        Clojure "{localhost.localdomain/novalidate-cert}Clojure",
+	Clojure "{localhost.localdomain/novalidate-cert}Clojure",
 	Scala-user "{localhost.localdomain/novalidate-cert}Scala-user",
 	RethinkDB "{localhost.localdomain/novalidate-cert}RethinkDB",
 	FreeBSD-Questions "{localhost.localdomain/novalidate-cert}FreeBSD-questions",
@@ -415,7 +415,7 @@ address-book=.addressbook,
 global-address-book=
 
 # Set by Alpine; controls beginning-of-month sent-mail pruning.
-last-time-prune-questioned=110.11
+last-time-prune-questioned=110.12
 
 # Set by Alpine; controls display of "new version" message.
 last-version-used=6.00
