@@ -29,10 +29,10 @@ URxvt.depth: 32
 URxvt.background: rgba:3f3f/3f3f/3f3f/eeee
 URxvt.foreground: #dcdccc
 URxvt.color0: #3f3f3f
-URxvt.color1: #705050
-URxvt.color2: #60b48a
-URxvt.color3: #dfaf8f
-URxvt.color4: #506070
+URxvt.color1: #d65858
+URxvt.color2: #3cb579
+URxvt.color3: #ab714b
+URxvt.color4: #38618a
 URxvt.color5: #dc8cc3
 URxvt.color6: #8cd0d3
 URxvt.color7: #dcdccc

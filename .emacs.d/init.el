@@ -12,6 +12,8 @@
 (add-to-list 'load-path (expand-file-name "~/git/clojure-refactoring"))
 ;; http://lampsvn.epfl.ch/svn-repos/scala/scala-tool-support/trunk/src/emacs
 (add-to-list 'load-path (expand-file-name "~/svn/scala-mode"))
+;; git://git.naquadah.org/offlineimap-el.git
+(add-to-list 'load-path (expand-file-name "~/git/offlineimap-el"))
 
 ;;}}}
 
@@ -528,6 +530,12 @@
      (add-to-list 'slime-lisp-implementations '(sbcl ("sbcl")))
      (slime-setup '(slime-repl))))
 (load (expand-file-name "~/git/slime/slime-autoloads.el"))
+
+;;}}}
+
+;;{{{ offlineimap
+
+(require 'offlineimap)
 
 ;;}}}
 
