@@ -2,4 +2,4 @@
 
 cd ${HOME}
 export PYTHONPATH=./git/offlineimap:${PYTHONPATH}
-exec git/offlineimap/bin/offlineimap $*
+exec git/offlineimap/bin/offlineimap "$@"
