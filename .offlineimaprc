@@ -48,7 +48,7 @@ accounts = Gmail
 # since any given sync run never "finishes" due to a timer, you will never
 # sync your additional accounts if this is 1.
 
-maxsyncaccounts = 3
+maxsyncaccounts = 1
 
 # You can specify one or more user interface modules for OfflineIMAP
 # to use.  OfflineIMAP will try the first in the list, and if it
@@ -68,7 +68,7 @@ maxsyncaccounts = 3
 
 # ui = Curses.Blinkenlights, TTY.TTYUI,
 #      Noninteractive.Basic, Noninteractive.Quiet
-ui = Curses.Blinkenlights, Noninteractive.Basic
+ui = Noninteractive.Basic
 
 # If you try to synchronize messages to a read-only folder,
 # OfflineIMAP will generate a warning.  If you want to suppress these
@@ -172,7 +172,7 @@ remoterepository = Gmail
 # frequently to do that (in minutes) here.  You can also specify
 # fractional minutes (ie, 3.25).
 
-autorefresh = 5
+# autorefresh = 5
 
 # You can tell offlineimap to do a number of quicker synchronizations
 # between full updates.  A quick synchronization only synchronizes
@@ -182,7 +182,7 @@ autorefresh = 5
 # -1 to always do quick updates, or a positive integer to do that many
 # quick updates between each full synchronization (requires autorefresh).
 
-quick = 10
+# quick = 10
 
 # You can specify a pre and post sync hook to execute a external command.
 # in this case a call to imapfilter to filter mail before the sync process
@@ -227,7 +227,7 @@ type = IMAP
 remotehost = localhost
 port = 143
 remoteuser = leif
-maxconnections = 3
+maxconnections = 1
 
 # [Repository Local]
 
@@ -478,7 +478,7 @@ type = Gmail
 # Specify the Gmail user name. This is the only mandatory parameter.
 remoteuser = leif.walsh@gmail.com
 
-maxconnections = 3
+maxconnections = 1
 
 # Deleting a message from a Gmail folder via the IMAP interface will
 # just remove that folder's label from the message: the message will
