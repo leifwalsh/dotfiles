@@ -15,4 +15,4 @@ alias clj=clj-env-dir
 export MANPATH=:$HOME/svn/scala-2.8.1_RC1/build/scaladoc/manual/man
 
 # start ssh-agent
-eval $(keychain -q)
+eval $(keychain -q --eval id_rsa F5709C49)
