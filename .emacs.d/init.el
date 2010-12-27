@@ -2,18 +2,10 @@
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/git-emacs"))
-;; git://github.com/jochu/clojure-mode.git
-(add-to-list 'load-path (expand-file-name "~/git/clojure-mode"))
-;; git://github.com/jochu/swank-clojure.git
-(add-to-list 'load-path (expand-file-name "~/git/swank-clojure"))
-;; git://git.boinkor.net/slime.git
-(add-to-list 'load-path (expand-file-name "~/git/slime"))
 ;; git://github.com/tcrayford/clojure-refactoring.git
 (add-to-list 'load-path (expand-file-name "~/git/clojure-refactoring"))
 ;; http://lampsvn.epfl.ch/svn-repos/scala/scala-tool-support/trunk/src/emacs
 (add-to-list 'load-path (expand-file-name "~/svn/scala-mode"))
-;; git://git.naquadah.org/offlineimap-el.git
-(add-to-list 'load-path (expand-file-name "~/git/offlineimap-el"))
 
 ;;}}}
 
@@ -513,24 +505,6 @@
 
 ;;{{{ swank-clojure
 
-(let
-    ((clojure-jars (append
-                    (when (file-directory-p "~/.clojure")
-                      (directory-files "~/.clojure" t ".jar$"))
-                    (when (file-directory-p "~/.clojure/ext")
-                      (directory-files "~/.clojure/ext" t ".jar$")))))
-  (setq swank-clojure-jar-path (expand-file-name "~/.clojure/clojure.jar")
-        swank-clojure-classpath clojure-jars
-        swank-clojure-extra-classpaths clojure-jars))
-
-(require 'swank-clojure)
-
-(eval-after-load "slime"
-  '(progn
-     (add-to-list 'slime-lisp-implementations '(sbcl ("sbcl")))
-     (slime-setup '(slime-repl))))
-(load (expand-file-name "~/git/slime/slime-autoloads.el"))
-
 (defun lein-swank ()
   (interactive)
   (let ((root (locate-dominating-file default-directory "project.clj")))
@@ -545,12 +519,6 @@
                             (slime-connect "localhost" slime-port)
                             (set-process-filter process nil))))
     (message "Starting swank server...")))
-
-;;}}}
-
-;;{{{ offlineimap
-
-(require 'offlineimap)
 
 ;;}}}
 
