@@ -379,6 +379,16 @@
 
 ;;}}}
 
+;;{{{ truncate
+
+(setq erc-max-buffer-size 5000)
+(defvar erc-insert-post-hook)
+(add-hook 'erc-insert-post-hook
+          'erc-truncate-buffer)
+(setq erc-truncate-buffer-on-save t)
+
+;;}}}
+
 ;;{{{ nick/servers/chans
 
 (setq erc-nick "Adlai")
@@ -535,6 +545,13 @@
       (append '(("\\.ml[ily]?$" . tuareg-mode)
                 ("\\.topml$" . tuareg-mode))
               auto-mode-alist))
+
+;;}}}
+
+;;{{{ html/php/js/etc
+
+; http://ourcomments.org/cgi-bin/emacsw32-dl-latest.pl
+(load (expand-file-name "~/.emacs.d/vendor/nxhtml/autostart.el"))
 
 ;;}}}
 
