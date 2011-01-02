@@ -188,6 +188,10 @@
           (lambda () (c-like-keys java-mode-map)))
 (add-hook 'tuareg-mode-hook
           (lambda () (c-like-keys tuareg-mode-map)))
+(add-hook 'nxhtml-mumamo-mode-hook
+          (lambda () (c-like-keys nxhtml-mumamo-mode-map)))
+(add-hook 'nxhtml-mode-hook
+          (lambda () (c-like-keys nxhtml-mode-map)))
 
 (defun dev-studio-beginning-of-line (arg)
   "Moves to beginning-of-line, or from there to the first non-whitespace
