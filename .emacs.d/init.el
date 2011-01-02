@@ -101,14 +101,14 @@
  '(inhibit-startup-screen t)
  '(menu-bar-mode -1)
  '(message-fill-column 74)
- '(mumamo-major-modes ((asp-js-mode js-mode javascript-mode espresso-mode
-                                    ecmascript-mode)
-                       (asp-vb-mode visual-basic-mode)
-                       (javascript-mode js2-mode js-mode javascript-mode
-                                        espresso-mode ecmascript-mode)
-                       (java-mode jde-mode java-mode)
-                       (groovy-mode groovy-mode)
-                       (nxhtml-mode nxhtml-mode html-mode)))
+ '(mumamo-major-modes '((asp-js-mode js-mode javascript-mode espresso-mode
+                                     ecmascript-mode)
+                        (asp-vb-mode visual-basic-mode)
+                        (javascript-mode js2-mode js-mode javascript-mode
+                                         espresso-mode ecmascript-mode)
+                        (java-mode jde-mode java-mode)
+                        (groovy-mode groovy-mode)
+                        (nxhtml-mode nxhtml-mode html-mode)))
  '(safe-local-variable-values (quote ((js2-basic-offset . 4) (c-indentation-style . linux))))
  '(scroll-bar-mode nil)
  '(show-paren-mode t)
