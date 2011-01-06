@@ -97,6 +97,9 @@
  '(display-time-mode t)
  '(fill-column 74)
  '(frame-title-format (concat invocation-name "@" system-name ": %b [%IB]") t)
+ '(global-cwarn-mode t)
+ '(global-font-lock-mode t)
+ '(global-hl-line-mode t)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(menu-bar-mode -1)
@@ -131,8 +134,6 @@
 
 ;;{{{ toggles
 
-;; syntax hilighting
-(global-font-lock-mode t)
 ;; max hilighting
 (setq font-lock-maximum-decoration t)
 ;; hilight marked region
@@ -147,8 +148,6 @@
 (add-hook 'doc-view-mode-hook 'auto-revert-mode)
 ;; stop forcing me to spell out "yes"
 (fset 'yes-or-no-p 'y-or-n-p)
-;; hilight current line (subtly)
-(global-hl-line-mode t)
 ;; auto-fill in text mode
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 (add-hook 'mail-mode-hook 'turn-on-auto-fill)
