@@ -96,22 +96,13 @@
  '(display-battery-mode t)
  '(display-time-mode t)
  '(fill-column 74)
+ '(flymake-allowed-file-name-masks (quote (("\\.c\\'" flymake-simple-make-init flymake-simple-cleanup flymake-get-real-file-name) ("\\.cpp\\'" flymake-simple-make-init flymake-simple-cleanup flymake-get-real-file-name) ("\\.xml\\'" flymake-xml-init) ("\\.html?\\'" flymake-xml-init) ("\\.cs\\'" flymake-simple-make-init) ("\\.p[ml]\\'" flymake-perl-init) ("\\.php[345]?\\'" flymake-php-init) ("\\.h\\'" flymake-master-make-header-init flymake-master-cleanup) ("\\.java\\'" flymake-simple-make-java-init flymake-simple-java-cleanup) ("[0-9]+\\.tex\\'" flymake-master-tex-init flymake-master-cleanup) ("\\.tex\\'" flymake-simple-tex-init) ("\\.idl\\'" flymake-simple-make-init))))
  '(frame-title-format (concat invocation-name "@" system-name ": %b [%IB]") t)
- '(global-cwarn-mode t)
- '(global-font-lock-mode t)
- '(global-hl-line-mode t)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(menu-bar-mode -1)
  '(message-fill-column 74)
- '(mumamo-major-modes '((asp-js-mode js-mode javascript-mode espresso-mode
-                                     ecmascript-mode)
-                        (asp-vb-mode visual-basic-mode)
-                        (javascript-mode js2-mode js-mode javascript-mode
-                                         espresso-mode ecmascript-mode)
-                        (java-mode jde-mode java-mode)
-                        (groovy-mode groovy-mode)
-                        (nxhtml-mode nxhtml-mode html-mode)))
+ '(mumamo-major-modes (quote ((asp-js-mode js-mode javascript-mode espresso-mode ecmascript-mode) (asp-vb-mode visual-basic-mode) (javascript-mode js2-mode js-mode javascript-mode espresso-mode ecmascript-mode) (java-mode jde-mode java-mode) (groovy-mode groovy-mode) (nxhtml-mode nxhtml-mode html-mode))))
  '(safe-local-variable-values (quote ((js2-basic-offset . 4) (c-indentation-style . linux))))
  '(scroll-bar-mode nil)
  '(show-paren-mode t)
@@ -235,6 +226,23 @@
 
 ;;}}}
 
+;;{{{ flymake-mode
+
+(require 'flymake)
+
+(eval-after-load "flymake"
+  '(progn
+     (add-hook 'find-file-hook 'flymake-find-file-hook)
+     (defun my-flymake-show-help ()
+       (when (get-char-property (point)
+                                'flymake-overlay)
+         (let ((help (get-char-property (point)
+                                        'help-echo)))
+           (if help
+               (message "%s" help)))))))
+
+;;}}}
+
 ;;{{{ haskell-mode
 
 (load "/home/leif/darcs/haskellmode-emacs/haskell-site-file.el")
@@ -257,7 +265,7 @@
             (setq outline-regexp "def\\|class ")
             (flymake-mode 1)))
 
-(when (load "flymake" t)
+(eval-after-load "flymake"
   (defun flymake-pylint-init ()
     (let* ((temp-file (flymake-init-create-temp-buffer-copy
                        'flymake-create-temp-inplace))
@@ -322,15 +330,20 @@
 
 ;;{{{ eldoc
 
-(require 'eldoc)
+(require 'c-eldoc)
 
-(add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
-(add-hook 'scheme-mode-hook 'turn-on-eldoc-mode)
-(add-hook 'lisp-mode-hook 'turn-on-eldoc-mode)
-(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-(add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
-(add-hook 'haskell-mode-hook 'turn-on-eldoc-mode)
-(add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
+(eval-after-load "eldoc"
+  '(progn
+     (add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
+     (add-hook 'scheme-mode-hook 'turn-on-eldoc-mode)
+     (add-hook 'lisp-mode-hook 'turn-on-eldoc-mode)
+     (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+     (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+     (add-hook 'haskell-mode-hook 'turn-on-eldoc-mode)))
+
+(eval-after-load "c-eldoc"
+  '(progn
+     (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)))
 
 ;;}}}
 
