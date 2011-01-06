@@ -64,6 +64,7 @@
 
 ;;{{{ transparency
 
+(require 'cl)
 (defun toggle-transparency ()
   (interactive)
   (set-frame-parameter
@@ -152,59 +153,6 @@
 
 ;;}}}
 
-;;{{{ remaps
-
-;; Swap M-x and M-q to make dvorak extended commands easier
-(global-set-key (kbd "M-q") 'execute-extended-command)
-(global-set-key (kbd "M-x") 'fill-paragraph)
-;; Use ibuffer instead of regular buffer
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-;; apropos(-symbol) is apparently better than apropos-command
-(global-set-key (kbd "\C-ha") 'apropos)
-;; sort of equivalent to cindent for vim
-(global-set-key (kbd "RET") 'newline-and-indent)
-
-(defun fullscreen ()
-  (interactive)
-  (x-send-client-message
-   nil 0 nil "_NET_WM_STATE" 32
-   '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
-(global-set-key [(meta return)] 'fullscreen)
-
-(defun c-like-keys (map)
-  (progn
-    (define-key map (kbd "C-c C-c") 'compile)
-    (define-key map (kbd "M-q") 'execute-extended-command)
-    (define-key map (kbd "M-x") 'c-fill-paragraph)))
-(add-hook 'c-mode-hook
-          (lambda () (c-like-keys c-mode-map)))
-(add-hook 'c++-mode-hook
-          (lambda () (c-like-keys c++-mode-map)))
-(add-hook 'objc-mode-hook
-          (lambda () (c-like-keys objc-mode-map)))
-(add-hook 'java-mode-hook
-          (lambda () (c-like-keys java-mode-map)))
-(add-hook 'tuareg-mode-hook
-          (lambda () (c-like-keys tuareg-mode-map)))
-(add-hook 'nxhtml-mumamo-mode-hook
-          (lambda () (c-like-keys nxhtml-mumamo-mode-map)))
-(add-hook 'nxhtml-mode-hook
-          (lambda () (c-like-keys nxhtml-mode-map)))
-
-(defun dev-studio-beginning-of-line (arg)
-  "Moves to beginning-of-line, or from there to the first non-whitespace
-   character.
-   This takes a numeric prefix argument; when not 1, it behaves exactly like
-   \(move-beginning-of-line arg) instead."
-  (interactive "p")
-  (if (and (looking-at "^") (= arg 1))
-      (skip-chars-forward " \t")
-    (move-beginning-of-line arg)))
-(global-set-key "\C-a" #'dev-studio-beginning-of-line)
-(global-set-key [home] #'dev-studio-beginning-of-line)
-
-;;}}}
-
 ;;{{{ filetypes
 
 (add-to-list 'auto-mode-alist '("^/tmp/pico\\." . mail-mode))
@@ -260,7 +208,7 @@
 (add-hook 'python-mode-hook
 	  (lambda ()
 	    (set-variable 'py-indent-offset 4)
-            (set (make-variable-buffer-local 'beginning-of-defun-function)
+            (set (make-local-variable 'beginning-of-defun-function)
                   'py-beginning-of-def-or-class)
             (setq outline-regexp "def\\|class ")
             (flymake-mode 1)))
@@ -318,13 +266,14 @@
 (require 'compile)
 (setq mode-compile-always-save-buffer-p t
       compilation-window-height 12
-      compilation-finish-function
-      (lambda (buf str)
-        (unless (string-match "exited abnormally" str)
-          (run-at-time
-           "2 sec" nil 'delete-windows-on
-           (get-buffer-create "*compilation*"))
-          (message "No compilation errors!"))))
+      compilation-finish-functions
+      (list
+       (lambda (buf str)
+         (unless (string-match "exited abnormally" str)
+           (run-at-time
+            "2 sec" nil 'delete-windows-on
+            (get-buffer-create "*compilation*"))
+           (message "No compilation errors!")))))
 (global-set-key [f12] 'compile)
 
 ;;}}}
@@ -543,20 +492,23 @@
 
 ;;{{{ swank-clojure
 
-(defun lein-swank ()
-  (interactive)
-  (let ((root (locate-dominating-file default-directory "project.clj")))
-    (when (not root)
-      (error "Not in a Leiningen project."))
-    ;; you can customize slime-port using .dir-locals.el
-    (shell-command (format "cd %s && lein swank %s &" root slime-port)
-                   "*lein-swank*")
-    (set-process-filter (get-buffer-process "*lein-swank*")
-                        (lambda (process output)
-                          (when (string-match "Connection opened on" output)
-                            (slime-connect "localhost" slime-port)
-                            (set-process-filter process nil))))
-    (message "Starting swank server...")))
+(eval-after-load "slime"
+  '(progn
+     (defun lein-swank ()
+       (interactive)
+       (let ((root (locate-dominating-file default-directory "project.clj")))
+         (when (not root)
+           (error "Not in a Leiningen project."))
+         ;; you can customize slime-port using .dir-locals.el
+         (shell-command (format "cd %s && lein swank %s &" root slime-port)
+                        "*lein-swank*")
+         (set-process-filter (get-buffer-process "*lein-swank*")
+                             (lambda (process output)
+                               (when (string-match "Connection opened on"
+                                                   output)
+                                 (slime-connect "localhost" slime-port)
+                                 (set-process-filter process nil))))
+         (message "Starting swank server...")))))
 
 ;;}}}
 
@@ -589,6 +541,61 @@
 (epa-file-enable)
 
 ;;}}}
+
+;;}}}
+
+;;{{{ remaps
+
+;; Swap M-x and M-q to make dvorak extended commands easier
+(global-set-key (kbd "M-q") 'execute-extended-command)
+(global-set-key (kbd "M-x") 'fill-paragraph)
+;; Use ibuffer instead of regular buffer
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+;; apropos(-symbol) is apparently better than apropos-command
+(global-set-key (kbd "\C-ha") 'apropos)
+;; sort of equivalent to cindent for vim
+(global-set-key (kbd "RET") 'newline-and-indent)
+
+(defun fullscreen ()
+  (interactive)
+  (x-send-client-message
+   nil 0 nil "_NET_WM_STATE" 32
+   '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
+(global-set-key [(meta return)] 'fullscreen)
+
+(defun c-like-keys (map)
+  (progn
+    (define-key map (kbd "C-c C-c") 'compile)
+    (define-key map (kbd "M-q") 'execute-extended-command)
+    (define-key map (kbd "M-x") 'c-fill-paragraph)))
+(add-hook 'c-mode-hook
+          (lambda () (c-like-keys c-mode-map)))
+(add-hook 'c++-mode-hook
+          (lambda () (c-like-keys c++-mode-map)))
+(add-hook 'objc-mode-hook
+          (lambda () (c-like-keys objc-mode-map)))
+(add-hook 'java-mode-hook
+          (lambda () (c-like-keys java-mode-map)))
+(eval-after-load "tuareg"
+  '(progn
+     (add-hook 'tuareg-mode-hook
+               (lambda () (c-like-keys tuareg-mode-map)))))
+(add-hook 'nxhtml-mumamo-mode-hook
+          (lambda () (c-like-keys nxhtml-mumamo-mode-map)))
+(add-hook 'nxhtml-mode-hook
+          (lambda () (c-like-keys nxhtml-mode-map)))
+
+(defun dev-studio-beginning-of-line (arg)
+  "Moves to beginning-of-line, or from there to the first non-whitespace
+   character.
+   This takes a numeric prefix argument; when not 1, it behaves exactly like
+   \(move-beginning-of-line arg) instead."
+  (interactive "p")
+  (if (and (looking-at "^") (= arg 1))
+      (skip-chars-forward " \t")
+    (move-beginning-of-line arg)))
+(global-set-key "\C-a" #'dev-studio-beginning-of-line)
+(global-set-key [home] #'dev-studio-beginning-of-line)
 
 ;;}}}
 
