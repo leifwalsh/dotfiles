@@ -91,6 +91,7 @@
  '(backup-directory-alist (quote (("." . "~/.emacs-backups"))))
  '(c-basic-offset 4)
  '(c-cleanup-list (quote (brace-else-brace brace-elseif-brace brace-catch-brace empty-defun-braces one-liner-defun defun-close-semi list-close-comma scope-operator compact-empty-funcall comment-close-slash)))
+ '(c-comment-prefix-regexp (quote set-from-style))
  '(c-default-style (quote ((c-mode . "stroustrup") (objc-mode . "objc") (java-mode . "java") (awk-mode . "awk") (other . "gnu"))))
  '(c-echo-syntactic-information-p t)
  '(column-number-mode t)
