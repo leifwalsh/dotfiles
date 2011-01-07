@@ -2,10 +2,22 @@
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/git-emacs"))
-;; git://github.com/tcrayford/clojure-refactoring.git
+;;; http://rtfm.etla.org/emacs/htmlfontify/
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/htmlfontify-0.20+texinfo/"))
+;;; git://github.com/tcrayford/clojure-refactoring.git
 (add-to-list 'load-path (expand-file-name "~/git/clojure-refactoring"))
-;; http://lampsvn.epfl.ch/svn-repos/scala/scala-tool-support/trunk/src/emacs
+;;; http://lampsvn.epfl.ch/svn-repos/scala/scala-tool-support/trunk/src/emacs
 (add-to-list 'load-path (expand-file-name "~/svn/scala-mode"))
+
+;;}}}
+
+;;{{{ useful non-settings
+
+;;{{{ common-lisp
+
+(require 'cl)
+
+;;}}}
 
 ;;}}}
 
@@ -21,7 +33,7 @@
      (expand-file-name "~/.emacs.d/elpa/package.el"))
   (package-initialize))
 
-;; from elisp cookbook
+;;; from elisp cookbook
 (defun walk-path (dir action)
   "walk DIR executing ACTION with (dir file)"
   (cond ((file-directory-p dir)
@@ -56,15 +68,15 @@
 ;;{{{ color theme
 
 (require 'color-theme)
-(setq color-theme-is-global t)
-;; (require 'color-theme-sunburst)
-(color-theme-zenburn)
+(eval-after-load "color-theme"
+  '(progn
+     (setq color-theme-is-global t)
+     (color-theme-zenburn)))
 
 ;;}}}
 
 ;;{{{ transparency
 
-(require 'cl)
 (defun toggle-transparency ()
   (interactive)
   (set-frame-parameter
@@ -79,73 +91,17 @@
 
 ;;}}}
 
-;;{{{ customize settings
-
-(custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(LaTeX-command "xelatex")
- '(align-rules-list (quote ((lisp-second-arg (regexp . "\\(^\\s-+[^(]\\|(\\(\\S-+\\)\\s-+\\)\\S-+\\(\\s-+\\)") (group . 3) (modes . align-lisp-modes) (run-if lambda nil current-prefix-arg)) (lisp-alist-dot (regexp . "\\(\\s-*\\)\\.\\(\\s-*\\)") (group 1 2) (modes . align-lisp-modes)) (open-comment (regexp lambda (end reverse) (funcall (if reverse (quote re-search-backward) (quote re-search-forward)) (concat "[^\\\\]" (regexp-quote comment-start) "\\(.+\\)$") end t)) (modes . align-open-comment-modes)) (c-macro-definition (regexp . "^\\s-*#\\s-*define\\s-+\\S-+\\(\\s-+\\)") (modes . align-c++-modes)) (c-comma-delimiter (regexp . ",\\(\\s-*\\)[^/]") (repeat . t) (modes . align-c++-modes) (run-if lambda nil current-prefix-arg)) (basic-comma-delimiter (regexp . ",\\(\\s-*\\)[^#]") (repeat . t) (modes append align-perl-modes (quote (python-mode))) (run-if lambda nil current-prefix-arg)) (c++-comment (regexp . "\\(\\s-*\\)\\(//.*\\|/\\*.*\\*/\\s-*\\)$") (modes . align-c++-modes) (column . comment-column) (valid lambda nil (save-excursion (goto-char (match-beginning 1)) (not (bolp))))) (c-chain-logic (regexp . "\\(\\s-*\\)\\(&&\\|||\\|\\<and\\>\\|\\<or\\>\\)") (modes . align-c++-modes) (valid lambda nil (save-excursion (goto-char (match-end 2)) (looking-at "\\s-*\\(/[*/]\\|$\\)")))) (perl-chain-logic (regexp . "\\(\\s-*\\)\\(&&\\|||\\|\\<and\\>\\|\\<or\\>\\)") (modes . align-perl-modes) (valid lambda nil (save-excursion (goto-char (match-end 2)) (looking-at "\\s-*\\(#\\|$\\)")))) (python-chain-logic (regexp . "\\(\\s-*\\)\\(\\<and\\>\\|\\<or\\>\\)") (modes quote (python-mode)) (valid lambda nil (save-excursion (goto-char (match-end 2)) (looking-at "\\s-*\\(#\\|$\\|\\\\\\)")))) (c-macro-line-continuation (regexp . "\\(\\s-*\\)\\\\$") (modes . align-c++-modes) (column . c-backslash-column)) (basic-line-continuation (regexp . "\\(\\s-*\\)\\\\$") (modes quote (python-mode makefile-mode))) (tex-record-separator (regexp lambda (end reverse) (align-match-tex-pattern "&" end reverse)) (group 1 2) (modes . align-tex-modes) (repeat . t)) (tex-tabbing-separator (regexp lambda (end reverse) (align-match-tex-pattern "\\\\[=>]" end reverse)) (group 1 2) (modes . align-tex-modes) (repeat . t) (run-if lambda nil (eq major-mode (quote latex-mode)))) (tex-record-break (regexp . "\\(\\s-*\\)\\\\\\\\") (modes . align-tex-modes)) (text-column (regexp . "\\(^\\|\\S-\\)\\([ 	]+\\)\\(\\S-\\|$\\)") (group . 2) (modes . align-text-modes) (repeat . t) (run-if lambda nil (and current-prefix-arg (not (eq (quote -) current-prefix-arg))))) (text-dollar-figure (regexp . "\\$?\\(\\s-+[0-9]+\\)\\.") (modes . align-text-modes) (justify . t) (run-if lambda nil (eq (quote -) current-prefix-arg))) (css-declaration (regexp . "^\\s-*\\w+:\\(\\s-*\\).*;") (group 1) (modes quote (css-mode html-mode))))))
- '(backup-directory-alist (quote (("." . "~/.emacs-backups"))))
- '(c-basic-offset 4)
- '(c-cleanup-list (quote (brace-else-brace brace-elseif-brace brace-catch-brace empty-defun-braces one-liner-defun defun-close-semi list-close-comma scope-operator compact-empty-funcall comment-close-slash)))
- '(c-comment-prefix-regexp (quote set-from-style))
- '(c-default-style (quote ((c-mode . "stroustrup") (objc-mode . "objc") (java-mode . "java") (awk-mode . "awk") (other . "gnu"))))
- '(c-echo-syntactic-information-p t)
- '(column-number-mode t)
- '(display-battery-mode t)
- '(display-time-mode t)
- '(fill-column 74)
- '(flymake-allowed-file-name-masks (quote (("\\.c\\'" flymake-simple-make-init flymake-simple-cleanup flymake-get-real-file-name) ("\\.cpp\\'" flymake-simple-make-init flymake-simple-cleanup flymake-get-real-file-name) ("\\.xml\\'" flymake-xml-init) ("\\.html?\\'" flymake-xml-init) ("\\.cs\\'" flymake-simple-make-init) ("\\.p[ml]\\'" flymake-perl-init) ("\\.php[345]?\\'" flymake-php-init) ("\\.h\\'" flymake-master-make-header-init flymake-master-cleanup) ("\\.java\\'" flymake-simple-make-java-init flymake-simple-java-cleanup) ("[0-9]+\\.tex\\'" flymake-master-tex-init flymake-master-cleanup) ("\\.tex\\'" flymake-simple-tex-init) ("\\.idl\\'" flymake-simple-make-init))))
- '(frame-title-format (concat invocation-name "@" system-name ": %b [%IB]") t)
- '(indent-tabs-mode nil)
- '(inhibit-startup-screen t)
- '(menu-bar-mode -1)
- '(message-fill-column 74)
- '(mumamo-major-modes (quote ((asp-js-mode js-mode javascript-mode espresso-mode ecmascript-mode) (asp-vb-mode visual-basic-mode) (javascript-mode js2-mode js-mode javascript-mode espresso-mode ecmascript-mode) (java-mode jde-mode java-mode) (groovy-mode groovy-mode) (nxhtml-mode nxhtml-mode html-mode))))
- '(safe-local-variable-values (quote ((js2-basic-offset . 4) (c-indentation-style . linux))))
- '(scroll-bar-mode nil)
- '(show-paren-mode t)
- '(show-trailing-whitespace t)
- '(slime-net-coding-system (quote utf-8-unix))
- '(tooltip-mode nil)
- '(user-mail-address "leif.walsh@gmail.com"))
-(custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#3f3f3f" :foreground "#dcdccc" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 98 :width normal :foundry "unknown" :family "Cousine"))))
- '(erc-input-face ((t (:foreground "cyan"))))
- '(erc-my-nick-face ((t (:foreground "cyan" :weight bold)))))
-
-;;}}}
-
 ;;{{{ misc stuff
 
 ;;{{{ toggles
 
-;; max hilighting
-(setq font-lock-maximum-decoration t)
-;; hilight marked region
-(transient-mark-mode t)
-;; match parentheses
-(show-paren-mode t)
-;; hide toolbar
-(tool-bar-mode -1)
-;; hide menubar
-(menu-bar-mode -1)
-;; make DocView automatically reload a pdf when I recompile it
+;;; make DocView automatically reload a pdf when I recompile it
 (add-hook 'doc-view-mode-hook 'auto-revert-mode)
-;; stop forcing me to spell out "yes"
-(fset 'yes-or-no-p 'y-or-n-p)
-;; Set underscore to word class for all modes
+;;; Set underscore to word class for all modes
 (defun undumbify-underscores ()
   (modify-syntax-entry ?_ "w"))
 (add-hook 'after-change-major-mode-hook 'undumbify-underscores)
-;; change default browser
+;;; change default browser
 (setq browse-url-generic-program (executable-find "xdg-open")
       browse-url-browser-function 'browse-url-generic)
 
@@ -159,12 +115,12 @@
 
 ;;{{{ modes for auto-fill-mode
 
-(mapcar (lambda (hook)
-          (add-hook hook 'turn-on-auto-fill))
-        '(text-mode-hook
-          mail-mode-hook
-          c-mode-hook
-          c++-mode-hook))
+(mapc (lambda (hook)
+        (add-hook hook 'turn-on-auto-fill))
+      '(text-mode-hook
+        mail-mode-hook
+        c-mode-hook
+        c++-mode-hook))
 
 ;;}}}
 
@@ -174,19 +130,20 @@
 
 ;;{{{ flyspell-mode
 
-(setq flyspell-sort-corrections nil)
-(add-hook 'LaTeX-mode-hook 'flyspell-mode)
-(add-hook 'text-mode-hook 'flyspell-mode)
-(add-hook 'mail-mode-hook 'flyspell-mode)
-(add-hook 'outline-mode-hook 'flyspell-mode)
-(add-hook 'org-mode-hook 'flyspell-mode)
+(autoload 'flyspell-mode "flyspell" "Flyspell mode." t)
+(eval-after-load 'flyspell
+  '(progn
+     (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+     (add-hook 'text-mode-hook 'flyspell-mode)
+     (add-hook 'mail-mode-hook 'flyspell-mode)
+     (add-hook 'outline-mode-hook 'flyspell-mode)
+     (add-hook 'org-mode-hook 'flyspell-mode)))
 
 ;;}}}
 
 ;;{{{ flymake-mode
 
 (require 'flymake)
-
 (eval-after-load "flymake"
   '(progn
      (add-hook 'find-file-hook 'flymake-find-file-hook)
@@ -202,10 +159,13 @@
 
 ;;{{{ haskell-mode
 
-(load "/home/leif/darcs/haskellmode-emacs/haskell-site-file.el")
+;;; http://code.haskell.org/haskellmode-emacs
+(load (expand-file-name "~/darcs/haskellmode-emacs/haskell-site-file.el"))
+(eval-after-load "haskell-mode"
+  '(progn
+     (require 'inf-haskell)))
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-(require 'inf-haskell)
 
 ;;}}}
 
@@ -214,26 +174,28 @@
 (autoload 'python-mode "python-mode" "Python Mode." t)
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
-(add-hook 'python-mode-hook
-	  (lambda ()
-	    (set-variable 'py-indent-offset 4)
-            (set (make-local-variable 'beginning-of-defun-function)
-                  'py-beginning-of-def-or-class)
-            (setq outline-regexp "def\\|class ")
-            (flymake-mode 1)))
-
-(eval-after-load "flymake"
+(eval-after-load "python-mode"
   '(progn
-     (defun flymake-pylint-init ()
-       (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                          'flymake-create-temp-inplace))
-              (local-file (file-relative-name
-                           temp-file
-                           (file-name-directory buffer-file-name))))
-         (list "epylint" (list local-file))))
+     (add-hook 'python-mode-hook
+               (lambda ()
+                 (set-variable 'py-indent-offset 4)
+                 (set (make-local-variable 'beginning-of-defun-function)
+                      'py-beginning-of-def-or-class)
+                 (setq outline-regexp "def\\|class ")
+                 (flymake-mode 1)))
 
-     (add-to-list 'flymake-allowed-file-name-masks
-                  '("\\.py\\'" flymake-pylint-init))))
+     (eval-after-load "flymake"
+       '(progn
+          (defun flymake-pylint-init ()
+            (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                               'flymake-create-temp-inplace))
+                   (local-file (file-relative-name
+                                temp-file
+                                (file-name-directory buffer-file-name))))
+              (list "epylint" (list local-file))))
+
+          (add-to-list 'flymake-allowed-file-name-masks
+                       '("\\.py\\'" flymake-pylint-init))))))
 
 ;;}}}
 
@@ -260,7 +222,6 @@
 ;;{{{ tramp
 
 (require 'tramp)
-(setq tramp-default-method "ssh")
 
 ;;}}}
 
@@ -274,7 +235,6 @@
 
 (require 'compile)
 (setq mode-compile-always-save-buffer-p t
-      compilation-window-height 12
       compilation-finish-functions
       (list
        (lambda (buf str)
@@ -287,22 +247,76 @@
 
 ;;}}}
 
+;;{{{ etags
+
+(require 'etags)
+
+;;}}}
+
 ;;{{{ eldoc
 
-(require 'c-eldoc)
+(autoload 'turn-on-eldoc-mode "eldoc" "Eldoc doc hints." t)
+(mapc (lambda (hook)
+        (add-hook hook 'turn-on-eldoc-mode))
+      '(clojure-mode-hook
+        scheme-mode-hook
+        lisp-mode-hook
+        emacs-lisp-mode-hook
+        lisp-interaction-mode-hook
+        slime-lisp-mode-hook
+        haskell-mode-hook
+        c-mode-hook
+        c++-mode-hook))
 
+;;; C/C++ magic
 (eval-after-load "eldoc"
   '(progn
-     (add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
-     (add-hook 'scheme-mode-hook 'turn-on-eldoc-mode)
-     (add-hook 'lisp-mode-hook 'turn-on-eldoc-mode)
-     (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-     (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
-     (add-hook 'haskell-mode-hook 'turn-on-eldoc-mode)))
+     (defun cleanup-function-synopsis (f)
+       ;; nuke newlines
+       (setq f (replace-regexp-in-string "\n" " " f))
+       ;; nuke comments (note non-greedy *? instead of *)
+       (setq f (replace-regexp-in-string "/\\*.*?\\*/" " " f))
+       ;; (just-one-space)
+       (setq f (replace-regexp-in-string "[ \t]+" " " f))
+       f)
 
-(eval-after-load "c-eldoc"
-  '(progn
-     (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)))
+     (put 'function-synopsis 'beginning-op
+          (lambda ()
+            (if (bolp) (forward-line -1) (beginning-of-line))
+            (skip-chars-forward "^{")
+            (dotimes (i 3) (backward-sexp))))
+     (put 'function-synopsis 'end-op
+          (lambda () (skip-chars-forward "^{")))
+
+     (defun show-tag-in-minibuffer ()
+       (when tags-table-list
+         (save-excursion
+           ;; shadow some etags globals so they won't be modified
+           (let ((deactivate-mark nil)
+                 (tags-location-ring (make-ring find-tag-marker-ring-length))
+                 (find-tag-marker-ring (make-ring find-tag-marker-ring-length))
+                 (last-tag nil))
+             (let* ((tag (funcall
+                          (or find-tag-default-function
+                              (get major-mode 'find-tag-default-function)
+                              'find-tag-default)))
+                    ;; we try to keep M-. from matching any old tag all the
+                    ;; time
+                    (tag-regex (format "\\(^\\|[ \t\n*]\\)%s\\($\\|(\\)"
+                                       (regexp-quote tag))))
+               (set-buffer (find-tag-noselect tag-regex nil t))
+               (let ((synopsis (or (thing-at-point 'function-synopsis)
+                                   (thing-at-point 'line))))
+                 (when synopsis
+                   (eldoc-message "%s"
+                                  (cleanup-function-synopsis synopsis)))))))))
+
+     (defadvice eldoc-print-current-symbol-info
+       (around eldoc-show-c-tag activate)
+       (if (or (eq major-mode 'c-mode)
+               (eq major-mode 'c++-mode))
+           (show-tag-in-minibuffer)
+         ad-do-it))))
 
 ;;}}}
 
@@ -322,113 +336,103 @@
 ;;{{{ ido
 
 (require 'ido)
-(ido-mode t)
-(setq ido-enable-flex-matching t)
-
-;;}}}
-
-;;{{{ js2
-
-(load "js2-mode-autoloads")
 
 ;;}}}
 
 ;;{{{ haml/sass
 
-(require 'haml-mode)
-(require 'sass-mode)
+(autoload 'haml-mode "haml-mode" "Major mode for editing haml files." t)
+(autoload 'sass-mode "sass-mode" "Major mode for editing sass files." t)
+(add-to-list 'auto-mode-alist '("\\.haml\\'" . haml-mode))
+(add-to-list 'auto-mode-alist '("\\.sass\\'" . sass-mode))
 
 ;;}}}
 
 ;;{{{ erc
 
-;;{{{ prompt
+(autoload 'erc "erc" "ERC IRC client." t)
+(autoload 'erc "erc-join" "Custom joining stuff for ERC.")
+(eval-after-load "erc"
+  '(progn
 
-(setq erc-prompt
-      (lambda ()
-        (if (and (boundp 'erc-default-recipients) (erc-default-target))
-            (erc-propertize (concat (erc-default-target) ">")
-                            'read-only t
-                            'rear-nonsticky t
-                            'front-nonsticky t)
-          (erc-propertize (concat "ERC>")
-                          'read-only t
-                          'rear-nonsticky t
-                          'front-nonsticky t))))
+     ;;{{{ prompt
 
-;;}}}
+     (setq erc-prompt
+           (lambda ()
+             (if (and (boundp 'erc-default-recipients) (erc-default-target))
+                 (erc-propertize (concat (erc-default-target) ">")
+                                 'read-only t
+                                 'rear-nonsticky t
+                                 'front-nonsticky t)
+               (erc-propertize (concat "ERC>")
+                               'read-only t
+                               'rear-nonsticky t
+                               'front-nonsticky t))))
 
-;;{{{ url regex
+     ;;}}}
 
-(setq erc-button-url-regexp
-      "\\([-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]+\\.\\)+[-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]*[-a-zA-Z0-9\\/]")
+     ;;{{{ url regex
 
-;;}}}
+     (setq erc-button-url-regexp
+           "\\([-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]+\\.\\)+[-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]*[-a-zA-Z0-9\\/]")
 
-;;{{{ truncate
+     ;;}}}
 
-(setq erc-max-buffer-size 5000)
-(defvar erc-insert-post-hook)
-(add-hook 'erc-insert-post-hook
-          'erc-truncate-buffer)
-(setq erc-truncate-buffer-on-save t)
+     ;;{{{ truncate
 
-;;}}}
+     (setq erc-max-buffer-size 5000)
+     (defvar erc-insert-post-hook)
+     (add-hook 'erc-insert-post-hook
+               'erc-truncate-buffer)
+     (setq erc-truncate-buffer-on-save t)
 
-;;{{{ nick/servers/chans
+     ;;}}}
 
-(setq erc-nick "Adlai")
-(setq erc-server-history-list
-      '("irc.foonetic.net"
-        "irc.freenode.net"
-        "localhost"))
-(require 'erc-join)
-(add-to-list 'erc-autojoin-channels-alist
-             '("foonetic.net"
-               "#xkcd"))
-(add-to-list 'erc-autojoin-channels-alist
-             '("freenode.net"
-               "#lisp"
-               "#haskell"
-               "#clojure"))
-(erc-nickserv-identify-mode 'autodetect)
+     ;;{{{ nick/servers/chans
 
-;;}}}
+     (eval-after-load "erc-join"
+       '(progn
+          (setq erc-server-history-list
+                '("localhost"
+                  "irc.foonetic.net"
+                  "irc.freenode.net"))))
 
-;;{{{ notify
+     ;;}}}
 
-(defun erc-xml-escape
-  (s)
-  (setq s (replace-regexp-in-string
-           "'" "&apos;"
-           (replace-regexp-in-string
-            "\"" "&quot;"
-            (replace-regexp-in-string
-             "&" "&amp;"
-             (replace-regexp-in-string
-              "<" "&lt;"
-              (replace-regexp-in-string
-               ">" "&gt;"
-               (replace-regexp-in-string
-                "~A" " " s))))))))
+     ;;{{{ notify
 
-(defun erc-osd-display
-  (id msg)
-  "Display a message msg using OSD."
-  (save-window-excursion
-    (shell-command
-     (format
-      "notify-send -i emacs23 '%s' '%s'"
-      id (erc-xml-escape msg)))))
+     (defun erc-xml-escape
+       (s)
+       "Escape unsafe characters from xml stuff."
+       (reduce (lambda (s regex-pair)
+                 (let ((match (car regex-pair))
+                       (replacement (cdr regex-pair)))
+                   (replace-regexp match replacement s)))
+               '(("'" . "&apos;")
+                 ("\"" . "&quot;")
+                 ("&" . "&amp;")
+                 ("<" . "&lt;")
+                 (">" . "&gt;")
+                 ("~A" . " "))
+               :initial-value s))
 
-(defun erc-notify-osd
-  (matched-type nick msg)
-  (interactive)
-  "Hook to add into erc-text-matched-hook in order to remind the user that a message from erc has come their way."
-  (when (string= matched-type "current-nick")
-    (erc-osd-display (erc-extract-nick nick) msg)))
+     (defun erc-osd-display
+       (id msg)
+       "Display a message msg using OSD."
+       (save-window-excursion
+         (shell-command
+          (format
+           "notify-send -i emacs23 '%s' '%s'"
+           id (erc-xml-escape msg)))))
 
-(add-hook 'erc-text-matched-hook 'erc-notify-osd)
+     (defun erc-notify-osd
+       (matched-type nick msg)
+       "Hook to add into erc-text-matched-hook in order to remind the user that a message from erc has come their way."
+       (interactive)
+       (when (string= matched-type "current-nick")
+         (erc-osd-display (erc-extract-nick nick) msg)))
+
+     (add-hook 'erc-text-matched-hook 'erc-notify-osd)))
 
 ;;}}}
 
@@ -449,97 +453,107 @@
   "Minor mode for pseudo-structurally editing Lisp code."
   t)
 
-(defun lisp-enable-paredit-hook () (paredit-mode 1))
-(add-hook 'clojure-mode-hook 'lisp-enable-paredit-hook)
-(add-hook 'scheme-mode-hook 'lisp-enable-paredit-hook)
-(add-hook 'lisp-mode-hook 'lisp-enable-paredit-hook)
-(add-hook 'emacs-lisp-mode-hook 'lisp-enable-paredit-hook)
-(add-hook 'lisp-interaction-mode-hook 'lisp-enable-paredit-hook)
-(add-hook 'slime-repl-mode-hook 'lisp-enable-paredit-hook)
+(mapc (lambda (hook)
+        (add-hook hook (lambda () (paredit-mode 1))))
+      '(clojure-mode-hook
+        scheme-mode-hook
+        lisp-mode-hook
+        emacs-lisp-mode-hook
+        lisp-interaction-mode-hook
+        slime-lisp-mode-hook))
 
 ;;}}}
+
+
 
 ;;{{{ clojure-mode
 
-(require 'clojure-mode)
-(defmacro defclojureface (name color desc &optional others)
-  `(defface ,name
-     '((((class color)) (:foreground ,color ,@others))) ,desc :group 'faces))
-
-(defclojureface clojure-parens       "DimGrey"   "Clojure parens")
-(defclojureface clojure-braces       "#49b2c7"   "Clojure braces")
-(defclojureface clojure-brackets     "SteelBlue" "Clojure brackets")
-(defclojureface clojure-keyword      "khaki"     "Clojure keywords")
-(defclojureface clojure-namespace    "#c476f1"   "Clojure namespace")
-(defclojureface clojure-java-call    "#4bcf68"   "Clojure Java calls")
-(defclojureface clojure-special      "#b8bb00"   "Clojure special")
-(defclojureface clojure-double-quote "#b8bb00"   "Clojure special"
-  (:background "unspecified"))
-
-(defun tweak-clojure-syntax ()
-  (mapcar (lambda (x) (font-lock-add-keywords nil x))
-          '((("#?['`]*(\\|)"                 . 'clojure-parens))
-            (("#?\\^?{\\|}"                  . 'clojure-brackets))
-            (("\\[\\|\\]"                    . 'clojure-braces))
-            ((":\\w+"                        . 'clojure-keyword))
-            (("#?\""               0 'clojure-double-quote prepend))
-            (("nil\\|true\\|false\\|%[1-9]?" . 'clojure-special))
-            (("(\\(\\.[^ \n)]*\\|[^ \n)]+\\.\\|new\\)\\([ )\n]\\|$\\)"
-              1 'clojure-java-call))
-            )))
-
-(add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
-(add-hook 'slime-repl-mode-hook 'tweak-clojure-syntax)
-
-;;}}}
-
-;;{{{ clojure-refactoring-mode
-
-(require 'clojure-refactoring-mode)
-
-;;}}}
-
-;;{{{ swank-clojure
-
-(eval-after-load "slime"
+(autoload 'clojure-mode "clojure-mode")
+(add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
+(eval-after-load "clojure-mode"
   '(progn
-     (defun lein-swank ()
-       (interactive)
-       (let ((root (locate-dominating-file default-directory "project.clj")))
-         (when (not root)
-           (error "Not in a Leiningen project."))
-         ;; you can customize slime-port using .dir-locals.el
-         (shell-command (format "cd %s && lein swank %s &" root slime-port)
-                        "*lein-swank*")
-         (set-process-filter (get-buffer-process "*lein-swank*")
-                             (lambda (process output)
-                               (when (string-match "Connection opened on"
-                                                   output)
-                                 (slime-connect "localhost" slime-port)
-                                 (set-process-filter process nil))))
-         (message "Starting swank server...")))))
+
+     ;;{{{ clojure syntax elements
+
+     (defmacro defclojureface (name color desc &optional others)
+       `(defface ,name
+          '((((class color)) (:foreground ,color ,@others))) ,desc :group 'faces))
+
+     (defclojureface clojure-parens       "DimGrey"   "Clojure parens")
+     (defclojureface clojure-braces       "#49b2c7"   "Clojure braces")
+     (defclojureface clojure-brackets     "SteelBlue" "Clojure brackets")
+     (defclojureface clojure-keyword      "khaki"     "Clojure keywords")
+     (defclojureface clojure-namespace    "#c476f1"   "Clojure namespace")
+     (defclojureface clojure-java-call    "#4bcf68"   "Clojure Java calls")
+     (defclojureface clojure-special      "#b8bb00"   "Clojure special")
+     (defclojureface clojure-double-quote "#b8bb00"   "Clojure special"
+       (:background "unspecified"))
+
+     (defun tweak-clojure-syntax ()
+       (mapc (lambda (x) (font-lock-add-keywords nil x))
+             '((("#?['`]*(\\|)"                 . 'clojure-parens))
+               (("#?\\^?{\\|}"                  . 'clojure-brackets))
+               (("\\[\\|\\]"                    . 'clojure-braces))
+               ((":\\w+"                        . 'clojure-keyword))
+               (("#?\""               0 'clojure-double-quote prepend))
+               (("nil\\|true\\|false\\|%[1-9]?" . 'clojure-special))
+               (("(\\(\\.[^ \n)]*\\|[^ \n)]+\\.\\|new\\)\\([ )\n]\\|$\\)"
+                 1 'clojure-java-call)))))
+
+     (add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
+     (add-hook 'slime-repl-mode-hook 'tweak-clojure-syntax)
+
+     ;;}}}
+
+     ;;{{{ clojure-refactoring-mode
+
+     (require 'clojure-refactoring-mode)
+
+     ;;}}}
+
+     ;;{{{ swank-clojure
+
+     (eval-after-load "slime"
+       '(progn
+          (defun lein-swank ()
+            (interactive)
+            (let ((root (locate-dominating-file default-directory
+                                                "project.clj")))
+              (when (not root)
+                (error "Not in a Leiningen project."))
+              ;; you can customize slime-port using .dir-locals.el
+              (shell-command (format "cd %s && lein swank %s &" root slime-port)
+                             "*lein-swank*")
+              (set-process-filter (get-buffer-process "*lein-swank*")
+                                  (lambda (process output)
+                                    (when (string-match "Connection opened on"
+                                                        output)
+                                      (slime-connect "localhost" slime-port)
+                                      (set-process-filter process nil))))
+              (message "Starting swank server...")))))))
+
+     ;;}}}
 
 ;;}}}
 
 ;;{{{ tuareg-mode (ocaml)
 
+(add-to-list 'auto-mode-alist '("\\.ml[ily]?$" . tuareg-mode))
+(add-to-list 'auto-mode-alist '("\\.topml$" . tuareg-mode))
 (autoload 'tuareg-mode "tuareg" "Major mode for editing Caml code" t)
-(autoload 'camldebug "camldebug" "Run the Caml debugger" t)
-(autoload 'tuareg-imenu-set-imenu "tuareg-imenu"
-  "Configuration of imenu for tuareg" t)
 
-(add-hook 'tuareg-mode-hook 'tuareg-imenu-set-imenu)
-
-(setq auto-mode-alist
-      (append '(("\\.ml[ily]?$" . tuareg-mode)
-                ("\\.topml$" . tuareg-mode))
-              auto-mode-alist))
+(eval-after-load "tuareg"
+  '(progn
+     (autoload 'camldebug "camldebug" "Run the Caml debugger" t)
+     (autoload 'tuareg-imenu-set-imenu "tuareg-imenu"
+       "Configuration of imenu for tuareg" t)
+     (add-hook 'tuareg-mode-hook 'tuareg-imenu-set-imenu)))
 
 ;;}}}
 
-;;{{{ html/php/js/etc
+;;{{{ nxhtml (html/php/js/etc)
 
-; http://ourcomments.org/cgi-bin/emacsw32-dl-latest.pl
+;;; http://ourcomments.org/cgi-bin/emacsw32-dl-latest.pl
 (load (expand-file-name "~/.emacs.d/vendor/nxhtml/autostart.el"))
 
 ;;}}}
@@ -555,14 +569,14 @@
 
 ;;{{{ remaps
 
-;; Swap M-x and M-q to make dvorak extended commands easier
+;;; Swap M-x and M-q to make dvorak extended commands easier
 (global-set-key (kbd "M-q") 'execute-extended-command)
 (global-set-key (kbd "M-x") 'fill-paragraph)
-;; Use ibuffer instead of regular buffer
+;;; Use ibuffer instead of regular buffer
 (global-set-key (kbd "C-x C-b") 'ibuffer)
-;; apropos(-symbol) is apparently better than apropos-command
+;;; apropos(-symbol) is apparently better than apropos-command
 (global-set-key (kbd "\C-ha") 'apropos)
-;; sort of equivalent to cindent for vim
+;;; sort of equivalent to cindent for vim
 (global-set-key (kbd "RET") 'newline-and-indent)
 
 (defun fullscreen ()
@@ -573,26 +587,27 @@
 (global-set-key [(meta return)] 'fullscreen)
 
 (defun c-like-keys (map)
-  (progn
+  (let ((old-meta-q (key-binding (kbd "M-q")))
+        (old-meta-x (key-binding (kbd "M-x"))))
     (define-key map (kbd "C-c C-c") 'compile)
-    (define-key map (kbd "M-q") 'execute-extended-command)
-    (define-key map (kbd "M-x") 'c-fill-paragraph)))
-(add-hook 'c-mode-hook
-          (lambda () (c-like-keys c-mode-map)))
-(add-hook 'c++-mode-hook
-          (lambda () (c-like-keys c++-mode-map)))
-(add-hook 'objc-mode-hook
-          (lambda () (c-like-keys objc-mode-map)))
-(add-hook 'java-mode-hook
-          (lambda () (c-like-keys java-mode-map)))
+    (define-key map (kbd "M-q") old-meta-x)
+    (define-key map (kbd "M-x") old-meta-q)))
+(eval-after-load "cc-mode"
+  '(progn
+     (add-hook 'c-mode-hook
+               (lambda () (c-like-keys c-mode-base-map)))))
 (eval-after-load "tuareg"
   '(progn
      (add-hook 'tuareg-mode-hook
                (lambda () (c-like-keys tuareg-mode-map)))))
-(add-hook 'nxhtml-mumamo-mode-hook
-          (lambda () (c-like-keys nxhtml-mumamo-mode-map)))
-(add-hook 'nxhtml-mode-hook
-          (lambda () (c-like-keys nxhtml-mode-map)))
+(eval-after-load "nxhtml-mode"
+  '(progn
+     (add-hook 'nxhtml-mode-hook
+               (lambda () (c-like-keys nxhtml-mode-map)))))
+(eval-after-load "nxhtml-mode"
+  '(progn
+     (add-hook 'nxhtml-mumamo-mode-hook
+               (lambda () (c-like-keys nxhtml-mumamo-mode-map)))))
 
 (defun dev-studio-beginning-of-line (arg)
   "Moves to beginning-of-line, or from there to the first non-whitespace
@@ -608,11 +623,70 @@
 
 ;;}}}
 
+;;{{{ customize settings
+
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(LaTeX-command "xelatex")
+ '(align-rules-list (quote ((lisp-second-arg (regexp . "\\(^\\s-+[^(]\\|(\\(\\S-+\\)\\s-+\\)\\S-+\\(\\s-+\\)") (group . 3) (modes . align-lisp-modes) (run-if lambda nil current-prefix-arg)) (lisp-alist-dot (regexp . "\\(\\s-*\\)\\.\\(\\s-*\\)") (group 1 2) (modes . align-lisp-modes)) (open-comment (regexp lambda (end reverse) (funcall (if reverse (quote re-search-backward) (quote re-search-forward)) (concat "[^\\\\]" (regexp-quote comment-start) "\\(.+\\)$") end t)) (modes . align-open-comment-modes)) (c-macro-definition (regexp . "^\\s-*#\\s-*define\\s-+\\S-+\\(\\s-+\\)") (modes . align-c++-modes)) (c-comma-delimiter (regexp . ",\\(\\s-*\\)[^/]") (repeat . t) (modes . align-c++-modes) (run-if lambda nil current-prefix-arg)) (basic-comma-delimiter (regexp . ",\\(\\s-*\\)[^#]") (repeat . t) (modes append align-perl-modes (quote (python-mode))) (run-if lambda nil current-prefix-arg)) (c++-comment (regexp . "\\(\\s-*\\)\\(//.*\\|/\\*.*\\*/\\s-*\\)$") (modes . align-c++-modes) (column . comment-column) (valid lambda nil (save-excursion (goto-char (match-beginning 1)) (not (bolp))))) (c-chain-logic (regexp . "\\(\\s-*\\)\\(&&\\|||\\|\\<and\\>\\|\\<or\\>\\)") (modes . align-c++-modes) (valid lambda nil (save-excursion (goto-char (match-end 2)) (looking-at "\\s-*\\(/[*/]\\|$\\)")))) (perl-chain-logic (regexp . "\\(\\s-*\\)\\(&&\\|||\\|\\<and\\>\\|\\<or\\>\\)") (modes . align-perl-modes) (valid lambda nil (save-excursion (goto-char (match-end 2)) (looking-at "\\s-*\\(#\\|$\\)")))) (python-chain-logic (regexp . "\\(\\s-*\\)\\(\\<and\\>\\|\\<or\\>\\)") (modes quote (python-mode)) (valid lambda nil (save-excursion (goto-char (match-end 2)) (looking-at "\\s-*\\(#\\|$\\|\\\\\\)")))) (c-macro-line-continuation (regexp . "\\(\\s-*\\)\\\\$") (modes . align-c++-modes) (column . c-backslash-column)) (basic-line-continuation (regexp . "\\(\\s-*\\)\\\\$") (modes quote (python-mode makefile-mode))) (tex-record-separator (regexp lambda (end reverse) (align-match-tex-pattern "&" end reverse)) (group 1 2) (modes . align-tex-modes) (repeat . t)) (tex-tabbing-separator (regexp lambda (end reverse) (align-match-tex-pattern "\\\\[=>]" end reverse)) (group 1 2) (modes . align-tex-modes) (repeat . t) (run-if lambda nil (eq major-mode (quote latex-mode)))) (tex-record-break (regexp . "\\(\\s-*\\)\\\\\\\\") (modes . align-tex-modes)) (text-column (regexp . "\\(^\\|\\S-\\)\\([ 	]+\\)\\(\\S-\\|$\\)") (group . 2) (modes . align-text-modes) (repeat . t) (run-if lambda nil (and current-prefix-arg (not (eq (quote -) current-prefix-arg))))) (text-dollar-figure (regexp . "\\$?\\(\\s-+[0-9]+\\)\\.") (modes . align-text-modes) (justify . t) (run-if lambda nil (eq (quote -) current-prefix-arg))) (css-declaration (regexp . "^\\s-*\\w+:\\(\\s-*\\).*;") (group 1) (modes quote (css-mode html-mode))))))
+ '(backup-directory-alist (quote (("." . "~/.emacs-backups"))))
+ '(c-basic-offset 4)
+ '(c-cleanup-list (quote (brace-else-brace brace-elseif-brace brace-catch-brace empty-defun-braces one-liner-defun defun-close-semi list-close-comma scope-operator compact-empty-funcall comment-close-slash)))
+ '(c-comment-prefix-regexp (quote set-from-style))
+ '(c-default-style (quote ((c-mode . "stroustrup") (objc-mode . "objc") (java-mode . "java") (awk-mode . "awk") (other . "gnu"))))
+ '(c-echo-syntactic-information-p t)
+ '(column-number-mode t)
+ '(compilation-window-height 12)
+ '(display-battery-mode t)
+ '(display-time-mode t)
+ '(erc-autojoin-channels-alist (quote (("foonetic.net" "#xkcd") ("freenode.net" "#emacs" "#lisp" "#haskell" "#clojure"))))
+ '(erc-nick (quote ("Adlai" "leifw" "Adlai_" "leifw_" "Adlai__" "leifw__")))
+ '(erc-nickserv-identify-mode (quote autodetect))
+ '(fill-column 74)
+ '(flymake-allowed-file-name-masks (quote (("\\.c\\'" flymake-simple-make-init flymake-simple-cleanup flymake-get-real-file-name) ("\\.cpp\\'" flymake-simple-make-init flymake-simple-cleanup flymake-get-real-file-name) ("\\.xml\\'" flymake-xml-init) ("\\.html?\\'" flymake-xml-init) ("\\.cs\\'" flymake-simple-make-init) ("\\.p[ml]\\'" flymake-perl-init) ("\\.php[345]?\\'" flymake-php-init) ("\\.h\\'" flymake-master-make-header-init flymake-master-cleanup) ("\\.java\\'" flymake-simple-make-java-init flymake-simple-java-cleanup) ("[0-9]+\\.tex\\'" flymake-master-tex-init flymake-master-cleanup) ("\\.tex\\'" flymake-simple-tex-init) ("\\.idl\\'" flymake-simple-make-init))))
+ '(flyspell-sort-corrections nil)
+ '(font-lock-maximum-decoration t)
+ '(frame-title-format (concat invocation-name "@" system-name ": %b [%IB]") t)
+ '(ido-enable-flex-matching t)
+ '(ido-everywhere t)
+ '(ido-mode (quote both) nil (ido))
+ '(ido-rotate-file-list-default t)
+ '(ido-use-filename-at-point (quote guess))
+ '(indent-tabs-mode nil)
+ '(inhibit-startup-screen t)
+ '(menu-bar-mode t)
+ '(message-fill-column 74)
+ '(mumamo-major-modes (quote ((asp-js-mode js-mode javascript-mode espresso-mode ecmascript-mode) (asp-vb-mode visual-basic-mode) (javascript-mode js2-mode js-mode javascript-mode espresso-mode ecmascript-mode) (java-mode jde-mode java-mode) (groovy-mode groovy-mode) (nxhtml-mode nxhtml-mode html-mode))))
+ '(safe-local-variable-values (quote ((js2-basic-offset . 4) (c-indentation-style . linux))))
+ '(scroll-bar-mode nil)
+ '(show-paren-mode t)
+ '(show-trailing-whitespace t)
+ '(slime-net-coding-system (quote utf-8-unix))
+ '(tool-bar-mode nil)
+ '(tooltip-mode nil)
+ '(tramp-default-method "ssh")
+ '(transient-mark-mode t)
+ '(user-mail-address "leif.walsh@gmail.com"))
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :stipple nil :background "#3f3f3f" :foreground "#dcdccc" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 98 :width normal :foundry "unknown" :family "Cousine"))))
+ '(erc-input-face ((t (:foreground "cyan"))))
+ '(erc-my-nick-face ((t (:foreground "cyan" :weight bold)))))
+
+;;}}}
+
 ;;{{{ recompile on exit
 
 (require 'bytecomp)
 
 (defun recompile-emacs-dir ()
+  (interactive)
   (byte-recompile-directory (expand-file-name "~/.emacs.d") 0))
 (add-hook 'kill-emacs-hook #'recompile-emacs-dir)
 
