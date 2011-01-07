@@ -590,8 +590,10 @@
   (let ((old-meta-q (key-binding (kbd "M-q")))
         (old-meta-x (key-binding (kbd "M-x"))))
     (define-key map (kbd "C-c C-c") 'compile)
-    (define-key map (kbd "M-q") old-meta-x)
-    (define-key map (kbd "M-x") old-meta-q)))
+    (if (eq old-meta-x 'execute-extended-command)
+        (progn
+          (define-key map (kbd "M-q") old-meta-x)
+          (define-key map (kbd "M-x") old-meta-q)))))
 (eval-after-load "cc-mode"
   '(progn
      (add-hook 'c-mode-hook
