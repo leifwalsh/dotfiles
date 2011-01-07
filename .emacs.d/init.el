@@ -141,9 +141,6 @@
 (add-hook 'doc-view-mode-hook 'auto-revert-mode)
 ;; stop forcing me to spell out "yes"
 (fset 'yes-or-no-p 'y-or-n-p)
-;; auto-fill in text mode
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
-(add-hook 'mail-mode-hook 'turn-on-auto-fill)
 ;; Set underscore to word class for all modes
 (defun undumbify-underscores ()
   (modify-syntax-entry ?_ "w"))
@@ -157,6 +154,17 @@
 ;;{{{ filetypes
 
 (add-to-list 'auto-mode-alist '("^/tmp/pico\\." . mail-mode))
+
+;;}}}
+
+;;{{{ modes for auto-fill-mode
+
+(mapcar (lambda (hook)
+          (add-hook hook 'turn-on-auto-fill))
+        '(text-mode-hook
+          mail-mode-hook
+          c-mode-hook
+          c++-mode-hook))
 
 ;;}}}
 
