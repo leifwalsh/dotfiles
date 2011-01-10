@@ -464,8 +464,6 @@
 
 ;;}}}
 
-
-
 ;;{{{ clojure-mode
 
 (autoload 'clojure-mode "clojure-mode")
