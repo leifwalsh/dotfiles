@@ -5,6 +5,9 @@
 # python byte-compiled files
 *.pyc
 
+# elisp byte-compiled files
+*.elc
+
 # vim swap files
 .*.sw?
 
