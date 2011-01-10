@@ -10,3 +10,9 @@
 [submodule ".emacs.d/vendor/processing-emacs"]
 	path = .emacs.d/vendor/processing-emacs
 	url = git://github.com/omouse/processing-emacs.git
+[submodule ".emacs.d/vendor/nxhtml"]
+	path = .emacs.d/vendor/nxhtml
+	url = git://github.com/emacsmirror/nxhtml.git
+[submodule ".emacs.d/vendor/tuareg"]
+	path = .emacs.d/vendor/tuareg
+	url = git://github.com/emacsmirror/tuareg.git
