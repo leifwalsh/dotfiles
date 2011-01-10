@@ -8,6 +8,9 @@
 # elisp byte-compiled files
 *.elc
 
+# unknown rnc file that's bugging out my nxhtml submodule
+*.rnc
+
 # vim swap files
 .*.sw?
 
