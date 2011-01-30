@@ -15,9 +15,9 @@
 # Over-rides your full name from Unix password file. Required for PC-Alpine.
 personal-name=
 
-user-id=leif.walsh@gmail.com
+user-id=leif@tokutek.com
 # Sets domain part of From: and local addresses in outgoing mail.
-user-domain=gmail.com
+user-domain=tokutek.com
 
 # List of SMTP servers for sending mail. If blank: Unix Alpine uses sendmail.
 smtp-server=
@@ -28,7 +28,7 @@ nntp-server=
 
 # Path of (local or remote) INBOX, e.g. ={mail.somewhere.edu}inbox
 # Normal Unix default is the local INBOX (usually /usr/spool/mail/$USER).
-inbox-path={localhost.localdomain/novalidate-cert/user=leif}INBOX
+inbox-path={tokulocal.localdomain/novalidate-cert/user=tokuleif}INBOX
 #inbox-path={imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}INBOX
 
 # List of folder pairs; the first indicates a folder to archive, and the
@@ -53,7 +53,7 @@ default-saved-msg-folder=
 # Over-rides default path for postponed messages folder, e.g. =pm (which uses
 # first folder collection dir) or ={host4}pm (using home dir on host4).
 # Default: postponed-msgs (Unix) or POSTPOND.MTX (PC) in default fldr coltn.
-postponed-folder={localhost.localdomain/novalidate-cert/user=leif}Drafts
+postponed-folder={tokulocal.localdomain/novalidate-cert/user=tokuleif}Drafts
 #postponed-folder={imap.gmail.com/ssl/user=leif.walsh@gmail.com}Drafts
 
 # If set, specifies where already-read messages will be moved upon quitting.
@@ -248,9 +248,7 @@ sending-filters=/home/leif/.gnupg/sign,
 	/home/leif/.gnupg/encrypt
 
 # A list of alternate addresses the user is known by
-alt-addresses=adlaiff6@gmail.com,
-	rlwalsh@ic.sunysb.edu,
-	leif@rethinkdb.com
+alt-addresses=
 
 # A list of keywords for use in categorizing messages
 keywords=
@@ -376,14 +374,11 @@ newmail-window-width=
 
 # List of incoming msg folders besides INBOX, e.g. ={host2}inbox, {host3}inbox
 # Syntax: optnl-label {optnl-imap-host-name}folder-path
-incoming-folders=Old-Inbox "{localhost.localdomain/novalidate-cert/user=leif}Old-Inbox",
-	Facebook "{localhost.localdomain/novalidate-cert/user=leif}Facebook",
-	Quora "{localhost.localdomain/novalidate-cert/user=leif}Quora",
-	Clojure "{localhost.localdomain/novalidate-cert/user=leif}Clojure",
-	Scala-user "{localhost.localdomain/novalidate-cert/user=leif}Scala-user",
-	RethinkDB "{localhost.localdomain/novalidate-cert/user=leif}RethinkDB",
-	FreeBSD-Questions "{localhost.localdomain/novalidate-cert/user=leif}FreeBSD-questions",
-	FreeBSD-STABLE "{localhost.localdomain/novalidate-cert/user=leif}FreeBSD-STABLE"
+incoming-folders="Follow up" "{tokulocal.localdomain/novalidate-cert/user=tokuleif}Follow up",
+	"Internal Docs" "{tokulocal.localdomain/novalidate-cert/user=tokuleif}Internal Docs",
+	Misc "{tokulocal.localdomain/novalidate-cert/user=tokuleif}Misc",
+	Priority "{tokulocal.localdomain/novalidate-cert/user=tokuleif}Priority",
+	Support "{tokulocal.localdomain/novalidate-cert/user=tokuleif}Support"
 # incoming-folders=Old-Inbox "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}Old-Inbox",
 # 	Facebook "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}Facebook",
 # 	Quora "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}Quora",
@@ -395,7 +390,7 @@ incoming-folders=Old-Inbox "{localhost.localdomain/novalidate-cert/user=leif}Old
 # List of directories where saved-message folders may be. First one is
 # the default for Saves. Example: Main {host1}mail/[], Desktop mail\[]
 # Syntax: optnl-label {optnl-imap-hostname}optnl-directory-path[]
-folder-collections=Gmail {localhost.localdomain/novalidate-cert/user=leif}[]
+folder-collections=Gmail {tokulocal.localdomain/novalidate-cert/user=tokuleif}[]
 #folder-collections=Gmail {imap.gmail.com/ssl/user=leif.walsh@gmail.com}[]
 
 # List, only needed if nntp-server not set, or news is on a different host
@@ -406,8 +401,7 @@ news-collections=
 # List of file or path names for personal addressbook(s).
 # Default: ~/.addressbook (Unix) or \PINE\ADDRBOOK (PC)
 # Syntax: optnl-label path-name
-address-book=.addressbook,
-	"Google Contacts" .addressbook-google
+address-book=.addressbook-tokutek
 
 # List of file or path names for global/shared addressbook(s).
 # Default: none

@@ -5,15 +5,15 @@ Xft.hintstyle: hintslight
 Xft.lcdfilter: lcddefault
 Xft.rgba: rgb
 
-/*URxvt.termName: rxvt-256color*/
+URxvt.termName: rxvt-unicode
 
 URxvt.iconFile: /usr/share/pixmaps/gnome-terminal.png
 
-URxvt.font: xft:Cousine-10:antialias=true:autohint=true,xft:Deja Vu Sans Mono-10:antialias=true:autohint=true,xft:Anonymous Pro-10:autohint=true,xft:Bitstream Vera Sans Mono-10:antialias=true:autohint=true
-URxvt.boldFont: xft:Cousine-10:bold:antialias=true:autohint=true,xft:Deja Vu Sans Mono-10:bold:antialias=true:autohint=true,xft:Anonymous Pro-10:bold:autohint=true,xft:Bitstream Vera Sans Mono-10:bold:antialias=true:autohint=true
-URxvt.italicFont: xft:Cousine-10:italic:antialias=true:autohint=true,xft:Deja Vu Sans Mono-10:italic:antialias=true:autohint=true,xft:Anonymous Pro-10:italic:autohint=true,xft:Bitstream Vera Sans Mono-10:italic:antialias=true:autohint=true
-URxvt.boldItalicFont: xft:Cousine-10:bold:italic:antialias=true:autohint=true,xft:Deja Vu Sans Mono-10:bold:italic:antialias=true:autohint=true,xft:Anonymous Pro-10:bold:italic:autohint=true,xft:Bitstream Vera Sans Mono-10:bold:italic:antialias=true:autohint=true
-URxvt.letterSpace: -2
+URxvt.font: xft:Deja Vu Sans Mono-10:antialias=true:autohint=true,xft:Anonymous Pro-10:autohint=true,xft:Bitstream Vera Sans Mono-10:antialias=true:autohint=true
+URxvt.boldFont: xft:Deja Vu Sans Mono-10:bold:antialias=true:autohint=true,xft:Anonymous Pro-10:bold:autohint=true,xft:Bitstream Vera Sans Mono-10:bold:antialias=true:autohint=true
+URxvt.italicFont: xft:Deja Vu Sans Mono-10:italic:antialias=true:autohint=true,xft:Anonymous Pro-10:italic:autohint=true,xft:Bitstream Vera Sans Mono-10:italic:antialias=true:autohint=true
+URxvt.boldItalicFont: xft:Deja Vu Sans Mono-10:bold:italic:antialias=true:autohint=true,xft:Anonymous Pro-10:bold:italic:autohint=true,xft:Bitstream Vera Sans Mono-10:bold:italic:antialias=true:autohint=true
+URxvt.letterSpace: -1
 
 URxvt.scrollBar: false
 URxvt.saveLines: 8192
@@ -26,9 +26,9 @@ URxvt.matcher.pattern.1: \\bwww\\.[\\w-]+\\.[\\w./?&@#-]*[\\w/-]
 
 URxvt.depth: 32
 
-URxvt.background: rgba:3f3f/3f3f/3f3f/eeee
-URxvt.foreground: #dcdccc
-URxvt.color0: #3f3f3f
+URxvt.background: rgba:0000/0000/0000/cccc /*rgba:2222/2222/2222/dddd*/
+URxvt.foreground: #ffffff /*#dcdccc*/
+URxvt.color0: rgba:0000/0000/0000/cccc /*#3f3f3f*/
 URxvt.color1: #d65858
 URxvt.color2: #3cb579
 URxvt.color3: #ab714b
