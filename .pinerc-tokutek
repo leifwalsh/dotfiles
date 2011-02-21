@@ -114,7 +114,7 @@ initial-keystroke-list=
 default-composer-hdrs=
 
 # Add these customized headers (and possible default values) when composing
-customized-hdrs=X-Rap-Videos-Starred-In: 173
+customized-hdrs=
 
 # When viewing messages, include this list of headers
 viewer-hdrs=
@@ -367,7 +367,7 @@ incoming-check-list=
 dead-letter-files=
 
 # Sets the filename for the newmail fifo (named pipe). Unix only.
-newmail-fifo-path=/tmp/alpine-fifo
+newmail-fifo-path=
 
 # Sets the width for the NewMail screen.
 newmail-window-width=
@@ -409,7 +409,7 @@ address-book=.addressbook-tokutek
 global-address-book=
 
 # Set by Alpine; controls beginning-of-month sent-mail pruning.
-last-time-prune-questioned=111.1
+last-time-prune-questioned=111.2
 
 # Set by Alpine; controls display of "new version" message.
 last-version-used=6.02
