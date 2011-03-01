@@ -48,7 +48,7 @@ accounts = Gmail,Tokutek
 # since any given sync run never "finishes" due to a timer, you will never
 # sync your additional accounts if this is 1.
 
-maxsyncaccounts = 2
+maxsyncaccounts = 1
 
 # You can specify one or more user interface modules for OfflineIMAP
 # to use.  OfflineIMAP will try the first in the list, and if it

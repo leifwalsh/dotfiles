@@ -53,5 +53,11 @@ autocmd BufRead,BufNewFile *.[ch] if filereadable(fname)
 autocmd BufRead,BufNewFile *.[ch]   exe 'so ' . fname
 autocmd BufRead,BufNewFile *.[ch] endif
 
+" noweb
+au BufRead,BufNewFile *.nw set filetype=noweb
+let noweb_backend = "tex"
+let noweb_language = "c"
+let noweb_fold_code = 0
+
 " for latexsuite
 set grepprg=grep\ -nH\ $*
