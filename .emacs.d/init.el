@@ -135,6 +135,9 @@
 (eval-after-load 'flyspell
   '(progn
      (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+     (add-hook 'TeX-mode-hook 'flyspell-mode)
+     (eval-after-load 'noweb-mode
+       '(add-hook 'noweb-mode-hook 'flyspell-mode))
      (add-hook 'text-mode-hook 'flyspell-mode)
      (add-hook 'mail-mode-hook 'flyspell-mode)
      (add-hook 'outline-mode-hook 'flyspell-mode)
@@ -589,9 +592,9 @@
   (let ((old-meta-q (key-binding (kbd "M-q")))
         (old-meta-x (key-binding (kbd "M-x"))))
     (define-key map (kbd "C-c C-c") 'compile)
-    (if (eq old-meta-x 'execute-extended-command)
+    (if (not (eq old-meta-q 'execute-extended-command))
         (progn
-          (define-key map (kbd "M-q") old-meta-x)
+          (define-key map (kbd "M-q") 'execute-extended-command)
           (define-key map (kbd "M-x") old-meta-q)))))
 (defun my-c-mode-font-lock-if0 (limit)
   (save-restriction
@@ -599,7 +602,8 @@
     (save-excursion
       (goto-char (point-min))
       (let ((depth 0) str start start-depth)
-        (while (re-search-forward "^\\s-*#\\s-*\\(if\\|else\\|endif\\)" limit 'move)
+        (while (re-search-forward "^\\s-*#\\s-*\\(if\\|else\\|endif\\)"
+                                  (+ 1000 limit) 'move)
           (setq str (match-string 1))
           (if (string= str "if")
               (progn
@@ -637,6 +641,12 @@
   '(progn
      (add-hook 'nxhtml-mumamo-mode-hook
                (lambda () (c-like-keys nxhtml-mumamo-mode-map)))))
+(eval-after-load "noweb-mode"
+  '(progn
+     (add-hook 'noweb-mode-hook
+               (lambda ()
+                 (c-like-keys noweb-mode-prefix-map)
+                 (c-like-keys LaTeX-mode-map)))))
 
 (defun dev-studio-beginning-of-line (arg)
   "Moves to beginning-of-line, or from there to the first non-whitespace
@@ -660,6 +670,7 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(LaTeX-command "xelatex")
+ '(LaTeX-command-style (quote (("" "%(latex) %S%(PDFout)"))))
  '(align-rules-list (quote ((lisp-second-arg (regexp . "\\(^\\s-+[^(]\\|(\\(\\S-+\\)\\s-+\\)\\S-+\\(\\s-+\\)") (group . 3) (modes . align-lisp-modes) (run-if lambda nil current-prefix-arg)) (lisp-alist-dot (regexp . "\\(\\s-*\\)\\.\\(\\s-*\\)") (group 1 2) (modes . align-lisp-modes)) (open-comment (regexp lambda (end reverse) (funcall (if reverse (quote re-search-backward) (quote re-search-forward)) (concat "[^\\\\]" (regexp-quote comment-start) "\\(.+\\)$") end t)) (modes . align-open-comment-modes)) (c-macro-definition (regexp . "^\\s-*#\\s-*define\\s-+\\S-+\\(\\s-+\\)") (modes . align-c++-modes)) (c-comma-delimiter (regexp . ",\\(\\s-*\\)[^/]") (repeat . t) (modes . align-c++-modes) (run-if lambda nil current-prefix-arg)) (basic-comma-delimiter (regexp . ",\\(\\s-*\\)[^#]") (repeat . t) (modes append align-perl-modes (quote (python-mode))) (run-if lambda nil current-prefix-arg)) (c++-comment (regexp . "\\(\\s-*\\)\\(//.*\\|/\\*.*\\*/\\s-*\\)$") (modes . align-c++-modes) (column . comment-column) (valid lambda nil (save-excursion (goto-char (match-beginning 1)) (not (bolp))))) (c-chain-logic (regexp . "\\(\\s-*\\)\\(&&\\|||\\|\\<and\\>\\|\\<or\\>\\)") (modes . align-c++-modes) (valid lambda nil (save-excursion (goto-char (match-end 2)) (looking-at "\\s-*\\(/[*/]\\|$\\)")))) (perl-chain-logic (regexp . "\\(\\s-*\\)\\(&&\\|||\\|\\<and\\>\\|\\<or\\>\\)") (modes . align-perl-modes) (valid lambda nil (save-excursion (goto-char (match-end 2)) (looking-at "\\s-*\\(#\\|$\\)")))) (python-chain-logic (regexp . "\\(\\s-*\\)\\(\\<and\\>\\|\\<or\\>\\)") (modes quote (python-mode)) (valid lambda nil (save-excursion (goto-char (match-end 2)) (looking-at "\\s-*\\(#\\|$\\|\\\\\\)")))) (c-macro-line-continuation (regexp . "\\(\\s-*\\)\\\\$") (modes . align-c++-modes) (column . c-backslash-column)) (basic-line-continuation (regexp . "\\(\\s-*\\)\\\\$") (modes quote (python-mode makefile-mode))) (tex-record-separator (regexp lambda (end reverse) (align-match-tex-pattern "&" end reverse)) (group 1 2) (modes . align-tex-modes) (repeat . t)) (tex-tabbing-separator (regexp lambda (end reverse) (align-match-tex-pattern "\\\\[=>]" end reverse)) (group 1 2) (modes . align-tex-modes) (repeat . t) (run-if lambda nil (eq major-mode (quote latex-mode)))) (tex-record-break (regexp . "\\(\\s-*\\)\\\\\\\\") (modes . align-tex-modes)) (text-column (regexp . "\\(^\\|\\S-\\)\\([ 	]+\\)\\(\\S-\\|$\\)") (group . 2) (modes . align-text-modes) (repeat . t) (run-if lambda nil (and current-prefix-arg (not (eq (quote -) current-prefix-arg))))) (text-dollar-figure (regexp . "\\$?\\(\\s-+[0-9]+\\)\\.") (modes . align-text-modes) (justify . t) (run-if lambda nil (eq (quote -) current-prefix-arg))) (css-declaration (regexp . "^\\s-*\\w+:\\(\\s-*\\).*;") (group 1) (modes quote (css-mode html-mode))))))
  '(backup-directory-alist (quote (("." . "~/.emacs-backups"))))
  '(c-basic-offset 4)
@@ -675,7 +686,8 @@
  '(erc-nick (quote ("Adlai" "leifw" "Adlai_" "leifw_" "Adlai__" "leifw__")))
  '(erc-nickserv-identify-mode (quote autodetect))
  '(fill-column 74)
- '(flymake-allowed-file-name-masks (quote (("\\.c\\'" flymake-simple-make-init flymake-simple-cleanup flymake-get-real-file-name) ("\\.cpp\\'" flymake-simple-make-init flymake-simple-cleanup flymake-get-real-file-name) ("\\.xml\\'" flymake-xml-init) ("\\.html?\\'" flymake-xml-init) ("\\.cs\\'" flymake-simple-make-init) ("\\.p[ml]\\'" flymake-perl-init) ("\\.php[345]?\\'" flymake-php-init) ("\\.h\\'" flymake-master-make-header-init flymake-master-cleanup) ("\\.java\\'" flymake-simple-make-java-init flymake-simple-java-cleanup) ("[0-9]+\\.tex\\'" flymake-master-tex-init flymake-master-cleanup) ("\\.tex\\'" flymake-simple-tex-init) ("\\.idl\\'" flymake-simple-make-init))))
+ '(flymake-allowed-file-name-masks (quote (("\\.c\\'" flymake-simple-make-init flymake-simple-cleanup flymake-get-real-file-name) ("\\.cpp\\'" flymake-simple-make-init flymake-simple-cleanup flymake-get-real-file-name) ("\\.xml\\'" flymake-xml-init) ("\\.html?\\'" flymake-xml-init) ("\\.cs\\'" flymake-simple-make-init) ("\\.p[ml]\\'" flymake-perl-init) ("\\.php[345]?\\'" flymake-php-init) ("\\.h\\'" flymake-master-make-header-init flymake-master-cleanup) ("\\.java\\'" flymake-simple-make-java-init flymake-simple-java-cleanup) ("\\.idl\\'" flymake-simple-make-init))))
+ '(flyspell-issue-welcome-flag nil)
  '(flyspell-sort-corrections nil)
  '(font-lock-maximum-decoration t)
  '(frame-title-format (concat invocation-name "@" system-name ": %b [%IB]") t)
@@ -689,7 +701,7 @@
  '(menu-bar-mode t)
  '(message-fill-column 74)
  '(mumamo-major-modes (quote ((asp-js-mode js-mode javascript-mode espresso-mode ecmascript-mode) (asp-vb-mode visual-basic-mode) (javascript-mode js2-mode js-mode javascript-mode espresso-mode ecmascript-mode) (java-mode jde-mode java-mode) (groovy-mode groovy-mode) (nxhtml-mode nxhtml-mode html-mode))))
- '(safe-local-variable-values (quote ((js2-basic-offset . 4) (c-indentation-style . linux))))
+ '(safe-local-variable-values (quote ((noweb-code-mode . c-mode) (js2-basic-offset . 4) (c-indentation-style . linux))))
  '(scroll-bar-mode nil)
  '(show-paren-mode t)
  '(show-trailing-whitespace t)
@@ -719,17 +731,6 @@
 (add-hook 'kill-emacs-hook #'recompile-emacs-dir)
 
 ;;}}}
-
-
-;;; This was installed by package-install.el.
-;;; This provides support for the package system and
-;;; interfacing with ELPA, the package archive.
-;;; Move this code earlier if you want to reference
-;;; packages in your .emacs.
-(when
-    (load
-     (expand-file-name "~/.emacs.d/elpa/package.el"))
-  (package-initialize))
 
 
 ;;; This was installed by package-install.el.
