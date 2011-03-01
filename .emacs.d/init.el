@@ -132,16 +132,14 @@
 ;;{{{ flyspell-mode
 
 (autoload 'flyspell-mode "flyspell" "Flyspell mode." t)
-(eval-after-load 'flyspell
-  '(progn
-     (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-     (add-hook 'TeX-mode-hook 'flyspell-mode)
-     (eval-after-load 'noweb-mode
-       '(add-hook 'noweb-mode-hook 'flyspell-mode))
-     (add-hook 'text-mode-hook 'flyspell-mode)
-     (add-hook 'mail-mode-hook 'flyspell-mode)
-     (add-hook 'outline-mode-hook 'flyspell-mode)
-     (add-hook 'org-mode-hook 'flyspell-mode)))
+(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+(add-hook 'TeX-mode-hook 'flyspell-mode)
+(eval-after-load 'noweb-mode
+  '(add-hook 'noweb-mode-hook 'flyspell-mode))
+(add-hook 'text-mode-hook 'flyspell-mode)
+(add-hook 'mail-mode-hook 'flyspell-mode)
+(add-hook 'outline-mode-hook 'flyspell-mode)
+(add-hook 'org-mode-hook 'flyspell-mode)
 
 ;;}}}
 
