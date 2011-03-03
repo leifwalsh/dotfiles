@@ -322,8 +322,23 @@ title () {
     esac
 }
 
+check_make_status() {
+    make -qs 2>/dev/null
+    local _STATUS=$?
+    if [[ x"$_STATUS" = x"0" ]]
+    then
+        PROMPT_MAKE=" %F{green}✔%f"
+    elif [[ x"$_STATUS" = x"1" ]]
+    then
+        PROMPT_MAKE=" %F{red}✗%f"
+    else
+        PROMPT_MAKE=" %B%F{blue}%#%f%b"
+    fi
+}
+
 precmd () {
     vcs_info prompt
+    check_make_status
     title zsh "[${TERM%-*}] zsh: ${(%):-%m@%n %~}"
 }
 
@@ -362,7 +377,7 @@ else
     ## gentoo tcsh style
     #PROMPT='%B%F{blue}(%f%(#.%F{red}.%F{green})%m%f%b:${vcs_info_msg_0_}%B%F{blue}) %(#.%F{red}.%F{green}%n)%#%f%b '
     ## gentoo bash/zsh style
-    PROMPT='%B%(#.%F{red}%m%f.%F{green}%n@%m%f)%b ${vcs_info_msg_0_} %B%F{blue}%#%f%b '
+    PROMPT='%B%(#.%F{red}%m%f.%F{green}%n@%m%f)%b ${vcs_info_msg_0_}${PROMPT_MAKE} '
     RPROMPT="%B%F{blue}%(?..(%f%F{red}%?%f%F{blue}%) )[%f%F{yellow}%T%f%F{blue}]%f%b"
 fi
 
