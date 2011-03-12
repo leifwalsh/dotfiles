@@ -16,6 +16,3 @@
 [submodule ".emacs.d/vendor/tuareg"]
 	path = .emacs.d/vendor/tuareg
 	url = git://github.com/emacsmirror/tuareg.git
-[submodule ".emacs.d/vendor/color-theme-radiance"]
-	path = .emacs.d/vendor/color-theme-radiance
-	url = git://github.com/miloshadzic/color-theme-radiance.git
