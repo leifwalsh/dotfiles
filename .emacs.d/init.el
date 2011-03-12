@@ -3,7 +3,6 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/git-emacs"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/tuareg"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/color-theme-radiance"))
 ;;; http://rtfm.etla.org/emacs/htmlfontify/
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/htmlfontify-0.20+texinfo/"))
 ;;; git://github.com/tcrayford/clojure-refactoring.git
@@ -73,7 +72,7 @@
 (eval-after-load "color-theme"
   '(progn
      (setq color-theme-is-global t)
-     (color-theme-radiance)))
+     (color-theme-zenburn)))
 
 ;;}}}
 
@@ -730,14 +729,3 @@
 (add-hook 'kill-emacs-hook #'recompile-emacs-dir)
 
 ;;}}}
-
-
-;;; This was installed by package-install.el.
-;;; This provides support for the package system and
-;;; interfacing with ELPA, the package archive.
-;;; Move this code earlier if you want to reference
-;;; packages in your .emacs.
-(when
-    (load
-     (expand-file-name "~/.emacs.d/elpa/package.el"))
-  (package-initialize))
