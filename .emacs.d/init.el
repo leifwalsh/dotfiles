@@ -3,6 +3,7 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/git-emacs"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/tuareg"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/color-theme-radiance"))
 ;;; http://rtfm.etla.org/emacs/htmlfontify/
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/htmlfontify-0.20+texinfo/"))
 ;;; git://github.com/tcrayford/clojure-refactoring.git
@@ -72,7 +73,7 @@
 (eval-after-load "color-theme"
   '(progn
      (setq color-theme-is-global t)
-     (color-theme-zenburn)))
+     (color-theme-radiance)))
 
 ;;}}}
 
@@ -352,7 +353,7 @@
 
 ;;{{{ erc
 
-(autoload 'erc "erc" "ERC IRC client." t)
+(require 'erc)
 (autoload 'erc "erc-join" "Custom joining stuff for ERC.")
 (eval-after-load "erc"
   '(progn
