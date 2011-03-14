@@ -409,7 +409,7 @@
        (reduce (lambda (s regex-pair)
                  (let ((match (car regex-pair))
                        (replacement (cdr regex-pair)))
-                   (replace-regexp match replacement s)))
+                   (replace-regexp-in-string match replacement s)))
                '(("'" . "&apos;")
                  ("\"" . "&quot;")
                  ("&" . "&amp;")
