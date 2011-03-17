@@ -12,7 +12,8 @@ require("debian.menu")
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
-beautiful.init(awful.util.getdir("config") .. "/themes/zenburn/theme.lua")
+--beautiful.init(awful.util.getdir("config") .. "/themes/zenburn/theme.lua")
+beautiful.init("/usr/share/awesome/themes/zenburn/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"  --"x-terminal-emulator"
@@ -50,7 +51,7 @@ tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
     tags[s] = awful.tag({ "%", "Ɛ", "✆", "✉", "♳", "♴", "♵", "☺", "♫" }, s,
-                        { layouts[2], layouts[2], layouts[10], layouts[2], layouts[2], layouts[2], layouts[1], layouts[1], layouts[1] })
+                        { layouts[2], layouts[2], layouts[10], layouts[2], layouts[2], layouts[2], layouts[1], layouts[2], layouts[2] })
 end
 -- }}}
 
@@ -347,9 +348,10 @@ awful.util.spawn_with_shell("pgrep -f '^nm-applet$' || nm-applet")
 awful.util.spawn_with_shell("pgrep -f '^gnome-power-manager$' || gnome-power-manager")
 awful.util.spawn_with_shell("pgrep -f '^bluetooth-applet' || bluetooth-applet")
 awful.util.spawn_with_shell("pgrep -f 'dropbox$' || dropbox start")
-awful.util.spawn_with_shell("pgrep -f 'xflux' || xflux -l 40.9 -g -72.6")
+--awful.util.spawn_with_shell("pgrep -f 'xflux' || xflux -l 40.9 -g -72.6")
 --awful.util.spawn_with_shell("pgrep -f 'offlineimap' || offlineimap")
 awful.util.spawn_with_shell("/home/leif/bin/edaemon.sh")
 --awful.util.spawn_with_shell("/home/leif/bin/wallchange-awesome.sh")
 awful.util.spawn_with_shell("/home/leif/bin/alpine-notify.sh")
+awful.util.spawn_with_shell("xrdb -merge /home/leif/.Xresources.zenburn-urxvt")
 -- }}}

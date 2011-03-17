@@ -9,7 +9,7 @@
 -- {{{ Main
 theme = {}
 theme.confdir = awful.util.getdir("config")
-theme.wallpaper_cmd = { "awsetbg /home/leif/Downloads/770px-GAto.jpg" }
+theme.wallpaper_cmd = { "awsetbg /usr/share/awesome/themes/zenburn/zenburn-background.png" }
 -- }}}
 
 -- {{{ Styles
@@ -25,7 +25,7 @@ theme.bg_urgent = "#3F3F3F"
 -- }}}
 
 -- {{{ Borders
-theme.border_width  = "1"
+theme.border_width  = "2"
 theme.border_normal = "#3F3F3F"
 theme.border_focus  = "#6F6F6F"
 theme.border_marked = "#CC9393"
@@ -50,17 +50,11 @@ theme.titlebar_bg_normal = "#3F3F3F"
 -- You can add as many variables as
 -- you wish and access them by using
 -- beautiful.variable in your rc.lua
-theme.fg_widget        = "#AECF96"
-theme.fg_center_widget = "#88A175"
-theme.fg_end_widget    = "#FF5656"
-theme.fg_off_widget    = "#494B4F"
-theme.fg_netup_widget  = "#7F9F7F"
-theme.fg_netdn_widget  = "#CC9393"
-theme.fg_bathigh_widget = "#7F9F7F"
-theme.fg_batmed_widget = "#CCCC83"
-theme.fg_batlow_widget = "#CC9393"
-theme.bg_widget        = "#494B4F"
-theme.border_widget    = "#3F3F3F"
+--theme.fg_widget        = "#AECF96"
+--theme.fg_center_widget = "#88A175"
+--theme.fg_end_widget    = "#FF5656"
+--theme.bg_widget        = "#494B4F"
+--theme.border_widget    = "#3F3F3F"
 -- }}}
 
 -- {{{ Mouse finder
@@ -116,20 +110,6 @@ theme.layout_max        = theme.confdir .. "/icons/layouts/max.png"
 theme.layout_fullscreen = theme.confdir .. "/icons/layouts/fullscreen.png"
 theme.layout_magnifier  = theme.confdir .. "/icons/layouts/magnifier.png"
 theme.layout_floating   = theme.confdir .. "/icons/layouts/floating.png"
--- }}}
-
--- {{{ Widget icons
-theme.widget_cpu    = theme.confdir .. "/icons/cpu.png"
-theme.widget_bat    = theme.confdir .. "/icons/bat.png"
-theme.widget_mem    = theme.confdir .. "/icons/mem.png"
-theme.widget_fs     = theme.confdir .. "/icons/disk.png"
-theme.widget_net    = theme.confdir .. "/icons/down.png"
-theme.widget_netup  = theme.confdir .. "/icons/up.png"
-theme.widget_mail   = theme.confdir .. "/icons/mail.png"
-theme.widget_vol    = theme.confdir .. "/icons/vol.png"
-theme.widget_org    = theme.confdir .. "/icons/cal.png"
-theme.widget_date   = theme.confdir .. "/icons/time.png"
-theme.widget_crypto = theme.confdir .. "/icons/crypto.png"
 -- }}}
 
 -- {{{ Titlebar
