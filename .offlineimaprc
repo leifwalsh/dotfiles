@@ -271,7 +271,7 @@ realdelete = no
 # spamfolder = [Google Mail]/Spam
 
 folderfilter = lambda foldername: foldername in \
-    ['[Gmail]/Drafts', '[Gmail]/Sent Mail',
+    ['[Gmail]/Drafts', '[Gmail]/Sent Mail', '[Gmail]/Spam',
      'INBOX', 'Old-Inbox', 'Facebook', 'Quora', 'Clojure', 'Scala-user',
      'RethinkDB', 'FreeBSD-questions', 'FreeBSD-STABLE']
 
