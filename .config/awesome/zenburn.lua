@@ -9,7 +9,7 @@
 -- {{{ Main
 theme = {}
 theme.confdir = awful.util.getdir("config")
-theme.wallpaper_cmd = { "awsetbg /usr/share/awesome/themes/zenburn/zenburn-background.png" }
+theme.wallpaper_cmd = { "awsetbg -u feh /usr/share/backgrounds/warty-final-ubuntu.png" }
 -- }}}
 
 -- {{{ Styles
@@ -72,10 +72,10 @@ theme.menu_width  = "100"
 
 -- {{{ Icons
 -- {{{ Taglist
---theme.taglist_squares_sel   = "/usr/share/awesome/themes/zenburn/taglist/squarefz.png"
---theme.taglist_squares_unsel = "/usr/share/awesome/themes/zenburn/taglist/squarez.png"
-theme.taglist_squares_sel   = theme.confdir .. "/icons/taglist/squarefz.png"
-theme.taglist_squares_unsel = theme.confdir .. "/icons/taglist/squareza.png"
+theme.taglist_squares_sel   = "/usr/share/awesome/themes/zenburn/taglist/squarefz.png"
+theme.taglist_squares_unsel = "/usr/share/awesome/themes/zenburn/taglist/squarez.png"
+--theme.taglist_squares_sel   = theme.confdir .. "/icons/taglist/squarefz.png"
+--theme.taglist_squares_unsel = theme.confdir .. "/icons/taglist/squareza.png"
 --theme.taglist_squares_resize = "false"
 -- }}}
 
@@ -86,30 +86,30 @@ theme.tasklist_floating_icon = "/usr/share/awesome/themes/default/tasklist/float
 -- }}}
 
 -- {{{ Layout
--- theme.layout_tile       = "/usr/share/awesome/themes/zenburn/layouts/tile.png"
--- theme.layout_tileleft   = "/usr/share/awesome/themes/zenburn/layouts/tileleft.png"
--- theme.layout_tilebottom = "/usr/share/awesome/themes/zenburn/layouts/tilebottom.png"
--- theme.layout_tiletop    = "/usr/share/awesome/themes/zenburn/layouts/tiletop.png"
--- theme.layout_fairv      = "/usr/share/awesome/themes/zenburn/layouts/fairv.png"
--- theme.layout_fairh      = "/usr/share/awesome/themes/zenburn/layouts/fairh.png"
--- theme.layout_spiral     = "/usr/share/awesome/themes/zenburn/layouts/spiral.png"
--- theme.layout_dwindle    = "/usr/share/awesome/themes/zenburn/layouts/dwindle.png"
--- theme.layout_max        = "/usr/share/awesome/themes/zenburn/layouts/max.png"
--- theme.layout_fullscreen = "/usr/share/awesome/themes/zenburn/layouts/fullscreen.png"
--- theme.layout_magnifier  = "/usr/share/awesome/themes/zenburn/layouts/magnifier.png"
--- theme.layout_floating   = "/usr/share/awesome/themes/zenburn/layouts/floating.png"
-theme.layout_tile       = theme.confdir .. "/icons/layouts/tile.png"
-theme.layout_tileleft   = theme.confdir .. "/icons/layouts/tileleft.png"
-theme.layout_tilebottom = theme.confdir .. "/icons/layouts/tilebottom.png"
-theme.layout_tiletop    = theme.confdir .. "/icons/layouts/tiletop.png"
-theme.layout_fairv      = theme.confdir .. "/icons/layouts/fairv.png"
-theme.layout_fairh      = theme.confdir .. "/icons/layouts/fairh.png"
-theme.layout_spiral     = theme.confdir .. "/icons/layouts/spiral.png"
-theme.layout_dwindle    = theme.confdir .. "/icons/layouts/dwindle.png"
-theme.layout_max        = theme.confdir .. "/icons/layouts/max.png"
-theme.layout_fullscreen = theme.confdir .. "/icons/layouts/fullscreen.png"
-theme.layout_magnifier  = theme.confdir .. "/icons/layouts/magnifier.png"
-theme.layout_floating   = theme.confdir .. "/icons/layouts/floating.png"
+theme.layout_tile       = "/usr/share/awesome/themes/zenburn/layouts/tile.png"
+theme.layout_tileleft   = "/usr/share/awesome/themes/zenburn/layouts/tileleft.png"
+theme.layout_tilebottom = "/usr/share/awesome/themes/zenburn/layouts/tilebottom.png"
+theme.layout_tiletop    = "/usr/share/awesome/themes/zenburn/layouts/tiletop.png"
+theme.layout_fairv      = "/usr/share/awesome/themes/zenburn/layouts/fairv.png"
+theme.layout_fairh      = "/usr/share/awesome/themes/zenburn/layouts/fairh.png"
+theme.layout_spiral     = "/usr/share/awesome/themes/zenburn/layouts/spiral.png"
+theme.layout_dwindle    = "/usr/share/awesome/themes/zenburn/layouts/dwindle.png"
+theme.layout_max        = "/usr/share/awesome/themes/zenburn/layouts/max.png"
+theme.layout_fullscreen = "/usr/share/awesome/themes/zenburn/layouts/fullscreen.png"
+theme.layout_magnifier  = "/usr/share/awesome/themes/zenburn/layouts/magnifier.png"
+theme.layout_floating   = "/usr/share/awesome/themes/zenburn/layouts/floating.png"
+-- theme.layout_tile       = theme.confdir .. "/icons/layouts/tile.png"
+-- theme.layout_tileleft   = theme.confdir .. "/icons/layouts/tileleft.png"
+-- theme.layout_tilebottom = theme.confdir .. "/icons/layouts/tilebottom.png"
+-- theme.layout_tiletop    = theme.confdir .. "/icons/layouts/tiletop.png"
+-- theme.layout_fairv      = theme.confdir .. "/icons/layouts/fairv.png"
+-- theme.layout_fairh      = theme.confdir .. "/icons/layouts/fairh.png"
+-- theme.layout_spiral     = theme.confdir .. "/icons/layouts/spiral.png"
+-- theme.layout_dwindle    = theme.confdir .. "/icons/layouts/dwindle.png"
+-- theme.layout_max        = theme.confdir .. "/icons/layouts/max.png"
+-- theme.layout_fullscreen = theme.confdir .. "/icons/layouts/fullscreen.png"
+-- theme.layout_magnifier  = theme.confdir .. "/icons/layouts/magnifier.png"
+-- theme.layout_floating   = theme.confdir .. "/icons/layouts/floating.png"
 -- }}}
 
 -- {{{ Titlebar
