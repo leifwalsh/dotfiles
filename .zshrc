@@ -2,9 +2,9 @@
 # Settings
 ################################################################################
 
-. /etc/profile
-. /etc/zsh/zprofile
-. ~/.profile
+[[ -f /etc/profile ]] && . /etc/profile
+[[ -f /etc/zsh/zprofile ]] && . /etc/zsh/zprofile
+[[ -f ~/.profile ]] && . ~/.profile
 
 # History options.
 export HISTFILE=~/.zsh_history
@@ -239,6 +239,11 @@ preexec () {
 if [[ -f /etc/DIR_COLORS ]]
 then
   eval $(dircolors /etc/DIR_COLORS)
+elif [[ -f ${HOME}/.dircolors ]]
+then
+  eval $(dircolors ${HOME}/.dircolors)
+else
+  eval $(dircolors -b)
 fi
 export ZLS_COLORS=${LS_COLORS}
 
@@ -269,9 +274,9 @@ _force_rehash() {
 zstyle ':completion:*' completer _force_rehash _complete _approximate
 zstyle -e ':completion:*:approximate:*' max-errors 'reply=( $(( ($#PREFIX + $#SUFFIX) / 3 )) )'
 # bold and underline sections
-zstyle ':completion:*:descriptions' format '%U%B%d%b%u'
+zstyle ':completion:*:descriptions' format '%U%d%u'
 # mention errors
-zstyle ':completion:*:corrections' format "%U%B%d%b%u (errors %e)"
+zstyle ':completion:*:corrections' format "%U%d%u (errors %e)"
 zstyle ':completion:*:default' list-prompt '%S%M matches%s'
 zstyle ':completion:*' group-name ''
 # ignore same file
@@ -303,12 +308,12 @@ zstyle ':vcs_info:*' check-for-changes true
 zstyle ':vcs_info:*' branchformat "%b:%r"
 zstyle ':vcs_info:*:prompt:*' unstagedstr '-'
 zstyle ':vcs_info:*:prompt:*' stagedstr '*'
-zstyle ':vcs_info:*:prompt:*' actionformats "%B%F{blue}%2~ [%f%F{red}%c%u%f%F{magenta}%b%f%F{blue}|%f%F{yellow}%a%f%F{blue}]%f%%b"
-zstyle ':vcs_info:*:prompt:*' formats "%B%F{blue}%2~ [%f%F{red}%c%u%f%F{magenta}%b%f%F{blue}]%f%%b"
+zstyle ':vcs_info:*:prompt:*' actionformats "%F{blue}%2~ [%f%F{red}%c%u%f%F{magenta}%b%f%F{blue}|%f%F{yellow}%a%f%F{blue}]%f "
+zstyle ':vcs_info:*:prompt:*' formats "%F{blue}%2~ [%f%F{red}%c%u%f%F{magenta}%b%f%F{blue}]%f "
 # no git stuff for anything in my homedir
-zstyle ':vcs_info:*:prompt:leif' actionformats "%B%F{blue}%2~%f%%b"
-zstyle ':vcs_info:*:prompt:leif' formats "%B%F{blue}%2~%f%%b"
-zstyle ':vcs_info:*:prompt:*' nvcsformats "%B%F{blue}%2~%f%b"
+zstyle ':vcs_info:*:prompt:leif' actionformats "%F{blue}%2~%f "
+zstyle ':vcs_info:*:prompt:leif' formats "%F{blue}%2~%f "
+zstyle ':vcs_info:*:prompt:*' nvcsformats "%F{blue}%2~%f "
 
 # show current directory in the menu bar
 title () {
@@ -327,12 +332,12 @@ check_make_status() {
     local _STATUS=$?
     if [[ x"$_STATUS" = x"0" ]]
     then
-        PROMPT_MAKE=" %F{green}✔%f"
+        PROMPT_MAKE="%F{green}✔%f"
     elif [[ x"$_STATUS" = x"1" ]]
     then
-        PROMPT_MAKE=" %F{red}✗%f"
+        PROMPT_MAKE="%F{red}✗%f"
     else
-        PROMPT_MAKE=" %B%F{blue}%#%f%b"
+        PROMPT_MAKE="%F{blue}%#%f"
     fi
 }
 
@@ -377,8 +382,8 @@ else
     ## gentoo tcsh style
     #PROMPT='%B%F{blue}(%f%(#.%F{red}.%F{green})%m%f%b:${vcs_info_msg_0_}%B%F{blue}) %(#.%F{red}.%F{green}%n)%#%f%b '
     ## gentoo bash/zsh style
-    PROMPT='%B%(#.%F{red}%m%f.%F{green}%n@%m%f)%b ${vcs_info_msg_0_}${PROMPT_MAKE} '
-    RPROMPT="%B%F{blue}%(?..(%f%F{red}%?%f%F{blue}%) )[%f%F{yellow}%T%f%F{blue}]%f%b"
+    PROMPT='%(#.%F{red}%B%m%b%f.%F{green}%n@%m%f) ${vcs_info_msg_0_}${PROMPT_MAKE} '
+    RPROMPT="%F{blue}%(?..(%f%F{red}%?%f%F{blue}%) )%B[%b%f%F{yellow}%T%f%F{blue}%B]%b%f"
 fi
 
 # done setting up

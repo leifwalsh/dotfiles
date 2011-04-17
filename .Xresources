@@ -1,3 +1,8 @@
+xpdf*enableFreetype:    yes
+xpdf*antialias:         yes
+xpdf*foreground:        black
+xpdf*background:        white
+
 Xft.dpi: 96
 Xft.antialias: 1
 Xft.hinting: 1
@@ -7,13 +12,13 @@ Xft.rgba: rgb
 
 URxvt.termName: rxvt-unicode
 
-URxvt.iconFile: /usr/share/pixmaps/gnome-terminal.png
+URxvt.iconFile: /usr/share/icons/Faenza/apps/48/terminal.png
 
 URxvt.font: xft:Deja Vu Sans Mono-10:antialias=true:autohint=true,xft:Anonymous Pro-10:autohint=true,xft:Bitstream Vera Sans Mono-10:antialias=true:autohint=true
 URxvt.boldFont: xft:Deja Vu Sans Mono-10:bold:antialias=true:autohint=true,xft:Anonymous Pro-10:bold:autohint=true,xft:Bitstream Vera Sans Mono-10:bold:antialias=true:autohint=true
 URxvt.italicFont: xft:Deja Vu Sans Mono-10:italic:antialias=true:autohint=true,xft:Anonymous Pro-10:italic:autohint=true,xft:Bitstream Vera Sans Mono-10:italic:antialias=true:autohint=true
 URxvt.boldItalicFont: xft:Deja Vu Sans Mono-10:bold:italic:antialias=true:autohint=true,xft:Anonymous Pro-10:bold:italic:autohint=true,xft:Bitstream Vera Sans Mono-10:bold:italic:antialias=true:autohint=true
-URxvt.letterSpace: -1
+!URxvt.letterSpace: -1
 
 URxvt.scrollBar: false
 URxvt.saveLines: 8192
@@ -26,24 +31,26 @@ URxvt.matcher.pattern.1: \\bwww\\.[\\w-]+\\.[\\w./?&@#-]*[\\w/-]
 
 URxvt.depth: 32
 
-URxvt.background: rgba:0000/0000/0000/cccc /*rgba:2222/2222/2222/dddd*/
-URxvt.foreground: #ffffff /*#dcdccc*/
-URxvt.color0: rgba:0000/0000/0000/cccc /*#3f3f3f*/
-URxvt.color1: #d65858
-URxvt.color2: #3cb579
-URxvt.color3: #ab714b
-URxvt.color4: #38618a
-URxvt.color5: #dc8cc3
-URxvt.color6: #8cd0d3
-URxvt.color7: #dcdccc
-URxvt.color8: #709080
-URxvt.color9: #dca3a3
-URxvt.color10: #c3bf9f
-URxvt.color11: #f0dfaf
-URxvt.color12: #94bff3
-URxvt.color13: #ec93d3
-URxvt.color14: #93e0e3
-URxvt.color15: #ffffff
+#include "/home/leif/git/adlaiff6-solarized/xresources-colors-solarized/Xresources-dark"
+URxvt.fading: 20
+! URxvt.background: rgba:3f3f/3f3f/3f3f/cccc /*rgba:2222/2222/2222/dddd*/
+! URxvt.foreground: #ffffff /*#dcdccc*/
+! URxvt.color0: rgba:3f3f/3f3f/3f3f/cccc /*#3f3f3f*/
+! URxvt.color1: #d65858
+! URxvt.color2: #3cb579
+! URxvt.color3: #ab714b
+! URxvt.color4: #38618a
+! URxvt.color5: #dc8cc3
+! URxvt.color6: #8cd0d3
+! URxvt.color7: #dcdccc
+! URxvt.color8: #709080
+! URxvt.color9: #dca3a3
+! URxvt.color10: #c3bf9f
+! URxvt.color11: #f0dfaf
+! URxvt.color12: #94bff3
+! URxvt.color13: #ec93d3
+! URxvt.color14: #93e0e3
+! URxvt.color15: #ffffff
 /*
 URxvt.foreground: white
 URxvt.background: rgba:2c2c/0000/1e1e/cccc
@@ -122,4 +129,4 @@ XTerm*vt100.on3Clicks: regex [-_/:=+?&@.A-Za-z0-9]+
 XTerm*vt100.on4Clicks: regex [^ ]+
 XTerm*vt100.on5Clicks: line
 
-Xcursor.theme: Neutral_Plus
+Xcursor.theme: Vanilla-DMZ-AA
