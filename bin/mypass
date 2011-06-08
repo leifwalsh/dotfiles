@@ -1,0 +1,4 @@
+#!/bin/bash
+
+if [[ $# -ne 1 ]]; then echo "Usage: $(basename $0) <site>" && exit 2; fi
+(gpg -q -d ~/.passwd.gpg; echo "$1") | sha256sum | cut -c-16
