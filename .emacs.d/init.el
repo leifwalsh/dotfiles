@@ -1,6 +1,7 @@
 ;;{{{ load-path
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/ecb-snap/"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/git-emacs"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/tuareg"))
 ;;; http://rtfm.etla.org/emacs/htmlfontify/
@@ -125,9 +126,101 @@
 
 ;;}}}
 
+;;{{{ smooth scrolling
+
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+;(setq mouse-wheel-progressive-speed 1) ;; don't accelerate scrolling
+(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+(setq scroll-step 1) ;; keyboard scroll one line at a time
+
+;;}}}
+
 ;;}}}
 
 ;;{{{ plugins
+
+;;{{{ cedet
+
+(setq ede-locate-setup-options '(ede-locate-global ede-locate-base))
+
+(load-file (expand-file-name "~/.emacs.d/vendor/cedet-1.0/common/cedet.el"))
+
+(global-ede-mode 1)
+(global-semantic-mru-bookmark-mode 1)
+(global-semantic-idle-scheduler-mode 1)
+(global-semanticdb-minor-mode 1)
+;; (semanticdb-enable-gnu-global-databases 'c-mode)
+;; (semanticdb-enable-gnu-global-databases 'c++-mode)
+(semantic-load-enable-excessive-code-helpers)
+(require 'semantic-decorate-include)
+(require 'semantic-gcc)
+(require 'semantic-ia)
+
+(setq-mode-local c-mode semanticdb-find-default-throttle
+                 '(project unloaded system recursive))
+
+(require 'eassist)
+
+(defun alexott/cedet-hook ()
+  (local-set-key [(control return)] 'complete-symbol)
+  (local-set-key "\C-c?" 'semantic-ia-complete-symbol-menu)
+  ;;
+  (local-set-key "\C-c>" 'semantic-complete-analyze-inline)
+  (local-set-key "\C-c=" 'semantic-decoration-include-visit)
+
+  (local-set-key "\C-cj" 'semantic-ia-fast-jump)
+  (local-set-key "\C-cq" 'semantic-ia-show-doc)
+  (local-set-key "\C-cs" 'semantic-ia-show-summary)
+  (local-set-key "\C-cp" 'semantic-analyze-proto-impl-toggle)
+  )
+;; (add-hook 'semantic-init-hooks 'alexott/cedet-hook)
+(add-hook 'c-mode-common-hook 'alexott/cedet-hook)
+(add-hook 'lisp-mode-hook 'alexott/cedet-hook)
+(add-hook 'scheme-mode-hook 'alexott/cedet-hook)
+(add-hook 'emacs-lisp-mode-hook 'alexott/cedet-hook)
+(add-hook 'erlang-mode-hook 'alexott/cedet-hook)
+
+(defun alexott/c-mode-cedet-hook ()
+  ;; (local-set-key "." 'semantic-complete-self-insert)
+  ;; (local-set-key ">" 'semantic-complete-self-insert)
+  (local-set-key "\C-ct" 'eassist-switch-h-cpp)
+  (local-set-key "\C-xt" 'eassist-switch-h-cpp)
+  (local-set-key "\C-ce" 'eassist-list-methods)
+  (local-set-key "\C-c\C-r" 'semantic-symref)
+  )
+(add-hook 'c-mode-common-hook 'alexott/c-mode-cedet-hook)
+
+;; hooks, specific for semantic
+(defun alexott/semantic-hook ()
+;; (semantic-tag-folding-mode 1)
+  (imenu-add-to-menubar "TAGS")
+  )
+(add-hook 'semantic-init-hooks 'alexott/semantic-hook)
+
+(require 'semantic-lex-spp)
+(ede-enable-generic-projects)
+
+(semantic-add-system-include "/ssh:leif@tokubuntu:/usr/include/")
+
+(setq tokudb-mainline-project
+      (ede-cpp-root-project
+       "Tokudb"
+       :name "Tokudb"
+       :file "/ssh:leif@tokubuntu:svn/tokutek/toku/tokudb/Makefile"
+       :include-path '("/" "/include" "/linux" "/toku_include" "/newbrt" "/src" "/src/lock_tree" "/src/range_tree")
+       :system-include-path '("/ssh:leif@tokubuntu:/usr/include/")
+       :spp-table '(("TOKUDB_REVISION" . "0")
+                    ("_SVID_SOURCE" . "")
+                    ("_FILE_OFFSET_BITS" . "64")
+                    ("_LARGEFILE64_SOURCE" . "")
+                    ("_XOPEN_SOURCE" . "600")
+                    ("_THREAD_SAFE" . "")
+                    ("TOKU_RT_NOOVERLAPS" . ""))))
+
+;;(require 'ecb)
+;;(ecb-layout-switch "left6")
+
+;;}}}
 
 ;;{{{ flyspell-mode
 
@@ -678,8 +771,12 @@
  '(c-echo-syntactic-information-p t)
  '(column-number-mode t)
  '(compilation-window-height 12)
+ '(default-frame-alist (quote ((background-mode . dark) (tool-bar-lines . 0) (menu-bar-lines . 1) (cursor-type bar . 1))))
  '(display-battery-mode t)
  '(display-time-mode t)
+ '(ecb-auto-activate t)
+ '(ecb-options-version "2.40")
+ '(ecb-tip-of-the-day nil)
  '(erc-autojoin-channels-alist (quote (("foonetic.net" "#xkcd") ("freenode.net" "#emacs" "#lisp" "#haskell" "#clojure"))))
  '(erc-nick (quote ("Adlai" "leifw" "Adlai_" "leifw_" "Adlai__" "leifw__")))
  '(erc-nickserv-identify-mode (quote autodetect))
@@ -729,3 +826,4 @@
 (add-hook 'kill-emacs-hook #'recompile-emacs-dir)
 
 ;;}}}
+
