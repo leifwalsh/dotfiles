@@ -199,7 +199,7 @@ alias -g V="| vim -"
 # Aliases.
 if [ "$TERM"x != dumbx ]
 then
-    alias ls='ls --color=auto'
+    alias ls='ls -G'
     alias grep='grep --color=auto'
 fi
 alias lsd='ls -d'
@@ -241,9 +241,9 @@ then
   eval $(dircolors /etc/DIR_COLORS)
 elif [[ -f ${HOME}/.dircolors ]]
 then
-  eval $(dircolors ${HOME}/.dircolors)
+  eval $(gdircolors ${HOME}/.dircolors)
 else
-  eval $(dircolors -b)
+  eval $(gdircolors -b)
 fi
 export ZLS_COLORS=${LS_COLORS}
 

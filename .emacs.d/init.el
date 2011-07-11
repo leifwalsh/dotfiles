@@ -1,8 +1,21 @@
+;;{{{ PATH
+
+(setenv "PATH"
+        (concat
+         (expand-file-name "~/bin") ":"
+	 "/usr/local/bin" ":"
+         (getenv "PATH")))
+(add-to-list 'exec-path "/usr/local/bin")
+(add-to-list 'exec-path (expand-file-name "~/bin"))
+
+;;}}}
+
 ;;{{{ load-path
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/ecb-snap/"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/git-emacs"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/color-theme"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/tuareg"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/org-7.6/lisp"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/org-7.6/contrib/lisp"))
@@ -74,8 +87,8 @@
 (require 'color-theme)
 (eval-after-load "color-theme"
   '(progn
-     (setq color-theme-is-global t)
-     (color-theme-zenburn)))
+     (color-theme-initialize)
+     (color-theme-solarized-dark)))
 
 ;;}}}
 
@@ -283,7 +296,7 @@ save the pointer marker if tag is found"
 
 ;;{{{ flymake-mode
 
-(require 'flymake)
+;(require 'flymake)
 (eval-after-load "flymake"
   '(progn
      (add-hook 'find-file-hook 'flymake-find-file-hook)
@@ -300,7 +313,7 @@ save the pointer marker if tag is found"
 ;;{{{ haskell-mode
 
 ;;; http://code.haskell.org/haskellmode-emacs
-(load "/usr/share/emacs/site-lisp/haskell-mode/haskell-site-file.el")
+;(load "/usr/share/emacs/site-lisp/haskell-mode/haskell-site-file.el")
 (eval-after-load "haskell-mode"
   '(progn
      (require 'inf-haskell)))
@@ -341,7 +354,7 @@ save the pointer marker if tag is found"
 
 ;;{{{ scala-mode
 
-(require 'scala-mode-auto)
+;(require 'scala-mode-auto)
 
 ;;}}}
 
@@ -354,8 +367,9 @@ save the pointer marker if tag is found"
 
 ;;{{{ folding
 
-(require 'folding)
-(folding-mode-add-find-file-hook)
+;(require 'folding)
+(eval-after-load "folding"
+  '(folding-mode-add-find-file-hook))
 
 ;;}}}
 
@@ -701,7 +715,7 @@ save the pointer marker if tag is found"
 ;;{{{ nxhtml (html/php/js/etc)
 
 ;;; http://ourcomments.org/cgi-bin/emacsw32-dl-latest.pl
-(load (expand-file-name "~/.emacs.d/vendor/nxhtml/autostart.el"))
+;(load (expand-file-name "~/.emacs.d/vendor/nxhtml/autostart.el"))
 
 ;;}}}
 
@@ -880,12 +894,13 @@ save the pointer marker if tag is found"
  '(tooltip-mode nil)
  '(tramp-default-method "ssh")
  '(user-mail-address "leif.walsh@gmail.com"))
+
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#3f3f3f" :foreground "#dcdccc" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 98 :width normal :foundry "unknown" :family "DejaVu Sans Mono"))))
+ '(ecb-default-highlight-face ((((class color) (background dark)) (:background "beige"))))
  '(erc-input-face ((t (:foreground "cyan"))))
  '(erc-my-nick-face ((t (:foreground "cyan" :weight bold)))))
 
