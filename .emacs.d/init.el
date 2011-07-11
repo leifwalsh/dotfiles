@@ -230,8 +230,8 @@
                     ("_THREAD_SAFE" . "")
                     ("TOKU_RT_NOOVERLAPS" . ""))))
 
-;;(require 'ecb)
-;;(ecb-layout-switch "left6")
+(require 'ecb)
+(ecb-layout-switch "left6")
 
 ;;}}}
 
@@ -788,7 +788,6 @@
  '(default-frame-alist (quote ((background-mode . dark) (tool-bar-lines . 0) (menu-bar-lines . 1) (cursor-type bar . 1))))
  '(display-battery-mode t)
  '(display-time-mode t)
- '(ecb-auto-activate t)
  '(ecb-options-version "2.40")
  '(ecb-tip-of-the-day nil)
  '(erc-autojoin-channels-alist (quote (("foonetic.net" "#xkcd") ("freenode.net" "#emacs" "#lisp" "#haskell" "#clojure"))))
