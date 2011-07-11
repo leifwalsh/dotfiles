@@ -7,7 +7,6 @@ then
     fi
 fi
 
-
 if [ -f ${HOME}/.termcap ]; then
   TERMCAP=$(< ${HOME}/.termcap)
   export TERMCAP
