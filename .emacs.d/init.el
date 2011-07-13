@@ -161,6 +161,47 @@
 
 (require 'eassist)
 
+(defvar semantic-tags-location-ring (make-ring 20))
+
+(defun semantic-goto-definition-fast (point)
+  "Goto definition using semantic-ia-fast-jump
+save the pointer marker if tag is found"
+  (interactive "def")
+  (condition-case err
+      (progn
+        (ring-insert semantic-tags-location-ring (point-marker))
+        (semantic-ia-fast-jump point))
+    (error
+     (set-marker (ring-remove semantic-tags-location-ring 0) nil nil)
+     (signal (car err) (cdr err)))))
+
+(defun semantic-goto-definition (point)
+  "Goto definition using semantic-complete-jump
+save the pointer marker if tag is found"
+  (interactive "def")
+  (condition-case err
+      (progn
+        (ring-insert semantic-tags-location-ring (point-marker))
+        (semantic-complete-jump point))
+    (error
+     ;;if not found remove the tag saved in the ring
+     (set-marker (ring-remove semantic-tags-location-ring 0) nil nil)
+     (signal (car err) (cdr err)))))
+
+(defun semantic-pop-tag-mark ()
+  "popup the tag save by semantic-goto-definition"
+  (interactive)
+  (if (ring-empty-p semantic-tags-location-ring)
+      (message "%s" "No more tags available")
+    (let* ((marker (ring-remove semantic-tags-location-ring 0))
+           (buff (marker-buffer marker))
+           (pos (marker-position marker)))
+      (if (not buff)
+          (message "Buffer has been deleted")
+        (switch-to-buffer buff)
+        (goto-char pos))
+      (set-marker marker nil nil))))
+
 (defun alexott/cedet-hook ()
   (local-set-key [(control return)] 'complete-symbol)
   (local-set-key "\C-c?" 'semantic-ia-complete-symbol-menu)
@@ -168,7 +209,9 @@
   (local-set-key "\C-c>" 'semantic-complete-analyze-inline)
   (local-set-key "\C-c=" 'semantic-decoration-include-visit)
 
-  (local-set-key "\C-cj" 'semantic-ia-fast-jump)
+  (local-set-key (kbd "M-.") 'semantic-goto-definition-fast)
+  (local-set-key (kbd "M-*") 'semantic-pop-tag-mark)
+  (local-set-key "\C-cj" 'semantic-goto-definition-fast)
   (local-set-key "\C-cq" 'semantic-ia-show-doc)
   (local-set-key "\C-cs" 'semantic-ia-show-summary)
   (local-set-key "\C-cp" 'semantic-analyze-proto-impl-toggle)
