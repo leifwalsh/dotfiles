@@ -3,7 +3,7 @@ if ps aux | grep VirtualBox | grep 'Ubuntu 64' | grep -v grep &>/dev/null
 then
     if ! ps aux | grep 'ssh -Y -C' | grep -v grep &>/dev/null
     then
-        ssh -Y -C -o ServerAliveInterval=30 -fN tokubuntu &>/dev/null
+        nohup ssh -Y -C -o ServerAliveInterval=30 -fN tokubuntu &>/dev/null
     fi
 fi
 
