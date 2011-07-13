@@ -2,8 +2,8 @@
 
 ;; Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2008 Eric M. Ludlam
 
-;; Author: Leif Walsh <leif@tokubook>
-;; Created: 2011-07-09 01:05:50-0400
+;; Author: Leif Walsh <leif@iBukMac.local>
+;; Created: 2011-07-13 10:58:28-0400
 ;; Keywords: syntax
 ;; X-RCS: $Id$
 

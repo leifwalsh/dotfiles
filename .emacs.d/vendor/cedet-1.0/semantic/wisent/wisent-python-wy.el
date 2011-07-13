@@ -2,8 +2,8 @@
 
 ;; Copyright (C) 2002, 2003, 2004, 2007 Richard Kim
 
-;; Author: Leif Walsh <leif@tokubook>
-;; Created: 2011-07-09 01:05:44-0400
+;; Author: Leif Walsh <leif@iBukMac.local>
+;; Created: 2011-07-13 10:58:13-0400
 ;; Keywords: syntax
 ;; X-RCS: $Id$
 

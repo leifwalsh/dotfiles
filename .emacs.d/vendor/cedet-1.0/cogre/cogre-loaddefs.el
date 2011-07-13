@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads (cogre) "cogre" "cogre.el" (19575 43634))
+;;;### (autoloads (cogre) "cogre" "cogre.el" (19995 19219))
 ;;; Generated autoloads from cogre.el
 
 (eieio-defclass-autoload (quote cogre-base-graph) (quote (eieio-persistent)) "cogre" "A Connected Graph.\na connected graph contains a series of nodes and links which are\nrendered in a buffer, or serialized to disk.")
@@ -26,7 +26,7 @@ Optional argument GRAPH-CLASS indicates the type of graph to create.
 ;;;***
 
 ;;;### (autoloads (cogre-export-ascii) "cogre-ascii" "cogre-ascii.el"
-;;;;;;  (19575 43634))
+;;;;;;  (19995 19219))
 ;;; Generated autoloads from cogre-ascii.el
 
 (autoload (quote cogre-export-ascii) "cogre-ascii" "\
@@ -38,7 +38,7 @@ Export the current diagram into an ASCII buffer.
 
 ;;;### (autoloads (cogre-export-utest cogre-export-dot-method cogre-export-dot-postscript-print
 ;;;;;;  cogre-export-dot-png cogre-export-dot) "cogre-convert" "cogre-convert.el"
-;;;;;;  (19575 43634))
+;;;;;;  (19995 19219))
 ;;; Generated autoloads from cogre-convert.el
 
 (autoload (quote cogre-export-dot) "cogre-convert" "\
@@ -75,7 +75,7 @@ Run all the COGRE structured export/convert test.
 ;;;***
 
 ;;;### (autoloads (cogre-dot-mode) "cogre-dot-mode" "cogre-dot-mode.el"
-;;;;;;  (19575 43634))
+;;;;;;  (19995 19219))
 ;;; Generated autoloads from cogre-dot-mode.el
 
 (autoload (quote cogre-dot-mode) "cogre-dot-mode" "\
@@ -92,7 +92,7 @@ as a parsing engine.
 ;;;***
 
 ;;;### (autoloads (cogre-layout) "cogre-layout" "cogre-layout.el"
-;;;;;;  (19575 43634))
+;;;;;;  (19995 19219))
 ;;; Generated autoloads from cogre-layout.el
 
 (autoload (quote cogre-layout) "cogre-layout" "\
@@ -103,8 +103,8 @@ This function depends on graphviz `dot' program.
 
 ;;;***
 
-;;;### (autoloads (cogre-mode) "cogre-mode" "cogre-mode.el" (19575
-;;;;;;  43634))
+;;;### (autoloads (cogre-mode) "cogre-mode" "cogre-mode.el" (19995
+;;;;;;  19219))
 ;;; Generated autoloads from cogre-mode.el
 
 (autoload (quote cogre-mode) "cogre-mode" "\
@@ -118,7 +118,7 @@ Connected Graph Editor Mode.
 ;;;***
 
 ;;;### (autoloads (cogre-periodic-utest cogre-periodic) "cogre-periodic"
-;;;;;;  "cogre-periodic.el" (19575 43634))
+;;;;;;  "cogre-periodic.el" (19995 19219))
 ;;; Generated autoloads from cogre-periodic.el
 
 (autoload (quote cogre-periodic) "cogre-periodic" "\
@@ -135,7 +135,7 @@ Also test various output mechanisms from the periodic table.
 ;;;***
 
 ;;;### (autoloads (cogre-uml-quick-class cogre-export-code cogre-semantic-tag-to-node)
-;;;;;;  "cogre-semantic" "cogre-semantic.el" (19575 43634))
+;;;;;;  "cogre-semantic" "cogre-semantic.el" (19995 19219))
 ;;; Generated autoloads from cogre-semantic.el
 
 (autoload (quote cogre-semantic-tag-to-node) "cogre-semantic" "\
@@ -162,8 +162,8 @@ The parent to CLASS, CLASS, and all of CLASSes children will be shown.
 ;;;***
 
 ;;;### (autoloads (srecode-semantic-handle-:dot srecode-semantic-handle-:cogre
-;;;;;;  cogre-srecode-setup) "cogre-srecode" "cogre-srecode.el" (19575
-;;;;;;  43634))
+;;;;;;  cogre-srecode-setup) "cogre-srecode" "cogre-srecode.el" (19995
+;;;;;;  19219))
 ;;; Generated autoloads from cogre-srecode.el
 
 (autoload (quote cogre-srecode-setup) "cogre-srecode" "\
@@ -186,7 +186,7 @@ Add macros to dictionary DICT based on the current DOT buffer.
 ;;;***
 
 ;;;### (autoloads (cogre-uml-sort-for-lineage cogre-uml-enable-unicode)
-;;;;;;  "cogre-uml" "cogre-uml.el" (19575 43634))
+;;;;;;  "cogre-uml" "cogre-uml.el" (19995 19219))
 ;;; Generated autoloads from cogre-uml.el
 
 (eieio-defclass-autoload (quote cogre-package) (quote (cogre-node)) "cogre-uml" "A Package node.\nPackages represent other class diagrams, and list the major nodes\nwithin them.  They can be linked by dependency links.")
@@ -225,7 +225,7 @@ Return it as a list of lists.  Each entry is of the form:
 ;;;***
 
 ;;;### (autoloads (cogre-utest-quick-class cogre-utest) "cogre-utest"
-;;;;;;  "cogre-utest.el" (19575 43634))
+;;;;;;  "cogre-utest.el" (19995 19219))
 ;;; Generated autoloads from cogre-utest.el
 
 (autoload (quote cogre-utest) "cogre-utest" "\
@@ -241,7 +241,7 @@ Test the quick-class function.
 ;;;***
 
 ;;;### (autoloads (cogre-picture-insert-rectangle) "picture-hack"
-;;;;;;  "picture-hack.el" (19575 43634))
+;;;;;;  "picture-hack.el" (19995 19219))
 ;;; Generated autoloads from picture-hack.el
 
 (autoload (quote cogre-picture-insert-rectangle) "picture-hack" "\
@@ -253,7 +253,7 @@ Leaves the region surrounding the rectangle.
 ;;;***
 
 ;;;### (autoloads (wisent-dot-setup-parser) "wisent-dot" "wisent-dot.el"
-;;;;;;  (19575 43634))
+;;;;;;  (19995 19219))
 ;;; Generated autoloads from wisent-dot.el
 
 (autoload (quote wisent-dot-setup-parser) "wisent-dot" "\
@@ -267,8 +267,8 @@ Setup buffer for parse.
 
 ;;;***
 
-;;;### (autoloads nil nil ("cogre-load.el" "wisent-dot-wy.el") (19991
-;;;;;;  59193 662237))
+;;;### (autoloads nil nil ("cogre-load.el" "wisent-dot-wy.el") (19997
+;;;;;;  45720 118638))
 
 ;;;***
 
