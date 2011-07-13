@@ -2,8 +2,8 @@
 
 ;; Copyright (C) 2008 Free Software Foundation
 
-;; Author: Leif Walsh <leif@tokubook>
-;; Created: 2011-07-09 01:06:07-0400
+;; Author: Leif Walsh <leif@iBukMac.local>
+;; Created: 2011-07-13 10:58:35-0400
 ;; Keywords: syntax
 ;; X-RCS: $Id$
 

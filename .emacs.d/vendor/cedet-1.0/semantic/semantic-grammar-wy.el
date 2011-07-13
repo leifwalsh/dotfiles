@@ -2,8 +2,8 @@
 
 ;; Copyright (C) 2002, 2003, 2004 David Ponce
 
-;; Author: Leif Walsh <leif@tokubook>
-;; Created: 2011-07-09 00:55:46-0400
+;; Author: Leif Walsh <leif@iBukMac.local>
+;; Created: 2011-07-13 10:52:56-0400
 ;; Keywords: syntax
 ;; X-RCS: $Id$
 
