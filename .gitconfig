@@ -13,7 +13,7 @@
     tool = gvimdiff
 [core]
     whitespace = trailing-space,space-before-tab,cr-at-eol
-    excludesfile = /home/leif/.gitignore
+    excludesfile = ~/.gitignore-default
     editor = emacsclient
 [github]
     user = adlaiff6
