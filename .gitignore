@@ -35,6 +35,3 @@ backgrounds
 bzr
 git
 svn
-
-# mac per-folder junk
-.DS_Store
