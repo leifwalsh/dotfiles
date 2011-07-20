@@ -4,6 +4,8 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/ecb-snap/"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/git-emacs"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/tuareg"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/org-7.6/lisp"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/org-7.6/contrib/lisp"))
 ;;; http://rtfm.etla.org/emacs/htmlfontify/
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/htmlfontify-0.20+texinfo/"))
 ;;; git://github.com/tcrayford/clojure-refactoring.git
@@ -578,10 +580,19 @@ save the pointer marker if tag is found"
 
 ;;{{{ org-mode
 
-(require 'org-install)
-(define-key global-map "\C-cl" 'org-store-link)
-(define-key global-map "\C-ca" 'org-agenda)
-(setq org-log-done t)
+(autoload 'org-mode "org-install"
+  "Org mode" t)
+(autoload 'org-store-link "org-install"
+  "Org mode" t)
+(autoload 'org-agenda "org-install"
+  "Org mode" t)
+(autoload 'org-iswitchb "org-install"
+  "Org mode" t)
+
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-cc" 'org-capture)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cb" 'org-iswitchb)
 
 ;;}}}
 
@@ -839,6 +850,27 @@ save the pointer marker if tag is found"
  '(menu-bar-mode t)
  '(message-fill-column 74)
  '(mumamo-major-modes (quote ((asp-js-mode js-mode javascript-mode espresso-mode ecmascript-mode) (asp-vb-mode visual-basic-mode) (javascript-mode js2-mode js-mode javascript-mode espresso-mode ecmascript-mode) (java-mode jde-mode java-mode) (groovy-mode groovy-mode) (nxhtml-mode nxhtml-mode html-mode))))
+ '(org-agenda-files (list (concat org-directory "tokutek.org") (concat org-directory "home.org")))
+ '(org-capture-templates (quote (("n" "Tokutek Note" entry (file+headline "~/Dropbox/org/tokutek.org" "notes") "** %?  %^G
+   %a
+   %i") ("t" "Tokutek TODO" entry (file+headline "~/Dropbox/org/tokutek.org" "todos") "** TODO %?  %^G
+   %a
+   %i"))))
+ '(org-default-notes-file (concat org-directory "notes.org"))
+ '(org-directory (expand-file-name "~/Dropbox/org/"))
+ '(org-export-latex-classes (quote (("article" "\\documentclass[11pt]{article} \\usepackage{fontspec} \\defaultfontfeatures{Mapping=tex-text} \\setromanfont{Palatino} \\setsansfont{Myriad Pro} \\setmonofont[Scale=0.8]{Monaco}" ("\\section{%s}" . "\\section*{%s}") ("\\subsection{%s}" . "\\subsection*{%s}") ("\\subsubsection{%s}" . "\\subsubsection*{%s}") ("\\paragraph{%s}" . "\\paragraph*{%s}") ("\\subparagraph{%s}" . "\\subparagraph*{%s}")) ("report" "\\documentclass[11pt]{report} \\usepackage{fontspec} \\defaultfontfeatures{Mapping=tex-text} \\setromanfont{Palatino} \\setsansfont{Myriad Pro} \\setmonofont[Scale=0.8]{Monaco}" ("\\part{%s}" . "\\part*{%s}") ("\\chapter{%s}" . "\\chapter*{%s}") ("\\section{%s}" . "\\section*{%s}") ("\\subsection{%s}" . "\\subsection*{%s}") ("\\subsubsection{%s}" . "\\subsubsection*{%s}")) ("book" "\\documentclass[11pt]{book} \\usepackage{fontspec} \\defaultfontfeatures{Mapping=tex-text} \\setromanfont{Palatino} \\setsansfont{Myriad Pro} \\setmonofont[Scale=0.8]{Monaco}" ("\\part{%s}" . "\\part*{%s}") ("\\chapter{%s}" . "\\chapter*{%s}") ("\\section{%s}" . "\\section*{%s}") ("\\subsection{%s}" . "\\subsection*{%s}") ("\\subsubsection{%s}" . "\\subsubsection*{%s}")) ("beamer" "\\documentclass{beamer} \\usepackage{fontspec} \\defaultfontfeatures{Mapping=tex-text} \\setromanfont{Palatino} \\setsansfont{Myriad Pro} \\setmonofont[Scale=0.8]{Monaco}" org-beamer-sectioning))))
+ '(org-export-latex-default-packages-alist (quote (("AUTO" "inputenc" t) ("T1" "fontenc" t) ("" "fixltx2e" nil) ("" "graphicx" t) ("" "longtable" nil) ("" "float" nil) ("" "wrapfig" nil) ("" "soul" t) ("" "textcomp" t) ("" "marvosym" t) ("" "wasysym" t) ("" "latexsym" t) ("" "amssymb" t) ("" "hyperref" nil) "\\tolerance=1000")))
+ '(org-export-latex-tag-markup "%s")
+ '(org-latex-to-pdf-process (quote ("xelatex -interaction nonstopmode -output-directory %o %f" "xelatex -interaction nonstopmode -output-directory %o %f" "xelatex -interaction nonstopmode -output-directory %o %f")))
+ '(org-log-done t)
+ '(org-mobile-directory "~/Dropbox/org/mobile/")
+ '(org-mobile-encryption-password "61795a79be616546")
+ '(org-mobile-files (quote (org-agenda-files)))
+ '(org-mobile-inbox-for-pull "~/Dropbox/org/from-mobile.org")
+ '(org-mobile-use-encryption nil)
+ '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-irc org-mac-message org-mew org-mhe org-rmail org-vm org-wl org-w3m org-mac-iCal org-mac-link-grabber)))
+ '(org-pretty-entities t)
+ '(org-use-sub-superscripts (quote {}))
  '(safe-local-variable-values (quote ((noweb-code-mode . c-mode) (js2-basic-offset . 4) (c-indentation-style . linux))))
  '(scroll-bar-mode nil)
  '(show-paren-mode t)
