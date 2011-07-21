@@ -1,6 +1,9 @@
 .Xauthority
 .adobe
+.bash*
 .bazaar
+.ccache
+.cpan
 .cvspass
 .dropbox
 .emacs.bmk
@@ -12,6 +15,7 @@
 .htoprc
 .ido.last
 .keychain
+.lesshst
 .local
 .passwd.gpg
 .semanticdb
