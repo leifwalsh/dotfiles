@@ -2,6 +2,7 @@
 .adobe
 .bash*
 .bazaar
+.bzr.log
 .ccache
 .cpan
 .cvspass
