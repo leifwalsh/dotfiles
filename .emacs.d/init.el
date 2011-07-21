@@ -258,22 +258,21 @@ save the pointer marker if tag is found"
 (require 'semantic-lex-spp)
 (ede-enable-generic-projects)
 
-(semantic-add-system-include "/ssh:leif@tokubuntu:/usr/include/")
-
 (setq tokudb-mainline-project
-      (ede-cpp-root-project
-       "Tokudb"
-       :name "Tokudb"
-       :file "/ssh:leif@tokubuntu:svn/tokutek/toku/tokudb/Makefile"
-       :include-path '("/" "/include" "/linux" "/toku_include" "/newbrt" "/src" "/src/lock_tree" "/src/range_tree")
-       :system-include-path '("/ssh:leif@tokubuntu:/usr/include/")
-       :spp-table '(("TOKUDB_REVISION" . "0")
-                    ("_SVID_SOURCE" . "")
-                    ("_FILE_OFFSET_BITS" . "64")
-                    ("_LARGEFILE64_SOURCE" . "")
-                    ("_XOPEN_SOURCE" . "600")
-                    ("_THREAD_SAFE" . "")
-                    ("TOKU_RT_NOOVERLAPS" . ""))))
+      (ignore-errors
+	(ede-cpp-root-project
+	 "Tokudb"
+	 :name "Tokudb"
+	 :file "/ssh:leif@tokubuntu:svn/tokutek/toku/tokudb/Makefile"
+	 :include-path '("/" "/include" "/linux" "/toku_include" "/newbrt" "/src" "/src/lock_tree" "/src/range_tree")
+	 :system-include-path '("/ssh:leif@tokubuntu:/usr/include/")
+	 :spp-table '(("TOKUDB_REVISION" . "0")
+		      ("_SVID_SOURCE" . "")
+		      ("_FILE_OFFSET_BITS" . "64")
+		      ("_LARGEFILE64_SOURCE" . "")
+		      ("_XOPEN_SOURCE" . "600")
+		      ("_THREAD_SAFE" . "")
+		      ("TOKU_RT_NOOVERLAPS" . "")))))
 
 (require 'ecb)
 (ecb-layout-switch "left6")

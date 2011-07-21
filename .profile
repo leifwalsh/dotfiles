@@ -12,10 +12,7 @@ if [ -f ${HOME}/.termcap ]; then
   export TERMCAP
 fi
 
-export CLOJURE_EXT=$HOME/.clojure:$HOME/.clojure/ext
-export PATH=/usr/local/bin:$PATH:$HOME/bin
-alias clj=clj-env-dir
-export MANPATH=:$HOME/svn/scala-2.8.1_RC1/build/scaladoc/manual/man
+export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # start ssh-agent
 eval $(keychain --agents ssh -q --eval id_rsa)
