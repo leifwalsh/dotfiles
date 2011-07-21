@@ -1,5 +1,6 @@
 .Xauthority
 .adobe
+.bazaar
 .cvspass
 .dropbox
 .emacs.bmk
@@ -15,6 +16,7 @@
 .passwd.gpg
 .semanticdb
 .serverauth.*
+.srecode
 .subversion
 .viminfo
 .zcompdump
