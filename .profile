@@ -13,6 +13,7 @@ if [ -f ${HOME}/.termcap ]; then
 fi
 
 export PATH=$HOME/bin:/usr/local/bin:$PATH
+export EDITOR="emacsclient -c"
 
 # start ssh-agent
 eval $(keychain --agents ssh -q --eval id_rsa)

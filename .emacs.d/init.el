@@ -263,9 +263,24 @@ save the pointer marker if tag is found"
 	(ede-cpp-root-project
 	 "Tokudb"
 	 :name "Tokudb"
-	 :file "/ssh:leif@tokubuntu:svn/tokutek/toku/tokudb/Makefile"
+	 :file "~/svn/tokutek/toku/tokudb/Makefile"
 	 :include-path '("/" "/include" "/linux" "/toku_include" "/newbrt" "/src" "/src/lock_tree" "/src/range_tree")
-	 :system-include-path '("/ssh:leif@tokubuntu:/usr/include/")
+	 :system-include-path '("/usr/include/")
+	 :spp-table '(("TOKUDB_REVISION" . "0")
+		      ("_SVID_SOURCE" . "")
+		      ("_FILE_OFFSET_BITS" . "64")
+		      ("_LARGEFILE64_SOURCE" . "")
+		      ("_XOPEN_SOURCE" . "600")
+		      ("_THREAD_SAFE" . "")
+		      ("TOKU_RT_NOOVERLAPS" . ""))))
+      tokudb-3635-project
+      (ignore-errors
+        (ede-cpp-root-project
+         "Tokudb 3635"
+         :name "Tokudb 3635"
+         :file "~/svn/tokutek/toku/tokudb.3635/Makefile"
+         :include-path '("/" "/include" "/linux" "/toku_include" "/newbrt" "/src" "/src/lock_tree" "/src/range_tree")
+	 :system-include-path '("/usr/include/")
 	 :spp-table '(("TOKUDB_REVISION" . "0")
 		      ("_SVID_SOURCE" . "")
 		      ("_FILE_OFFSET_BITS" . "64")
