@@ -37,12 +37,7 @@ filetype plugin indent on
 let vimclojure#NailgunClient = "/home/leif/bin/ng"
 
 set background=dark
-if &t_Co >= 88
-    colorscheme zenburn
-endif
-if &t_Co >= 256 || has("gui_running")
-    colorscheme zenburn
-endif
+colorscheme solarized
 if &t_Co > 2 || has("gui_running")
     syntax on
 endif

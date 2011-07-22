@@ -1,0 +1,1 @@
+/Users/leif/git/solarized/vim-colors-solarized/doc/solarized.txt
