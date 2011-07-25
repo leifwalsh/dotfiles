@@ -925,7 +925,7 @@ save the pointer marker if tag is found"
  '(tooltip-mode nil)
  '(tramp-default-method "ssh")
  '(user-mail-address "leif.walsh@gmail.com")
- '(whitespace-style (quote (face tabs trailing lines-tail space-before-tab indentation empty space-after-tab tab-mark))))
+ '(whitespace-style (quote (face tabs trailing space-before-tab indentation empty space-after-tab tab-mark))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -950,4 +950,3 @@ save the pointer marker if tag is found"
 (add-hook 'kill-emacs-hook #'recompile-emacs-dir)
 
 ;;}}}
-
