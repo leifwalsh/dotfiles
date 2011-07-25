@@ -143,20 +143,21 @@
 
 ;;{{{ cedet
 
-(setq ede-locate-setup-options '(ede-locate-global ede-locate-base))
-
-(load-file (expand-file-name "~/.emacs.d/vendor/cedet-1.0/common/cedet.el"))
+(load-file (expand-file-name "~/.emacs.d/vendor/cedet/common/cedet.el"))
 
 (global-ede-mode 1)
+(setq ede-locate-setup-options '(ede-locate-global ede-locate-base))
+
+(require 'semantic)
+(require 'semantic-ia)
+(require 'semantic-gcc)
+(require 'semantic-decorate-include)
 (global-semantic-mru-bookmark-mode 1)
 (global-semantic-idle-scheduler-mode 1)
 (global-semanticdb-minor-mode 1)
 (semanticdb-enable-gnu-global-databases 'c-mode)
 (semanticdb-enable-gnu-global-databases 'c++-mode)
 (semantic-load-enable-excessive-code-helpers)
-(require 'semantic-decorate-include)
-(require 'semantic-gcc)
-(require 'semantic-ia)
 
 (setq-mode-local c-mode semanticdb-find-default-throttle
                  '(project unloaded system recursive))
