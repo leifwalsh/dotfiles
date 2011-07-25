@@ -1,3 +1,15 @@
+;;{{{ PATH
+
+(setenv "PATH"
+        (concat
+         (expand-file-name "~/bin") ":"
+         "/usr/local/bin" ":"
+         (getenv "PATH")))
+(add-to-list 'exec-path "/usr/local/bin")
+(add-to-list 'exec-path (expand-file-name "~/bin"))
+
+;;}}}
+
 ;;{{{ load-path
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor"))
