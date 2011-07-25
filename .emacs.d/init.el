@@ -172,7 +172,7 @@ save the pointer marker if tag is found"
   (condition-case err
       (progn
         (ring-insert semantic-tags-location-ring (point-marker))
-        (semantic-ia-fast-jump point))
+        (call-interactively 'semantic-ia-fast-jump))
     (error
      (set-marker (ring-remove semantic-tags-location-ring 0) nil nil)
      (signal (car err) (cdr err)))))
@@ -184,7 +184,7 @@ save the pointer marker if tag is found"
   (condition-case err
       (progn
         (ring-insert semantic-tags-location-ring (point-marker))
-        (semantic-complete-jump point))
+        (call-interactively 'semantic-complete-jump))
     (error
      ;;if not found remove the tag saved in the ring
      (set-marker (ring-remove semantic-tags-location-ring 0) nil nil)
@@ -213,7 +213,7 @@ save the pointer marker if tag is found"
 
   (local-set-key (kbd "M-.") 'semantic-goto-definition-fast)
   (local-set-key (kbd "M-*") 'semantic-pop-tag-mark)
-  (local-set-key "\C-cj" 'semantic-goto-definition-fast)
+  (local-set-key "\C-cj" 'semantic-goto-definition)
   (local-set-key "\C-cq" 'semantic-ia-show-doc)
   (local-set-key "\C-cs" 'semantic-ia-show-summary)
   (local-set-key "\C-cp" 'semantic-analyze-proto-impl-toggle)
