@@ -853,6 +853,7 @@ save the pointer marker if tag is found"
  '(flyspell-sort-corrections nil)
  '(font-lock-maximum-decoration t)
  '(frame-title-format (concat invocation-name "@" system-name ": %b [%IB]") t)
+ '(global-hl-line-mode t)
  '(global-whitespace-mode t)
  '(ido-enable-flex-matching t)
  '(ido-everywhere t)
@@ -904,8 +905,11 @@ save the pointer marker if tag is found"
  '(ecb-default-highlight-face ((((class color) (background dark)) (:background "beige"))))
  '(erc-input-face ((t (:foreground "cyan"))))
  '(erc-my-nick-face ((t (:foreground "cyan" :weight bold))))
- '(whitespace-space-after-tab ((t (:background "grey22" :foreground "darkgray"))))
- '(whitespace-space-before-tab ((t (:background "grey22" :foreground "darkgray")))))
+ '(hl-line ((t (:inherit highlight))))
+ '(whitespace-indentation ((t nil)))
+ '(whitespace-space-after-tab ((t nil)))
+ '(whitespace-space-before-tab ((t nil)))
+ '(whitespace-tab ((t nil))))
 
 ;;}}}
 
