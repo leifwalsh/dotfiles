@@ -170,6 +170,7 @@
 (semanticdb-enable-gnu-global-databases 'c-mode)
 (semanticdb-enable-gnu-global-databases 'c++-mode)
 (semantic-load-enable-excessive-code-helpers)
+(semantic-load-enable-all-exuberent-ctags-support)
 
 (setq-mode-local c-mode semanticdb-find-default-throttle
                  '(project unloaded system recursive))
