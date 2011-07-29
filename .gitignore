@@ -2,11 +2,13 @@
 .adobe
 .bash*
 .bazaar
+.bzr.log
 .ccache
 .cpan
 .cvspass
 .dropbox
 .emacs.bmk
+.emacs-backups
 .eshell
 .fontconfig
 .gitk
