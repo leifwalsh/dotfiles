@@ -3,7 +3,6 @@ srecode/srecode-template-wy.el
 semantic/bovine/*-by.el
 cogre/wisent-dot-wy.el
 contrib/wisent-*-wy.el
-semantic/semantic-grammar-wy.el
 *.elc
 *.info
 *-compile-script
