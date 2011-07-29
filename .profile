@@ -12,7 +12,7 @@ if [ -f ${HOME}/.termcap ]; then
   export TERMCAP
 fi
 
-export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH=$HOME/bin:$HOME/local/bin:/usr/local/bin:$PATH
 
 # start ssh-agent
 eval $(keychain --agents ssh -q --eval id_rsa)
