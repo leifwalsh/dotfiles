@@ -13,7 +13,7 @@
 ;;{{{ load-path
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/ecb-snap/"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/ecb"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/git-emacs"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/color-theme"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/tuareg"))
@@ -156,128 +156,133 @@
 
 ;;{{{ cedet
 
-(load-file (expand-file-name "~/.emacs.d/vendor/cedet/common/cedet.el"))
+(eval-after-load 'cedet
+  '(progn
+     (setq semantic-default-submodes
+           '(global-semanticdb-minor-mode
+             global-semantic-idle-scheduler-mode
+             global-semantic-idle-summary-mode
+             global-semantic-idle-completions-mode
+             global-semantic-decoration-mode
+             global-semantic-highlight-func-mode
+             global-semantic-stickyfunc-mode
+             global-semantic-mru-bookmark-mode))
+     (semantic-mode 1)
+     (semanticdb-enable-gnu-global-databases 'c-mode)
+     (semanticdb-enable-gnu-global-databases 'c++-mode)
 
-(global-ede-mode 1)
-(setq ede-locate-setup-options '(ede-locate-global ede-locate-base))
+     (setq-mode-local c-mode semanticdb-find-default-throttle
+                      '(project unloaded system recursive))
 
-(require 'semantic)
-(require 'semantic-ia)
-(require 'semantic-gcc)
-(require 'semantic-decorate-include)
-(global-semantic-mru-bookmark-mode 1)
-(global-semantic-idle-scheduler-mode 1)
-(global-semanticdb-minor-mode 1)
-(semanticdb-enable-gnu-global-databases 'c-mode)
-(semanticdb-enable-gnu-global-databases 'c++-mode)
-(semantic-load-enable-excessive-code-helpers)
-(semantic-load-enable-all-exuberent-ctags-support)
+     (defvar semantic-tags-location-ring (make-ring 20))
 
-(setq-mode-local c-mode semanticdb-find-default-throttle
-                 '(project unloaded system recursive))
-
-(require 'eassist)
-
-(defvar semantic-tags-location-ring (make-ring 20))
-
-(defun semantic-goto-definition-fast (point)
-  "Goto definition using semantic-ia-fast-jump
+     (defun semantic-goto-definition-fast (point)
+       "Goto definition using semantic-ia-fast-jump
 save the pointer marker if tag is found"
-  (interactive "def")
-  (condition-case err
-      (progn
-        (ring-insert semantic-tags-location-ring (point-marker))
-        (call-interactively 'semantic-ia-fast-jump))
-    (error
-     (set-marker (ring-remove semantic-tags-location-ring 0) nil nil)
-     (signal (car err) (cdr err)))))
+       (interactive "def")
+       (condition-case err
+           (progn
+             (ring-insert semantic-tags-location-ring (point-marker))
+             (call-interactively 'semantic-ia-fast-jump))
+         (error
+          (set-marker (ring-remove semantic-tags-location-ring 0) nil nil)
+          (signal (car err) (cdr err)))))
 
-(defun semantic-goto-definition (point)
-  "Goto definition using semantic-complete-jump
+     (defun semantic-goto-definition (point)
+       "Goto definition using semantic-complete-jump
 save the pointer marker if tag is found"
-  (interactive "def")
-  (condition-case err
-      (progn
-        (ring-insert semantic-tags-location-ring (point-marker))
-        (call-interactively 'semantic-complete-jump))
-    (error
-     ;;if not found remove the tag saved in the ring
-     (set-marker (ring-remove semantic-tags-location-ring 0) nil nil)
-     (signal (car err) (cdr err)))))
+       (interactive "def")
+       (condition-case err
+           (progn
+             (ring-insert semantic-tags-location-ring (point-marker))
+             (call-interactively 'semantic-complete-jump))
+         (error
+          ;;if not found remove the tag saved in the ring
+          (set-marker (ring-remove semantic-tags-location-ring 0) nil nil)
+          (signal (car err) (cdr err)))))
 
-(defun semantic-pop-tag-mark ()
-  "popup the tag save by semantic-goto-definition"
-  (interactive)
-  (if (ring-empty-p semantic-tags-location-ring)
-      (message "%s" "No more tags available")
-    (let* ((marker (ring-remove semantic-tags-location-ring 0))
-           (buff (marker-buffer marker))
-           (pos (marker-position marker)))
-      (if (not buff)
-          (message "Buffer has been deleted")
-        (switch-to-buffer buff)
-        (goto-char pos))
-      (set-marker marker nil nil))))
+     (defun semantic-pop-tag-mark ()
+       "popup the tag save by semantic-goto-definition"
+       (interactive)
+       (if (ring-empty-p semantic-tags-location-ring)
+           (message "%s" "No more tags available")
+         (let* ((marker (ring-remove semantic-tags-location-ring 0))
+                (buff (marker-buffer marker))
+                (pos (marker-position marker)))
+           (if (not buff)
+               (message "Buffer has been deleted")
+             (switch-to-buffer buff)
+             (goto-char pos))
+           (set-marker marker nil nil))))
 
-(defun alexott/cedet-hook ()
-  (local-set-key [(control return)] 'complete-symbol)
-  (local-set-key "\C-c?" 'semantic-ia-complete-symbol-menu)
-  ;;
-  (local-set-key "\C-c>" 'semantic-complete-analyze-inline)
-  (local-set-key "\C-c=" 'semantic-decoration-include-visit)
+     (defun alexott/cedet-hook ()
+       (local-set-key [(control return)] 'complete-symbol)
+       (local-set-key "\C-c?" 'semantic-ia-complete-symbol-menu)
+       ;;
+       (local-set-key "\C-c>" 'semantic-complete-analyze-inline)
+       (local-set-key "\C-c=" 'semantic-decoration-include-visit)
 
-  (local-set-key (kbd "M-.") 'semantic-goto-definition-fast)
-  (local-set-key (kbd "M-*") 'semantic-pop-tag-mark)
-  (local-set-key "\C-cj" 'semantic-goto-definition)
-  (local-set-key "\C-cq" 'semantic-ia-show-doc)
-  (local-set-key "\C-cs" 'semantic-ia-show-summary)
-  (local-set-key "\C-cp" 'semantic-analyze-proto-impl-toggle)
-  )
-;; (add-hook 'semantic-init-hooks 'alexott/cedet-hook)
-(add-hook 'c-mode-common-hook 'alexott/cedet-hook)
-(add-hook 'lisp-mode-hook 'alexott/cedet-hook)
-(add-hook 'scheme-mode-hook 'alexott/cedet-hook)
-(add-hook 'emacs-lisp-mode-hook 'alexott/cedet-hook)
-(add-hook 'erlang-mode-hook 'alexott/cedet-hook)
+       (local-set-key (kbd "M-.") 'semantic-goto-definition-fast)
+       (local-set-key "\C-cj" 'semantic-goto-definition)
+       (local-set-key (kbd "M-*") 'semantic-pop-tag-mark)
+       (local-set-key "\C-cq" 'semantic-ia-show-doc)
+       (local-set-key "\C-cm" 'semantic-symref)
+       (local-set-key "\C-cp" 'semantic-analyze-proto-impl-toggle)
+       (local-set-key "." 'semantic-complete-self-insert)
+       (local-set-key ">" 'semantic-complete-self-insert))
+     (add-hook 'semantic-init-hooks 'alexott/cedet-hook)
+     (add-hook 'c-mode-common-hook 'alexott/cedet-hook)
+     (add-hook 'lisp-mode-hook 'alexott/cedet-hook)
+     (add-hook 'scheme-mode-hook 'alexott/cedet-hook)
+     (add-hook 'emacs-lisp-mode-hook 'alexott/cedet-hook)
+     (add-hook 'erlang-mode-hook 'alexott/cedet-hook)
 
-(defun alexott/c-mode-cedet-hook ()
-  ;; (local-set-key "." 'semantic-complete-self-insert)
-  ;; (local-set-key ">" 'semantic-complete-self-insert)
-  (local-set-key "\C-ct" 'eassist-switch-h-cpp)
-  (local-set-key "\C-xt" 'eassist-switch-h-cpp)
-  (local-set-key "\C-ce" 'eassist-list-methods)
-  (local-set-key "\C-c\C-r" 'semantic-symref)
-  )
-(add-hook 'c-mode-common-hook 'alexott/c-mode-cedet-hook)
+     (eval-after-load 'eassist
+       '(progn
+          (defun alexott/c-mode-cedet-hook ()
+            ;; (local-set-key "." 'semantic-complete-self-insert)
+            ;; (local-set-key ">" 'semantic-complete-self-insert)
+            (local-set-key "\C-ct" 'eassist-switch-h-cpp)
+            (local-set-key "\C-xt" 'eassist-switch-h-cpp)
+            (local-set-key "\C-ce" 'eassist-list-methods)
+            (local-set-key "\C-c\C-r" 'semantic-symref)
+            )
+          (add-hook 'c-mode-common-hook 'alexott/c-mode-cedet-hook)))
+     (ignore-errors (require 'eassist))
 
-;; hooks, specific for semantic
-(defun alexott/semantic-hook ()
-;; (semantic-tag-folding-mode 1)
-  (imenu-add-to-menubar "TAGS")
-  )
-(add-hook 'semantic-init-hooks 'alexott/semantic-hook)
+     ;; hooks, specific for semantic
+     (defun alexott/semantic-hook ()
+       ;; (semantic-tag-folding-mode 1)
+       (imenu-add-to-menubar "TAGS")
+       )
+     (add-hook 'semantic-init-hooks 'alexott/semantic-hook)
 
-(require 'semantic-lex-spp)
-(ede-enable-generic-projects)
+     (setq ede-locate-setup-options
+           '(ede-locate-global ede-locate-base))
+     (global-ede-mode 1)
+     (ede-enable-generic-projects)
 
-(setq tokudb-mainline-project
-      (ignore-errors
-        (ede-cpp-root-project
-         "Tokudb"
-         :name "Tokudb"
-         :file "/ssh:leif@tokubuntu:svn/tokutek/toku/tokudb/Makefile"
-         :include-path '("/" "/include" "/linux" "/toku_include" "/newbrt" "/src" "/src/lock_tree" "/src/range_tree")
-         :system-include-path '("/ssh:leif@tokubuntu:/usr/include/")
-         :spp-table '(("TOKUDB_REVISION" . "0")
-                      ("_SVID_SOURCE" . "")
-                      ("_FILE_OFFSET_BITS" . "64")
-                      ("_LARGEFILE64_SOURCE" . "")
-                      ("_XOPEN_SOURCE" . "600")
-                      ("_THREAD_SAFE" . "")
-                      ("TOKU_RT_NOOVERLAPS" . "")))))
+     (setq tokudb-mainline-project
+           (ignore-errors
+             (ede-cpp-root-project
+              "Tokudb"
+              :name "Tokudb"
+              :file "~/svn/tokutek/toku/tokudb/Makefile"
+              :include-path '("/" "/include" "/linux" "/toku_include" "/newbrt" "/src" "/src/lock_tree" "/src/range_tree")
+              :system-include-path '("/usr/include/")
+              :spp-table '(("TOKUDB_REVISION" . "0")
+                           ("_SVID_SOURCE" . "")
+                           ("_FILE_OFFSET_BITS" . "64")
+                           ("_LARGEFILE64_SOURCE" . "")
+                           ("_XOPEN_SOURCE" . "600")
+                           ("_THREAD_SAFE" . "")
+                           ("TOKU_RT_NOOVERLAPS" . "")))))
+     (eval-after-load 'ecb
+       '(ecb-layout-switch "left6"))
+     (ignore-errors (require 'ecb))
+     ))
 
-(require 'ecb)
-(ecb-layout-switch "left6")
+(ignore-errors (require 'cedet))
 
 ;;}}}
 

@@ -13,6 +13,7 @@
 .emacs-backups
 .eshell
 .fontconfig
+.gem
 .gitk
 .gnupg
 .gpg-agent-info
