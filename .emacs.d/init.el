@@ -958,6 +958,6 @@ save the pointer marker if tag is found"
 (defun recompile-emacs-dir ()
   (interactive)
   (byte-recompile-directory (expand-file-name "~/.emacs.d") 0))
-(add-hook 'kill-emacs-hook #'recompile-emacs-dir)
+;(add-hook 'kill-emacs-hook #'recompile-emacs-dir)
 
 ;;}}}
