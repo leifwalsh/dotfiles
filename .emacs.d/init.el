@@ -237,18 +237,16 @@ save the pointer marker if tag is found"
      (add-hook 'emacs-lisp-mode-hook 'alexott/cedet-hook)
      (add-hook 'erlang-mode-hook 'alexott/cedet-hook)
 
-     (eval-after-load 'eassist
-       '(progn
-          (defun alexott/c-mode-cedet-hook ()
-            ;; (local-set-key "." 'semantic-complete-self-insert)
-            ;; (local-set-key ">" 'semantic-complete-self-insert)
-            (local-set-key "\C-ct" 'eassist-switch-h-cpp)
-            (local-set-key "\C-xt" 'eassist-switch-h-cpp)
-            (local-set-key "\C-ce" 'eassist-list-methods)
-            (local-set-key "\C-c\C-r" 'semantic-symref)
-            )
-          (add-hook 'c-mode-common-hook 'alexott/c-mode-cedet-hook)))
-     (ignore-errors (require 'eassist))
+     (defun alexott/c-mode-cedet-hook ()
+       ;; (local-set-key "." 'semantic-complete-self-insert)
+       ;; (local-set-key ">" 'semantic-complete-self-insert)
+       (local-set-key "\C-ct" 'eassist-switch-h-cpp)
+       (local-set-key "\C-xt" 'eassist-switch-h-cpp)
+       (local-set-key "\C-ce" 'eassist-list-methods)
+       (local-set-key "\C-c\C-r" 'semantic-symref)
+       )
+     (add-hook 'c-mode-common-hook 'alexott/c-mode-cedet-hook)
+     (require 'eassist-autoloads)
 
      ;; hooks, specific for semantic
      (defun alexott/semantic-hook ()
@@ -310,7 +308,7 @@ save the pointer marker if tag is found"
 
      (eval-after-load 'ecb
        '(ecb-layout-switch "left6"))
-     (ignore-errors (require 'ecb))
+     (require 'ecb-autoloads)
      ))
 
 (ignore-errors (require 'cedet))
