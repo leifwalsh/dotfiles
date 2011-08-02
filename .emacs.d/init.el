@@ -244,7 +244,7 @@ save the pointer marker if tag is found"
        (local-set-key "\C-ce" 'eassist-list-methods)
        (local-set-key "\C-c\C-r" 'semantic-symref)
        )
-     (add-hook 'c-mode-common-hook 'alexott/c-mode-cedet-hook)))
+     (add-hook 'c-mode-common-hook 'alexott/c-mode-cedet-hook)
      (require 'eassist-autoloads)
 
      ;; hooks, specific for semantic
