@@ -15,15 +15,8 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/ecb"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/git-emacs"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/tuareg"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/org-7.6/lisp"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/org-7.6/contrib/lisp"))
-;;; http://rtfm.etla.org/emacs/htmlfontify/
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/htmlfontify-0.20+texinfo/"))
-;;; git://github.com/tcrayford/clojure-refactoring.git
-(add-to-list 'load-path (expand-file-name "~/git/clojure-refactoring"))
-;;; http://lampsvn.epfl.ch/svn-repos/scala/scala-tool-support/trunk/src/emacs
-(add-to-list 'load-path (expand-file-name "~/svn/scala-mode"))
 
 ;;}}}
 
@@ -87,7 +80,8 @@
 (eval-after-load "color-theme"
   '(progn
      (setq color-theme-is-global t)
-     (color-theme-zenburn)))
+     (require 'color-theme-solarized)
+     (color-theme-solarized-dark)))
 
 ;;}}}
 
@@ -313,18 +307,6 @@ save the pointer marker if tag is found"
 
 ;;}}}
 
-;;{{{ haskell-mode
-
-;;; http://code.haskell.org/haskellmode-emacs
-(load "/usr/share/emacs/site-lisp/haskell-mode/haskell-site-file.el")
-(eval-after-load "haskell-mode"
-  '(progn
-     (require 'inf-haskell)))
-(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-
-;;}}}
-
 ;;{{{ python-mode
 
 (autoload 'python-mode "python-mode" "Python Mode." t)
@@ -355,23 +337,10 @@ save the pointer marker if tag is found"
 
 ;;}}}
 
-;;{{{ scala-mode
-
-(require 'scala-mode-auto)
-
-;;}}}
-
 ;;{{{ uniquify
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'reverse)
-
-;;}}}
-
-;;{{{ folding
-
-(require 'folding)
-(folding-mode-add-find-file-hook)
 
 ;;}}}
 
@@ -383,7 +352,7 @@ save the pointer marker if tag is found"
 
 ;;{{{ cscope
 
-(require 'xcscope)
+(ignore-errors (require 'xcscope))
 
 ;;}}}
 
@@ -399,7 +368,6 @@ save the pointer marker if tag is found"
             "2 sec" nil 'delete-windows-on
             (get-buffer-create "*compilation*"))
            (message "No compilation errors!")))))
-(global-set-key [f12] 'compile)
 
 ;;}}}
 
@@ -420,7 +388,6 @@ save the pointer marker if tag is found"
         emacs-lisp-mode-hook
         lisp-interaction-mode-hook
         slime-lisp-mode-hook
-        haskell-mode-hook
         c-mode-hook
         c++-mode-hook))
 
@@ -492,15 +459,6 @@ save the pointer marker if tag is found"
 ;;{{{ ido
 
 (require 'ido)
-
-;;}}}
-
-;;{{{ haml/sass
-
-(autoload 'haml-mode "haml-mode" "Major mode for editing haml files." t)
-(autoload 'sass-mode "sass-mode" "Major mode for editing sass files." t)
-(add-to-list 'auto-mode-alist '("\\.haml\\'" . haml-mode))
-(add-to-list 'auto-mode-alist '("\\.sass\\'" . sass-mode))
 
 ;;}}}
 
@@ -668,12 +626,6 @@ save the pointer marker if tag is found"
 
      ;;}}}
 
-     ;;{{{ clojure-refactoring-mode
-
-     (require 'clojure-refactoring-mode)
-
-     ;;}}}
-
      ;;{{{ swank-clojure
 
      (eval-after-load "slime"
@@ -696,28 +648,6 @@ save the pointer marker if tag is found"
               (message "Starting swank server...")))))))
 
      ;;}}}
-
-;;}}}
-
-;;{{{ tuareg-mode (ocaml)
-
-(add-to-list 'auto-mode-alist '("\\.ml[ily]?$" . tuareg-mode))
-(add-to-list 'auto-mode-alist '("\\.topml$" . tuareg-mode))
-(autoload 'tuareg-mode "tuareg" "Major mode for editing Caml code" t)
-
-(eval-after-load "tuareg"
-  '(progn
-     (autoload 'camldebug "camldebug" "Run the Caml debugger" t)
-     (autoload 'tuareg-imenu-set-imenu "tuareg-imenu"
-       "Configuration of imenu for tuareg" t)
-     (add-hook 'tuareg-mode-hook 'tuareg-imenu-set-imenu)))
-
-;;}}}
-
-;;{{{ nxhtml (html/php/js/etc)
-
-;;; http://ourcomments.org/cgi-bin/emacsw32-dl-latest.pl
-(load (expand-file-name "~/.emacs.d/vendor/nxhtml/autostart.el"))
 
 ;;}}}
 
@@ -790,18 +720,6 @@ save the pointer marker if tag is found"
                   nil
                   '((my-c-mode-font-lock-if0 (0 font-lock-comment-face prepend)))
                   'add-to-end)))))
-(eval-after-load "tuareg"
-  '(progn
-     (add-hook 'tuareg-mode-hook
-               (lambda () (c-like-keys tuareg-mode-map)))))
-(eval-after-load "nxhtml-mode"
-  '(progn
-     (add-hook 'nxhtml-mode-hook
-               (lambda () (c-like-keys nxhtml-mode-map)))))
-(eval-after-load "nxhtml-mode"
-  '(progn
-     (add-hook 'nxhtml-mumamo-mode-hook
-               (lambda () (c-like-keys nxhtml-mumamo-mode-map)))))
 (eval-after-load "noweb-mode"
   '(progn
      (add-hook 'noweb-mode-hook
@@ -826,10 +744,10 @@ save the pointer marker if tag is found"
 ;;{{{ customize settings
 
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
  '(LaTeX-command "xelatex")
  '(LaTeX-command-style (quote (("" "%(latex) %S%(PDFout)"))))
  '(align-rules-list (quote ((lisp-second-arg (regexp . "\\(^\\s-+[^(]\\|(\\(\\S-+\\)\\s-+\\)\\S-+\\(\\s-+\\)") (group . 3) (modes . align-lisp-modes) (run-if lambda nil current-prefix-arg)) (lisp-alist-dot (regexp . "\\(\\s-*\\)\\.\\(\\s-*\\)") (group 1 2) (modes . align-lisp-modes)) (open-comment (regexp lambda (end reverse) (funcall (if reverse (quote re-search-backward) (quote re-search-forward)) (concat "[^\\\\]" (regexp-quote comment-start) "\\(.+\\)$") end t)) (modes . align-open-comment-modes)) (c-macro-definition (regexp . "^\\s-*#\\s-*define\\s-+\\S-+\\(\\s-+\\)") (modes . align-c++-modes)) (c-comma-delimiter (regexp . ",\\(\\s-*\\)[^/]") (repeat . t) (modes . align-c++-modes) (run-if lambda nil current-prefix-arg)) (basic-comma-delimiter (regexp . ",\\(\\s-*\\)[^#]") (repeat . t) (modes append align-perl-modes (quote (python-mode))) (run-if lambda nil current-prefix-arg)) (c++-comment (regexp . "\\(\\s-*\\)\\(//.*\\|/\\*.*\\*/\\s-*\\)$") (modes . align-c++-modes) (column . comment-column) (valid lambda nil (save-excursion (goto-char (match-beginning 1)) (not (bolp))))) (c-chain-logic (regexp . "\\(\\s-*\\)\\(&&\\|||\\|\\<and\\>\\|\\<or\\>\\)") (modes . align-c++-modes) (valid lambda nil (save-excursion (goto-char (match-end 2)) (looking-at "\\s-*\\(/[*/]\\|$\\)")))) (perl-chain-logic (regexp . "\\(\\s-*\\)\\(&&\\|||\\|\\<and\\>\\|\\<or\\>\\)") (modes . align-perl-modes) (valid lambda nil (save-excursion (goto-char (match-end 2)) (looking-at "\\s-*\\(#\\|$\\)")))) (python-chain-logic (regexp . "\\(\\s-*\\)\\(\\<and\\>\\|\\<or\\>\\)") (modes quote (python-mode)) (valid lambda nil (save-excursion (goto-char (match-end 2)) (looking-at "\\s-*\\(#\\|$\\|\\\\\\)")))) (c-macro-line-continuation (regexp . "\\(\\s-*\\)\\\\$") (modes . align-c++-modes) (column . c-backslash-column)) (basic-line-continuation (regexp . "\\(\\s-*\\)\\\\$") (modes quote (python-mode makefile-mode))) (tex-record-separator (regexp lambda (end reverse) (align-match-tex-pattern "&" end reverse)) (group 1 2) (modes . align-tex-modes) (repeat . t)) (tex-tabbing-separator (regexp lambda (end reverse) (align-match-tex-pattern "\\\\[=>]" end reverse)) (group 1 2) (modes . align-tex-modes) (repeat . t) (run-if lambda nil (eq major-mode (quote latex-mode)))) (tex-record-break (regexp . "\\(\\s-*\\)\\\\\\\\") (modes . align-tex-modes)) (text-column (regexp . "\\(^\\|\\S-\\)\\([ 	]+\\)\\(\\S-\\|$\\)") (group . 2) (modes . align-text-modes) (repeat . t) (run-if lambda nil (and current-prefix-arg (not (eq (quote -) current-prefix-arg))))) (text-dollar-figure (regexp . "\\$?\\(\\s-+[0-9]+\\)\\.") (modes . align-text-modes) (justify . t) (run-if lambda nil (eq (quote -) current-prefix-arg))) (css-declaration (regexp . "^\\s-*\\w+:\\(\\s-*\\).*;") (group 1) (modes quote (css-mode html-mode))))))
@@ -865,7 +783,7 @@ save the pointer marker if tag is found"
  '(ido-use-filename-at-point (quote guess))
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
- '(menu-bar-mode t)
+ '(menu-bar-mode nil)
  '(message-fill-column 74)
  '(mumamo-major-modes (quote ((asp-js-mode js-mode javascript-mode espresso-mode ecmascript-mode) (asp-vb-mode visual-basic-mode) (javascript-mode js2-mode js-mode javascript-mode espresso-mode ecmascript-mode) (java-mode jde-mode java-mode) (groovy-mode groovy-mode) (nxhtml-mode nxhtml-mode html-mode))))
  '(org-agenda-files (list (concat org-directory "tokutek.org") (concat org-directory "home.org")))
@@ -901,10 +819,10 @@ save the pointer marker if tag is found"
  '(whitespace-style (quote (face tabs trailing space-before-tab indentation empty space-after-tab tab-mark))))
 
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
  '(ecb-default-highlight-face ((((class color) (background dark)) (:background "beige"))))
  '(erc-input-face ((t (:foreground "cyan"))))
  '(erc-my-nick-face ((t (:foreground "cyan" :weight bold))))
