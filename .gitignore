@@ -62,6 +62,7 @@
 .shotwell/
 .Skype/
 .srecode
+.ssh/config.bak
 .subversion
 .sudo_as_admin_successful
 .thumbnails/
@@ -76,6 +77,7 @@ Desktop
 Documents
 Downloads
 Dropbox
+ISOs
 Library
 Movies
 Music
