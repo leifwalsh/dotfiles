@@ -19,12 +19,6 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/tuareg"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/org-7.6/lisp"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/org-7.6/contrib/lisp"))
-;;; http://rtfm.etla.org/emacs/htmlfontify/
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/htmlfontify-0.20+texinfo/"))
-;;; git://github.com/tcrayford/clojure-refactoring.git
-(add-to-list 'load-path (expand-file-name "~/git/clojure-refactoring"))
-;;; http://lampsvn.epfl.ch/svn-repos/scala/scala-tool-support/trunk/src/emacs
-(add-to-list 'load-path (expand-file-name "~/svn/scala-mode"))
 
 ;;}}}
 
@@ -422,7 +416,7 @@ save the pointer marker if tag is found"
 
 ;;{{{ cscope
 
-(require 'xcscope)
+(ignore-errors (require 'xcscope))
 
 ;;}}}
 
@@ -438,7 +432,6 @@ save the pointer marker if tag is found"
             "2 sec" nil 'delete-windows-on
             (get-buffer-create "*compilation*"))
            (message "No compilation errors!")))))
-(global-set-key [f12] 'compile)
 
 ;;}}}
 
@@ -459,7 +452,6 @@ save the pointer marker if tag is found"
         emacs-lisp-mode-hook
         lisp-interaction-mode-hook
         slime-lisp-mode-hook
-        haskell-mode-hook
         c-mode-hook
         c++-mode-hook))
 
@@ -531,15 +523,6 @@ save the pointer marker if tag is found"
 ;;{{{ ido
 
 (require 'ido)
-
-;;}}}
-
-;;{{{ haml/sass
-
-(autoload 'haml-mode "haml-mode" "Major mode for editing haml files." t)
-(autoload 'sass-mode "sass-mode" "Major mode for editing sass files." t)
-(add-to-list 'auto-mode-alist '("\\.haml\\'" . haml-mode))
-(add-to-list 'auto-mode-alist '("\\.sass\\'" . sass-mode))
 
 ;;}}}
 
@@ -707,12 +690,6 @@ save the pointer marker if tag is found"
 
      ;;}}}
 
-     ;;{{{ clojure-refactoring-mode
-
-     (require 'clojure-refactoring-mode)
-
-     ;;}}}
-
      ;;{{{ swank-clojure
 
      (eval-after-load "slime"
@@ -830,18 +807,6 @@ save the pointer marker if tag is found"
                   nil
                   '((my-c-mode-font-lock-if0 (0 font-lock-comment-face prepend)))
                   'add-to-end)))))
-(eval-after-load "tuareg"
-  '(progn
-     (add-hook 'tuareg-mode-hook
-               (lambda () (c-like-keys tuareg-mode-map)))))
-(eval-after-load "nxhtml-mode"
-  '(progn
-     (add-hook 'nxhtml-mode-hook
-               (lambda () (c-like-keys nxhtml-mode-map)))))
-(eval-after-load "nxhtml-mode"
-  '(progn
-     (add-hook 'nxhtml-mumamo-mode-hook
-               (lambda () (c-like-keys nxhtml-mumamo-mode-map)))))
 (eval-after-load "noweb-mode"
   '(progn
      (add-hook 'noweb-mode-hook
@@ -905,7 +870,7 @@ save the pointer marker if tag is found"
  '(ido-use-filename-at-point (quote guess))
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
- '(menu-bar-mode t)
+ '(menu-bar-mode nil)
  '(message-fill-column 74)
  '(mumamo-major-modes (quote ((asp-js-mode js-mode javascript-mode espresso-mode ecmascript-mode) (asp-vb-mode visual-basic-mode) (javascript-mode js2-mode js-mode javascript-mode espresso-mode ecmascript-mode) (java-mode jde-mode java-mode) (groovy-mode groovy-mode) (nxhtml-mode nxhtml-mode html-mode))))
  '(org-agenda-files (list (concat org-directory "tokutek.org") (concat org-directory "home.org")))
