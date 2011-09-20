@@ -274,6 +274,36 @@ save the pointer marker if tag is found"
                            ("_LARGEFILE64_SOURCE" . "")
                            ("_XOPEN_SOURCE" . "600")
                            ("_THREAD_SAFE" . "")
+                           ("TOKU_RT_NOOVERLAPS" . ""))))
+           tokudb-3923b-project
+           (ignore-errors
+             (ede-cpp-root-project
+              "Tokudb 3923b"
+              :name "Tokudb 3923b"
+              :file "~/svn/tokutek/toku/tokudb.3923b/Makefile"
+              :include-path '("/" "/include" "/linux" "/toku_include" "/newbrt" "/src" "/src/lock_tree" "/src/range_tree")
+              :system-include-path '("/usr/include/")
+              :spp-table '(("TOKUDB_REVISION" . "0")
+                           ("_SVID_SOURCE" . "")
+                           ("_FILE_OFFSET_BITS" . "64")
+                           ("_LARGEFILE64_SOURCE" . "")
+                           ("_XOPEN_SOURCE" . "600")
+                           ("_THREAD_SAFE" . "")
+                           ("TOKU_RT_NOOVERLAPS" . ""))))
+           tokudb-3923c-project
+           (ignore-errors
+             (ede-cpp-root-project
+              "Tokudb 3923c"
+              :name "Tokudb 3923c"
+              :file "~/svn/tokutek/toku/tokudb.3923c/Makefile"
+              :include-path '("/" "/include" "/linux" "/toku_include" "/newbrt" "/src" "/src/lock_tree" "/src/range_tree")
+              :system-include-path '("/usr/include/")
+              :spp-table '(("TOKUDB_REVISION" . "0")
+                           ("_SVID_SOURCE" . "")
+                           ("_FILE_OFFSET_BITS" . "64")
+                           ("_LARGEFILE64_SOURCE" . "")
+                           ("_XOPEN_SOURCE" . "600")
+                           ("_THREAD_SAFE" . "")
                            ("TOKU_RT_NOOVERLAPS" . "")))))
      (eval-after-load 'ecb
        '(ecb-layout-switch "left6"))
@@ -281,6 +311,13 @@ save the pointer marker if tag is found"
      ))
 
 (ignore-errors (require 'cedet))
+
+;;}}}
+
+;;{{{ simple-wiki-mode
+
+(autoload 'simple-wiki-mode "simple-wiki" "Simple wiki mode." t)
+(add-to-list 'auto-mode-alist '("\\.wiki\\'" . simple-wiki-mode))
 
 ;;}}}
 
@@ -710,9 +747,10 @@ save the pointer marker if tag is found"
 (eval-after-load "tuareg"
   '(progn
      (autoload 'camldebug "camldebug" "Run the Caml debugger" t)
-     (autoload 'tuareg-imenu-set-imenu "tuareg-imenu"
-       "Configuration of imenu for tuareg" t)
-     (add-hook 'tuareg-mode-hook 'tuareg-imenu-set-imenu)))
+     ;; (autoload 'tuareg-imenu-set-imenu "tuareg-imenu"
+     ;;   "Configuration of imenu for tuareg" t)
+     ;; (add-hook 'tuareg-mode-hook 'tuareg-imenu-set-imenu)
+     ))
 
 ;;}}}
 
@@ -828,10 +866,10 @@ save the pointer marker if tag is found"
 ;;{{{ customize settings
 
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
  '(LaTeX-command "xelatex")
  '(LaTeX-command-style (quote (("" "%(latex) %S%(PDFout)"))))
  '(align-rules-list (quote ((lisp-second-arg (regexp . "\\(^\\s-+[^(]\\|(\\(\\S-+\\)\\s-+\\)\\S-+\\(\\s-+\\)") (group . 3) (modes . align-lisp-modes) (run-if lambda nil current-prefix-arg)) (lisp-alist-dot (regexp . "\\(\\s-*\\)\\.\\(\\s-*\\)") (group 1 2) (modes . align-lisp-modes)) (open-comment (regexp lambda (end reverse) (funcall (if reverse (quote re-search-backward) (quote re-search-forward)) (concat "[^\\\\]" (regexp-quote comment-start) "\\(.+\\)$") end t)) (modes . align-open-comment-modes)) (c-macro-definition (regexp . "^\\s-*#\\s-*define\\s-+\\S-+\\(\\s-+\\)") (modes . align-c++-modes)) (c-comma-delimiter (regexp . ",\\(\\s-*\\)[^/]") (repeat . t) (modes . align-c++-modes) (run-if lambda nil current-prefix-arg)) (basic-comma-delimiter (regexp . ",\\(\\s-*\\)[^#]") (repeat . t) (modes append align-perl-modes (quote (python-mode))) (run-if lambda nil current-prefix-arg)) (c++-comment (regexp . "\\(\\s-*\\)\\(//.*\\|/\\*.*\\*/\\s-*\\)$") (modes . align-c++-modes) (column . comment-column) (valid lambda nil (save-excursion (goto-char (match-beginning 1)) (not (bolp))))) (c-chain-logic (regexp . "\\(\\s-*\\)\\(&&\\|||\\|\\<and\\>\\|\\<or\\>\\)") (modes . align-c++-modes) (valid lambda nil (save-excursion (goto-char (match-end 2)) (looking-at "\\s-*\\(/[*/]\\|$\\)")))) (perl-chain-logic (regexp . "\\(\\s-*\\)\\(&&\\|||\\|\\<and\\>\\|\\<or\\>\\)") (modes . align-perl-modes) (valid lambda nil (save-excursion (goto-char (match-end 2)) (looking-at "\\s-*\\(#\\|$\\)")))) (python-chain-logic (regexp . "\\(\\s-*\\)\\(\\<and\\>\\|\\<or\\>\\)") (modes quote (python-mode)) (valid lambda nil (save-excursion (goto-char (match-end 2)) (looking-at "\\s-*\\(#\\|$\\|\\\\\\)")))) (c-macro-line-continuation (regexp . "\\(\\s-*\\)\\\\$") (modes . align-c++-modes) (column . c-backslash-column)) (basic-line-continuation (regexp . "\\(\\s-*\\)\\\\$") (modes quote (python-mode makefile-mode))) (tex-record-separator (regexp lambda (end reverse) (align-match-tex-pattern "&" end reverse)) (group 1 2) (modes . align-tex-modes) (repeat . t)) (tex-tabbing-separator (regexp lambda (end reverse) (align-match-tex-pattern "\\\\[=>]" end reverse)) (group 1 2) (modes . align-tex-modes) (repeat . t) (run-if lambda nil (eq major-mode (quote latex-mode)))) (tex-record-break (regexp . "\\(\\s-*\\)\\\\\\\\") (modes . align-tex-modes)) (text-column (regexp . "\\(^\\|\\S-\\)\\([ 	]+\\)\\(\\S-\\|$\\)") (group . 2) (modes . align-text-modes) (repeat . t) (run-if lambda nil (and current-prefix-arg (not (eq (quote -) current-prefix-arg))))) (text-dollar-figure (regexp . "\\$?\\(\\s-+[0-9]+\\)\\.") (modes . align-text-modes) (justify . t) (run-if lambda nil (eq (quote -) current-prefix-arg))) (css-declaration (regexp . "^\\s-*\\w+:\\(\\s-*\\).*;") (group 1) (modes quote (css-mode html-mode))))))
@@ -883,11 +921,6 @@ save the pointer marker if tag is found"
  '(org-export-latex-tag-markup "%s")
  '(org-latex-to-pdf-process (quote ("xelatex -interaction nonstopmode -output-directory %o %f" "xelatex -interaction nonstopmode -output-directory %o %f" "xelatex -interaction nonstopmode -output-directory %o %f")))
  '(org-log-done t)
- '(org-mobile-directory "~/Dropbox/org/mobile/")
- '(org-mobile-encryption-password "61795a79be616546")
- '(org-mobile-files (quote (org-agenda-files)))
- '(org-mobile-inbox-for-pull "~/Dropbox/org/from-mobile.org")
- '(org-mobile-use-encryption nil)
  '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-irc org-mac-message org-mew org-mhe org-rmail org-vm org-wl org-w3m org-mac-iCal org-mac-link-grabber)))
  '(org-pretty-entities t)
  '(org-use-sub-superscripts (quote {}))
@@ -903,14 +936,15 @@ save the pointer marker if tag is found"
  '(whitespace-style (quote (face tabs trailing space-before-tab indentation empty space-after-tab tab-mark))))
 
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
  '(ecb-default-highlight-face ((((class color) (background dark)) (:background "beige"))))
  '(erc-input-face ((t (:foreground "cyan"))))
  '(erc-my-nick-face ((t (:foreground "cyan" :weight bold))))
  '(hl-line ((t (:inherit highlight))))
+ '(region ((t (:inherit isearch))))
  '(whitespace-indentation ((t nil)))
  '(whitespace-space-after-tab ((t nil)))
  '(whitespace-space-before-tab ((t nil)))

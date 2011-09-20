@@ -7,6 +7,7 @@
 .bzr.log
 .ccache
 .cpan
+.config/gtk-2.0
 .cvspass
 .dropbox
 .emacs.bmk
@@ -26,6 +27,7 @@
 .semanticdb
 .serverauth.*
 .srecode
+.ssh/config.bak
 .subversion
 .viminfo
 .zcompdump
@@ -34,6 +36,7 @@ Desktop
 Documents
 Downloads
 Dropbox
+ISOs
 Library
 Movies
 Music
