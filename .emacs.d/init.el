@@ -152,6 +152,7 @@
 
 (eval-after-load 'cedet
   '(progn
+     (require 'cedet-contrib-load)
      (setq semantic-default-submodes
            '(global-semanticdb-minor-mode
              global-semantic-idle-scheduler-mode
@@ -161,7 +162,8 @@
              global-semantic-highlight-func-mode
              global-semantic-stickyfunc-mode
              global-semantic-mru-bookmark-mode))
-     (semantic-mode 1)
+     (require 'semantic)
+     (semantic-load-enable-excessive-code-helpers)
      (semanticdb-enable-gnu-global-databases 'c-mode)
      (semanticdb-enable-gnu-global-databases 'c++-mode)
 
@@ -240,7 +242,6 @@ save the pointer marker if tag is found"
        (local-set-key "\C-c\C-r" 'semantic-symref)
        )
      (add-hook 'c-mode-common-hook 'alexott/c-mode-cedet-hook)
-     (require 'eassist-autoloads)
 
      ;; hooks, specific for semantic
      (defun alexott/semantic-hook ()
@@ -269,27 +270,12 @@ save the pointer marker if tag is found"
                            ("_XOPEN_SOURCE" . "600")
                            ("_THREAD_SAFE" . "")
                            ("TOKU_RT_NOOVERLAPS" . ""))))
-           tokudb-3923b-project
+           tokudb-3997-project
            (ignore-errors
              (ede-cpp-root-project
-              "Tokudb 3923b"
-              :name "Tokudb 3923b"
-              :file "~/svn/tokutek/toku/tokudb.3923b/Makefile"
-              :include-path '("/" "/include" "/linux" "/toku_include" "/newbrt" "/src" "/src/lock_tree" "/src/range_tree")
-              :system-include-path '("/usr/include/")
-              :spp-table '(("TOKUDB_REVISION" . "0")
-                           ("_SVID_SOURCE" . "")
-                           ("_FILE_OFFSET_BITS" . "64")
-                           ("_LARGEFILE64_SOURCE" . "")
-                           ("_XOPEN_SOURCE" . "600")
-                           ("_THREAD_SAFE" . "")
-                           ("TOKU_RT_NOOVERLAPS" . ""))))
-           tokudb-3923c-project
-           (ignore-errors
-             (ede-cpp-root-project
-              "Tokudb 3923c"
-              :name "Tokudb 3923c"
-              :file "~/svn/tokutek/toku/tokudb.3923c/Makefile"
+              "Tokudb 3997"
+              :name "Tokudb 3997"
+              :file "~/svn/tokutek/toku/tokudb.3997/Makefile"
               :include-path '("/" "/include" "/linux" "/toku_include" "/newbrt" "/src" "/src/lock_tree" "/src/range_tree")
               :system-include-path '("/usr/include/")
               :spp-table '(("TOKUDB_REVISION" . "0")
@@ -304,7 +290,10 @@ save the pointer marker if tag is found"
      (require 'ecb-autoloads)
      ))
 
-(ignore-errors (require 'cedet))
+(setq load-path
+      (remove (concat "/Applications/Emacs.app/Contents/Resources/lisp/cedet")
+              load-path))
+(load "/Users/leif/Downloads/cedet-1.0/common/cedet.el")
 
 ;;}}}
 
@@ -724,9 +713,11 @@ save the pointer marker if tag is found"
 (eval-after-load "tuareg"
   '(progn
      (autoload 'camldebug "camldebug" "Run the Caml debugger" t)
+     (add-hook 'tuareg-mode-hook
+               (lambda () (c-like-keys tuareg-mode-map)))
      ;; (autoload 'tuareg-imenu-set-imenu "tuareg-imenu"
      ;;   "Configuration of imenu for tuareg" t)
-     ;; (add-hook 'tuareg-mode-hook 'tuareg-imenu-set-imenu)
+     (add-hook 'tuareg-mode-hook 'tuareg-imenu-set-imenu)
      ))
 
 ;;}}}
