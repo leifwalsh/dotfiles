@@ -13,6 +13,7 @@ if [ -f ${HOME}/.termcap ]; then
 fi
 
 export PATH=$HOME/bin:$HOME/local/bin:/usr/local/bin:$PATH
+export PYTHONPATH=/Users/leif/local/lib/python2.7/site-packages/:$PYTHONPATH
 export EDITOR="emacsclient -c"
 
 # start ssh-agent
