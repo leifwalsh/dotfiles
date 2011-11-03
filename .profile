@@ -15,6 +15,7 @@ fi
 export PATH=$HOME/bin:$HOME/local/bin:/usr/local/bin:$PATH
 export PYTHONPATH=/Users/leif/local/lib/python2.7/site-packages/:$PYTHONPATH
 export EDITOR="emacsclient -c"
+export ALTERNATE_EDITOR="vim"
 
 # start ssh-agent
 eval $(keychain --agents ssh -q --eval id_rsa)
