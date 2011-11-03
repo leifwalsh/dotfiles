@@ -164,6 +164,7 @@
              global-semantic-mru-bookmark-mode))
      (require 'semantic)
      (semantic-load-enable-excessive-code-helpers)
+     (semantic-load-enable-all-exuberent-ctags-support)
      (semanticdb-enable-gnu-global-databases 'c-mode)
      (semanticdb-enable-gnu-global-databases 'c++-mode)
 
