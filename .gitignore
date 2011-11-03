@@ -30,6 +30,10 @@
 .srecode
 .ssh/config.bak
 .subversion
+.sudo_as_admin_successful
+.texmf-var/
+.thumbnails/
+.Trash
 .viminfo
 .zcompdump
 .*_history
