@@ -64,6 +64,7 @@
 .srecode
 .subversion
 .sudo_as_admin_successful
+.texmf-var/
 .thumbnails/
 .Trash
 .viminfo
@@ -88,5 +89,6 @@ VirtualBox VMs
 backgrounds
 bzr
 git
+local
 src
 svn
