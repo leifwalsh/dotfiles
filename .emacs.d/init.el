@@ -160,7 +160,9 @@
              global-semantic-highlight-func-mode
              global-semantic-stickyfunc-mode
              global-semantic-mru-bookmark-mode))
-     (semantic-mode 1)
+     (require 'semantic)
+     (semantic-load-enable-excessive-code-helpers)
+     (semantic-load-enable-all-exuberent-ctags-support)
      (semanticdb-enable-gnu-global-databases 'c-mode)
      (semanticdb-enable-gnu-global-databases 'c++-mode)
 

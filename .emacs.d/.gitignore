@@ -5,6 +5,7 @@
 elpa
 
 # caches for various packages
+auto-save-list
 tramp
 .org-id-locations
 ede-projects.el
