@@ -889,6 +889,7 @@ save the pointer marker if tag is found"
  '(tooltip-mode nil)
  '(tramp-default-method "ssh")
  '(user-mail-address "leif.walsh@gmail.com")
+ '(vc-handled-backends (quote (RCS CVS SVN git SCCS Bzr Git Hg Arch)))
  '(whitespace-style (quote (face tabs trailing space-before-tab indentation empty space-after-tab tab-mark))))
 
 (custom-set-faces
