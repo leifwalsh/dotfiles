@@ -297,7 +297,7 @@ save the pointer marker if tag is found"
 (setq load-path
       (remove (concat "/Applications/Emacs.app/Contents/Resources/lisp/cedet")
               load-path))
-(load "/Users/leif/Downloads/cedet-1.0/common/cedet.el")
+(load (expand-file-name "~/bzr/cedet/common/cedet.el"))
 
 ;;}}}
 
