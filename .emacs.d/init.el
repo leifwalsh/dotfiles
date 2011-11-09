@@ -15,7 +15,8 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/ecb"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/git-emacs"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/color-theme"))
+(add-to-list 'load-path (expand-file-name "~/src/color-theme-6.6.0"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/emacs-color-theme-solarized"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/tuareg"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/org-7.6/lisp"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/org-7.6/contrib/lisp"))
@@ -82,6 +83,8 @@
 (eval-after-load "color-theme"
   '(progn
      (color-theme-initialize)
+     (setq color-theme-is-global t)
+     (require 'color-theme-solarized)
      (color-theme-solarized-dark)))
 
 ;;}}}
