@@ -18,6 +18,7 @@
 .eshell
 .fontconfig
 .gem
+.ghc/
 .gitk
 .gnupg
 .gpg-agent-info
@@ -54,6 +55,7 @@ VirtualBox VMs
 backgrounds
 bzr
 git
+hg
 local
 src
 svn
