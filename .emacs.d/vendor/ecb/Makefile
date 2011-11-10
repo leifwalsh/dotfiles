@@ -35,7 +35,7 @@
 
 # Define here the correct path to your Emacs or XEmacs binary. Ensure you
 # have set this variable to 'xemacs' if you want byte-compile with XEmacs!
-EMACS=emacs
+EMACS=/Applications/Emacs.app/Contents/MacOS/Emacs
 
 # In the following path-settings of this section use always FORWARD-SLASHES
 # as directory-separator even with MS Windows systems.
@@ -51,8 +51,8 @@ EMACS=emacs
 # + If you use Emacs < 23.2 or if you want to use the author version of CEDET:
 #   Set this to the full path of your CEDET-installation.
 
-#CEDET=
-CEDET=c:/Programme/emacs-23.1/site-lisp/package-development/cedet
+CEDET=~/bzr/cedet
+#CEDET=c:/Programme/emacs-23.1/site-lisp/package-development/cedet
 
 # You can set here more load-paths to arbitrary packages if you want. But
 # this is really not necessary!
@@ -100,7 +100,7 @@ PS2PDF=/C/home/bin/ps2pdf
 
 # Set here the path of the info subdirectory of your (X)Emacs installation
 # which contains the dir file.
-EMACSINFOPATH=/C/Programme/emacs-22.3/info
+EMACSINFOPATH=/Applications/Emacs.app/Contents/Resources/info
 
 # If you want to install the info-format of the online-help in the
 # Top-directory of the info-directory of (X)Emacs (see above EMACSINFOPATH)

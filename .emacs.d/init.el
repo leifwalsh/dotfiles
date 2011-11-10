@@ -3,9 +3,11 @@
 (setenv "PATH"
         (concat
          (expand-file-name "~/bin") ":"
+         (expand-file-name "~/local/bin") ":"
          "/usr/local/bin" ":"
          (getenv "PATH")))
 (add-to-list 'exec-path "/usr/local/bin")
+(add-to-list 'exec-path (expand-file-name "~/local/bin"))
 (add-to-list 'exec-path (expand-file-name "~/bin"))
 
 ;;}}}
@@ -116,7 +118,7 @@
   (modify-syntax-entry ?_ "w"))
 (add-hook 'after-change-major-mode-hook 'undumbify-underscores)
 ;;; change default browser
-(setq browse-url-generic-program (executable-find "xdg-open")
+(setq browse-url-generic-program (executable-find "open")
       browse-url-browser-function 'browse-url-generic)
 
 ;;}}}
@@ -165,11 +167,14 @@
              global-semantic-highlight-func-mode
              global-semantic-stickyfunc-mode
              global-semantic-mru-bookmark-mode))
+     (defvar x-max-tooltip-size '(32 . 32))
      (require 'semantic)
+     (require 'semantic-wisent)
      (semantic-load-enable-excessive-code-helpers)
      (semantic-load-enable-all-exuberent-ctags-support)
      (semanticdb-enable-gnu-global-databases 'c-mode)
      (semanticdb-enable-gnu-global-databases 'c++-mode)
+     (setq senator-isearch-semantic-mode t)
 
      (setq-mode-local c-mode semanticdb-find-default-throttle
                       '(project unloaded system recursive))
@@ -846,7 +851,9 @@ save the pointer marker if tag is found"
  '(default-frame-alist (quote ((background-mode . dark) (tool-bar-lines . 0) (menu-bar-lines . 1) (cursor-type bar . 1))))
  '(display-battery-mode t)
  '(display-time-mode t)
+ '(ecb-layout-name "left6")
  '(ecb-options-version "2.40")
+ '(ecb-source-path (quote (("~/svn/tokutek/toku/tokudb" "mainline") ("~/svn/tokutek/toku/tokudb.3997" "cleaner threads"))))
  '(ecb-tip-of-the-day nil)
  '(erc-autojoin-channels-alist (quote (("foonetic.net" "#xkcd") ("freenode.net" "#emacs" "#lisp" "#haskell" "#clojure"))))
  '(erc-nick (quote ("Adlai" "leifw" "Adlai_" "leifw_" "Adlai__" "leifw__")))
