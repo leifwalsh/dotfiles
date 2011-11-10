@@ -15,7 +15,8 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/ecb"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/git-emacs"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/color-theme"))
+(add-to-list 'load-path (expand-file-name "~/src/color-theme-6.6.0"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/emacs-color-theme-solarized"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/tuareg"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/org-7.6/lisp"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/org-7.6/contrib/lisp"))
@@ -82,6 +83,8 @@
 (eval-after-load "color-theme"
   '(progn
      (color-theme-initialize)
+     (setq color-theme-is-global t)
+     (require 'color-theme-solarized)
      (color-theme-solarized-dark)))
 
 ;;}}}
@@ -164,6 +167,7 @@
              global-semantic-mru-bookmark-mode))
      (require 'semantic)
      (semantic-load-enable-excessive-code-helpers)
+     (semantic-load-enable-all-exuberent-ctags-support)
      (semanticdb-enable-gnu-global-databases 'c-mode)
      (semanticdb-enable-gnu-global-databases 'c++-mode)
 
@@ -294,7 +298,7 @@ save the pointer marker if tag is found"
 (setq load-path
       (remove (concat "/Applications/Emacs.app/Contents/Resources/lisp/cedet")
               load-path))
-(load "/Users/leif/Downloads/cedet-1.0/common/cedet.el")
+(load (expand-file-name "~/bzr/cedet/common/cedet.el"))
 
 ;;}}}
 

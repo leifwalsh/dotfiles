@@ -9,6 +9,9 @@
 .cpan
 .config/gtk-2.0
 .cvspass
+.dir_colors
+.dbus/
+.dmrc
 .dropbox
 .emacs.bmk
 .emacs-backups
