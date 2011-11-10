@@ -37,6 +37,7 @@
 .gconf/
 .gconfd/
 .gem
+.ghc/
 .gitk
 .gnome2/
 .gnupg
@@ -91,6 +92,7 @@ VirtualBox VMs
 backgrounds
 bzr
 git
+hg
 local
 src
 svn
