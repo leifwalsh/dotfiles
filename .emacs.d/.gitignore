@@ -5,6 +5,7 @@
 elpa
 
 # caches for various packages
+ac-comphist.dat
 auto-save-list
 tramp
 .org-id-locations

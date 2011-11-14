@@ -17,6 +17,7 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/ecb"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/git-emacs"))
+(add-to-list 'load-path (expand-file-name "~/src/auto-complete-1.3.1"))
 (add-to-list 'load-path (expand-file-name "~/src/color-theme-6.6.0"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/emacs-color-theme-solarized"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/tuareg"))
@@ -158,26 +159,12 @@
 (eval-after-load 'cedet
   '(progn
      (require 'cedet-contrib-load)
-     (setq semantic-default-submodes
-           '(global-semanticdb-minor-mode
-             global-semantic-idle-scheduler-mode
-             global-semantic-idle-summary-mode
-             global-semantic-idle-completions-mode
-             global-semantic-decoration-mode
-             global-semantic-highlight-func-mode
-             global-semantic-stickyfunc-mode
-             global-semantic-mru-bookmark-mode))
-     (defvar x-max-tooltip-size '(32 . 32))
+     (setq x-max-tooltip-size '(1000 . 1000))
      (require 'semantic)
-     (require 'semantic-wisent)
-     (semantic-load-enable-excessive-code-helpers)
-     (semantic-load-enable-all-exuberent-ctags-support)
+     (require 'semantic-complete)
+     (semantic-load-enable-code-helpers)
      (semanticdb-enable-gnu-global-databases 'c-mode)
      (semanticdb-enable-gnu-global-databases 'c++-mode)
-     (setq senator-isearch-semantic-mode t)
-
-     (setq-mode-local c-mode semanticdb-find-default-throttle
-                      '(project unloaded system recursive))
 
      (defvar semantic-tags-location-ring (make-ring 20))
 
@@ -221,9 +208,6 @@ save the pointer marker if tag is found"
            (set-marker marker nil nil))))
 
      (defun alexott/cedet-hook ()
-       (local-set-key [(control return)] 'complete-symbol)
-       (local-set-key "\C-c?" 'semantic-ia-complete-symbol-menu)
-       ;;
        (local-set-key "\C-c>" 'semantic-complete-analyze-inline)
        (local-set-key "\C-c=" 'semantic-decoration-include-visit)
 
@@ -232,10 +216,8 @@ save the pointer marker if tag is found"
        (local-set-key (kbd "M-*") 'semantic-pop-tag-mark)
        (local-set-key "\C-cq" 'semantic-ia-show-doc)
        (local-set-key "\C-cm" 'semantic-symref)
-       (local-set-key "\C-cp" 'semantic-analyze-proto-impl-toggle)
-       (local-set-key "." 'semantic-complete-self-insert)
-       (local-set-key ">" 'semantic-complete-self-insert))
-     (add-hook 'semantic-init-hooks 'alexott/cedet-hook)
+       (local-set-key "\C-cp" 'semantic-analyze-proto-impl-toggle))
+     (add-hook 'semantic-init-hook 'alexott/cedet-hook)
      (add-hook 'c-mode-common-hook 'alexott/cedet-hook)
      (add-hook 'lisp-mode-hook 'alexott/cedet-hook)
      (add-hook 'scheme-mode-hook 'alexott/cedet-hook)
@@ -243,21 +225,12 @@ save the pointer marker if tag is found"
      (add-hook 'erlang-mode-hook 'alexott/cedet-hook)
 
      (defun alexott/c-mode-cedet-hook ()
-       ;; (local-set-key "." 'semantic-complete-self-insert)
-       ;; (local-set-key ">" 'semantic-complete-self-insert)
        (local-set-key "\C-ct" 'eassist-switch-h-cpp)
        (local-set-key "\C-xt" 'eassist-switch-h-cpp)
        (local-set-key "\C-ce" 'eassist-list-methods)
        (local-set-key "\C-c\C-r" 'semantic-symref)
        )
      (add-hook 'c-mode-common-hook 'alexott/c-mode-cedet-hook)
-
-     ;; hooks, specific for semantic
-     (defun alexott/semantic-hook ()
-       ;; (semantic-tag-folding-mode 1)
-       (imenu-add-to-menubar "TAGS")
-       )
-     (add-hook 'semantic-init-hooks 'alexott/semantic-hook)
 
      (setq ede-locate-setup-options
            '(ede-locate-global ede-locate-base))
@@ -295,8 +268,6 @@ save the pointer marker if tag is found"
                            ("_THREAD_SAFE" . "")
                            ("TOKU_RT_NOOVERLAPS" . "")))))
 
-     (eval-after-load 'ecb
-       '(ecb-layout-switch "left6"))
      (require 'ecb-autoloads)
      ))
 
@@ -304,6 +275,25 @@ save the pointer marker if tag is found"
       (remove (concat "/Applications/Emacs.app/Contents/Resources/lisp/cedet")
               load-path))
 (load (expand-file-name "~/bzr/cedet/common/cedet.el"))
+
+;;}}}
+
+;;{{{ auto-complete
+
+(eval-after-load "auto-complete-config"
+  '(progn
+     (ac-config-default)
+     (eval-after-load "semantic"
+       '(progn
+          (defun auto-complete-add-semantic-sources ()
+            (setq ac-sources '(ac-source-semantic
+                               ac-source-semantic-raw
+                               ac-source-gtags))
+            (local-set-key [(control return)] 'auto-complete)
+            (local-set-key [(meta tab)] 'auto-complete))
+          (add-hook 'c-mode-common-hook 'auto-complete-add-semantic-sources)
+          (add-hook 'emacs-lisp-mode-hook 'auto-complete-add-semantic-sources)))))
+(require 'auto-complete-config)
 
 ;;}}}
 
@@ -331,16 +321,16 @@ save the pointer marker if tag is found"
 ;;{{{ flymake-mode
 
 ;(require 'flymake)
-(eval-after-load "flymake"
-  '(progn
-     (add-hook 'find-file-hook 'flymake-find-file-hook)
-     (defun my-flymake-show-help ()
-       (when (get-char-property (point)
-                                'flymake-overlay)
-         (let ((help (get-char-property (point)
-                                        'help-echo)))
-           (if help
-               (message "%s" help)))))))
+;; (eval-after-load "flymake"
+;;   '(progn
+;;      (add-hook 'find-file-hook 'flymake-find-file-hook)
+;;      (defun my-flymake-show-help ()
+;;        (when (get-char-property (point)
+;;                                 'flymake-overlay)
+;;          (let ((help (get-char-property (point)
+;;                                         'help-echo)))
+;;            (if help
+;;                (message "%s" help)))))))
 
 ;;}}}
 
@@ -422,15 +412,7 @@ save the pointer marker if tag is found"
 ;;{{{ compile
 
 (require 'compile)
-(setq mode-compile-always-save-buffer-p t
-      compilation-finish-functions
-      (list
-       (lambda (buf str)
-         (unless (string-match "exited abnormally" str)
-           (run-at-time
-            "2 sec" nil 'delete-windows-on
-            (get-buffer-create "*compilation*"))
-           (message "No compilation errors!")))))
+(setq mode-compile-always-save-buffer-p t)
 
 ;;}}}
 
@@ -838,6 +820,7 @@ save the pointer marker if tag is found"
   ;; If there is more than one, they won't work right.
  '(LaTeX-command "xelatex")
  '(LaTeX-command-style (quote (("" "%(latex) %S%(PDFout)"))))
+ '(ac-quick-help-prefer-x nil)
  '(align-rules-list (quote ((lisp-second-arg (regexp . "\\(^\\s-+[^(]\\|(\\(\\S-+\\)\\s-+\\)\\S-+\\(\\s-+\\)") (group . 3) (modes . align-lisp-modes) (run-if lambda nil current-prefix-arg)) (lisp-alist-dot (regexp . "\\(\\s-*\\)\\.\\(\\s-*\\)") (group 1 2) (modes . align-lisp-modes)) (open-comment (regexp lambda (end reverse) (funcall (if reverse (quote re-search-backward) (quote re-search-forward)) (concat "[^\\\\]" (regexp-quote comment-start) "\\(.+\\)$") end t)) (modes . align-open-comment-modes)) (c-macro-definition (regexp . "^\\s-*#\\s-*define\\s-+\\S-+\\(\\s-+\\)") (modes . align-c++-modes)) (c-comma-delimiter (regexp . ",\\(\\s-*\\)[^/]") (repeat . t) (modes . align-c++-modes) (run-if lambda nil current-prefix-arg)) (basic-comma-delimiter (regexp . ",\\(\\s-*\\)[^#]") (repeat . t) (modes append align-perl-modes (quote (python-mode))) (run-if lambda nil current-prefix-arg)) (c++-comment (regexp . "\\(\\s-*\\)\\(//.*\\|/\\*.*\\*/\\s-*\\)$") (modes . align-c++-modes) (column . comment-column) (valid lambda nil (save-excursion (goto-char (match-beginning 1)) (not (bolp))))) (c-chain-logic (regexp . "\\(\\s-*\\)\\(&&\\|||\\|\\<and\\>\\|\\<or\\>\\)") (modes . align-c++-modes) (valid lambda nil (save-excursion (goto-char (match-end 2)) (looking-at "\\s-*\\(/[*/]\\|$\\)")))) (perl-chain-logic (regexp . "\\(\\s-*\\)\\(&&\\|||\\|\\<and\\>\\|\\<or\\>\\)") (modes . align-perl-modes) (valid lambda nil (save-excursion (goto-char (match-end 2)) (looking-at "\\s-*\\(#\\|$\\)")))) (python-chain-logic (regexp . "\\(\\s-*\\)\\(\\<and\\>\\|\\<or\\>\\)") (modes quote (python-mode)) (valid lambda nil (save-excursion (goto-char (match-end 2)) (looking-at "\\s-*\\(#\\|$\\|\\\\\\)")))) (c-macro-line-continuation (regexp . "\\(\\s-*\\)\\\\$") (modes . align-c++-modes) (column . c-backslash-column)) (basic-line-continuation (regexp . "\\(\\s-*\\)\\\\$") (modes quote (python-mode makefile-mode))) (tex-record-separator (regexp lambda (end reverse) (align-match-tex-pattern "&" end reverse)) (group 1 2) (modes . align-tex-modes) (repeat . t)) (tex-tabbing-separator (regexp lambda (end reverse) (align-match-tex-pattern "\\\\[=>]" end reverse)) (group 1 2) (modes . align-tex-modes) (repeat . t) (run-if lambda nil (eq major-mode (quote latex-mode)))) (tex-record-break (regexp . "\\(\\s-*\\)\\\\\\\\") (modes . align-tex-modes)) (text-column (regexp . "\\(^\\|\\S-\\)\\([ 	]+\\)\\(\\S-\\|$\\)") (group . 2) (modes . align-text-modes) (repeat . t) (run-if lambda nil (and current-prefix-arg (not (eq (quote -) current-prefix-arg))))) (text-dollar-figure (regexp . "\\$?\\(\\s-+[0-9]+\\)\\.") (modes . align-text-modes) (justify . t) (run-if lambda nil (eq (quote -) current-prefix-arg))) (css-declaration (regexp . "^\\s-*\\w+:\\(\\s-*\\).*;") (group 1) (modes quote (css-mode html-mode))))))
  '(backup-directory-alist (quote (("." . "~/.emacs-backups"))))
  '(browse-url-generic-program "/usr/bin/open" t)
@@ -851,20 +834,38 @@ save the pointer marker if tag is found"
  '(default-frame-alist (quote ((background-mode . dark) (tool-bar-lines . 0) (menu-bar-lines . 1) (cursor-type bar . 1))))
  '(display-battery-mode t)
  '(display-time-mode t)
+ '(ecb-compilation-buffer-names (quote (("*Calculator*") ("*vc*") ("*vc-diff*") ("*Apropos*") ("*Occur*") ("*shell*") ("\\*[cC]ompilation.*\\*" . t) ("\\*i?grep.*\\*" . t) ("*JDEE Compile Server*") ("*Help*") ("*Completions*") ("*Backtrace*") ("*Compile-log*") ("*bsh*") ("*Messages*") ("\\*Symref.*" . t))))
+ '(ecb-compile-window-height 6)
  '(ecb-layout-name "left6")
  '(ecb-options-version "2.40")
+ '(ecb-primary-secondary-mouse-buttons (quote mouse-1--C-mouse-1))
  '(ecb-source-path (quote (("~/svn/tokutek/toku/tokudb" "mainline") ("~/svn/tokutek/toku/tokudb.3997" "cleaner threads"))))
- '(ecb-tip-of-the-day nil)
+ '(ecb-windows-width 0.3)
+ '(ede-locate-setup-options (quote (ede-locate-global ede-locate-cscope ede-locate-base)))
  '(erc-autojoin-channels-alist (quote (("foonetic.net" "#xkcd") ("freenode.net" "#emacs" "#lisp" "#haskell" "#clojure"))))
  '(erc-nick (quote ("Adlai" "leifw" "Adlai_" "leifw_" "Adlai__" "leifw__")))
  '(erc-nickserv-identify-mode (quote autodetect))
  '(fill-column 74)
  '(flymake-allowed-file-name-masks (quote (("\\.c\\'" flymake-simple-make-init flymake-simple-cleanup flymake-get-real-file-name) ("\\.cpp\\'" flymake-simple-make-init flymake-simple-cleanup flymake-get-real-file-name) ("\\.xml\\'" flymake-xml-init) ("\\.html?\\'" flymake-xml-init) ("\\.cs\\'" flymake-simple-make-init) ("\\.p[ml]\\'" flymake-perl-init) ("\\.php[345]?\\'" flymake-php-init) ("\\.h\\'" flymake-master-make-header-init flymake-master-cleanup) ("\\.java\\'" flymake-simple-make-java-init flymake-simple-java-cleanup) ("\\.idl\\'" flymake-simple-make-init))))
+ '(flymake-gui-warnings-enabled nil)
  '(flyspell-issue-welcome-flag nil)
  '(flyspell-sort-corrections nil)
  '(font-lock-maximum-decoration t)
  '(frame-title-format (concat invocation-name "@" system-name ": %b [%IB]") t)
+ '(gdb-many-windows t)
+ '(gdb-use-separate-io-buffer t)
+ '(global-auto-complete-mode t)
  '(global-hl-line-mode t)
+ '(global-semantic-decoration-mode t nil (semantic-decorate-mode))
+ '(global-semantic-highlight-func-mode t nil (semantic-util-modes))
+ '(global-semantic-idle-breadcrumbs-mode t nil (semantic-idle))
+ '(global-semantic-idle-completions-mode nil nil (semantic-idle))
+ '(global-semantic-idle-local-symbol-highlight-mode t nil (semantic-idle))
+ '(global-semantic-idle-scheduler-mode t nil (semantic-idle))
+ '(global-semantic-idle-summary-mode t nil (semantic-idle))
+ '(global-semantic-mru-bookmark-mode t nil (semantic-util-modes))
+ '(global-semantic-stickyfunc-mode t nil (semantic-util-modes))
+ '(global-senator-minor-mode t nil (senator))
  '(global-whitespace-mode t)
  '(ido-enable-flex-matching t)
  '(ido-everywhere t)
@@ -894,9 +895,17 @@ save the pointer marker if tag is found"
  '(org-use-sub-superscripts (quote {}))
  '(safe-local-variable-values (quote ((noweb-code-mode . c-mode) (js2-basic-offset . 4) (c-indentation-style . linux))))
  '(scroll-bar-mode nil)
+ '(semantic-complete-inline-analyzer-displayor-class (quote semantic-displayor-traditional-with-focus-highlight))
+ '(semantic-decoration-styles (quote (("semantic-decoration-on-includes" . t) ("semantic-decoration-on-protected-members" . t) ("semantic-decoration-on-private-members" . t) ("semantic-tag-boundary" . t))))
+ '(semantic-idle-breadcrumbs-format-tag-function (quote semantic-format-tag-uml-prototype))
+ '(semantic-idle-work-parse-neighboring-files-flag t)
+ '(semantic-idle-work-update-headers-flag t)
+ '(semanticdb-find-default-throttle (quote (local project unloaded system recursive omniscient)))
+ '(semanticdb-global-mode t nil (semanticdb))
  '(show-paren-mode t)
  '(show-trailing-whitespace t)
  '(slime-net-coding-system (quote utf-8-unix))
+ '(tags-revert-without-query t)
  '(tool-bar-mode nil)
  '(tooltip-mode nil)
  '(tramp-default-method "ssh")
