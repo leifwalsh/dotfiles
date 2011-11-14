@@ -274,7 +274,7 @@ save the pointer marker if tag is found"
 (setq load-path
       (remove (concat "/Applications/Emacs.app/Contents/Resources/lisp/cedet")
               load-path))
-(load (expand-file-name "~/bzr/cedet/common/cedet.el"))
+(load (expand-file-name "~/.emacs.d/vendor/cedet/common/cedet.el"))
 
 ;;}}}
 
@@ -840,6 +840,7 @@ save the pointer marker if tag is found"
  '(ecb-options-version "2.40")
  '(ecb-primary-secondary-mouse-buttons (quote mouse-1--C-mouse-1))
  '(ecb-source-path (quote (("~/svn/tokutek/toku/tokudb" "mainline") ("~/svn/tokutek/toku/tokudb.3997" "cleaner threads"))))
+ '(ecb-tip-of-the-day nil)
  '(ecb-windows-width 0.3)
  '(ede-locate-setup-options (quote (ede-locate-global ede-locate-cscope ede-locate-base)))
  '(erc-autojoin-channels-alist (quote (("foonetic.net" "#xkcd") ("freenode.net" "#emacs" "#lisp" "#haskell" "#clojure"))))
