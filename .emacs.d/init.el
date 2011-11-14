@@ -237,6 +237,28 @@ save the pointer marker if tag is found"
      (global-ede-mode 1)
      (ede-enable-generic-projects)
 
+     (mapc (lambda (file-and-attr)
+             (let ((dir (car file-and-attr))
+                   (attr (cdr file-and-attr)))
+               (message "%s" dir)
+               (when (and (car attr)
+                          (file-exists-p (concat "~/svn/tokutek/toku/" dir "/Makefile")))
+                 (let ((branch (substring dir 7)))
+                   (set (intern (format "tokudb-%s-project" branch))
+                         (ede-cpp-root-project
+                          (format "Tokudb %s" branch)
+                          :name (format "Tokudb %s" branch)
+                          :file (concat "~/svn/tokutek/toku/" dir "/Makefile")
+                          :include-path '("/" "/include" "/linux" "/toku_include" "/newbrt" "/src" "/src/lock_tree" "/src/range_tree")
+                          :system-include-path '("/usr/include" "/usr/local/include")
+                          :spp-table '(("TOKUDB_REVISION" . "0")
+                                       ("_SVID_SOURCE" . "")
+                                       ("_FILE_OFFSET_BITS" . "64")
+                                       ("_LARGEFILE64_SOURCE" . "")
+                                       ("_XOPEN_SOURCE" . "600")
+                                       ("_THREAD_SAFE" . "")
+                                       ("TOKU_RT_NOOVERLAPS" . ""))))))))
+           (directory-files-and-attributes "~/svn/tokutek/toku/" nil "tokudb\\..*"))
      (setq tokudb-mainline-project
            (ignore-errors
              (ede-cpp-root-project
@@ -244,22 +266,7 @@ save the pointer marker if tag is found"
               :name "Tokudb"
               :file "~/svn/tokutek/toku/tokudb/Makefile"
               :include-path '("/" "/include" "/linux" "/toku_include" "/newbrt" "/src" "/src/lock_tree" "/src/range_tree")
-              :system-include-path '("/usr/include/")
-              :spp-table '(("TOKUDB_REVISION" . "0")
-                           ("_SVID_SOURCE" . "")
-                           ("_FILE_OFFSET_BITS" . "64")
-                           ("_LARGEFILE64_SOURCE" . "")
-                           ("_XOPEN_SOURCE" . "600")
-                           ("_THREAD_SAFE" . "")
-                           ("TOKU_RT_NOOVERLAPS" . ""))))
-           tokudb-3997-project
-           (ignore-errors
-             (ede-cpp-root-project
-              "Tokudb 3997"
-              :name "Tokudb 3997"
-              :file "~/svn/tokutek/toku/tokudb.3997/Makefile"
-              :include-path '("/" "/include" "/linux" "/toku_include" "/newbrt" "/src" "/src/lock_tree" "/src/range_tree")
-              :system-include-path '("/usr/include/")
+              :system-include-path '("/usr/include" "/usr/local/include")
               :spp-table '(("TOKUDB_REVISION" . "0")
                            ("_SVID_SOURCE" . "")
                            ("_FILE_OFFSET_BITS" . "64")
@@ -280,20 +287,18 @@ save the pointer marker if tag is found"
 
 ;;{{{ auto-complete
 
-(eval-after-load "auto-complete-config"
-  '(progn
-     (ac-config-default)
-     (eval-after-load "semantic"
-       '(progn
-          (defun auto-complete-add-semantic-sources ()
-            (setq ac-sources '(ac-source-semantic
-                               ac-source-semantic-raw
-                               ac-source-gtags))
-            (local-set-key [(control return)] 'auto-complete)
-            (local-set-key [(meta tab)] 'auto-complete))
-          (add-hook 'c-mode-common-hook 'auto-complete-add-semantic-sources)
-          (add-hook 'emacs-lisp-mode-hook 'auto-complete-add-semantic-sources)))))
 (require 'auto-complete-config)
+(add-hook 'emacs-lisp-mode-hook 'ac-emacs-lisp-mode-setup)
+(add-hook 'auto-complete-mode-hook 'ac-common-setup)
+(eval-after-load "semantic"
+  '(progn
+     (defun auto-complete-add-semantic-sources ()
+       (require 'auto-complete-config)
+       (setq ac-sources '(ac-source-semantic
+                          ac-source-semantic-raw))
+       (local-set-key [(control return)] 'auto-complete)
+       (local-set-key [(meta tab)] 'auto-complete))
+     (add-hook 'c-mode-common-hook 'auto-complete-add-semantic-sources)))
 
 ;;}}}
 
