@@ -244,6 +244,8 @@ save the pointer marker if tag is found"
                (when (and (car attr)
                           (file-exists-p (concat "~/svn/tokutek/toku/" dir "/Makefile")))
                  (let ((branch (substring dir 7)))
+                   (add-to-list 'semanticdb-project-roots
+                                (concat "~/svn/tokutek/toku/" dir))
                    (set (intern (format "tokudb-%s-project" branch))
                          (ede-cpp-root-project
                           (format "Tokudb %s" branch)
