@@ -14,8 +14,9 @@ fi
 
 export PATH=$HOME/bin:$HOME/local/bin:$HOME/local/sbin:/usr/local/bin:/usr/local/sbin:$PATH
 export PYTHONPATH=/Users/leif/local/lib/python2.7/site-packages/:$PYTHONPATH
-export EDITOR="emacsclient -c"
+export EDITOR="emacsclient -t"
 export ALTERNATE_EDITOR="vim"
 
 # start ssh-agent
 eval $(keychain --agents ssh -q --eval id_rsa)
+ps aux | grep Emacs.app | grep -v grep >/dev/null || /Applications/Emacs.app/Contents/MacOS/Emacs --daemon
