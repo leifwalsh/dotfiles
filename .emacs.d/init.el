@@ -119,8 +119,9 @@
   (modify-syntax-entry ?_ "w"))
 (add-hook 'after-change-major-mode-hook 'undumbify-underscores)
 ;;; change default browser
-(setq browse-url-generic-program (executable-find "open")
-      browse-url-browser-function 'browse-url-generic)
+(when (eq system-type 'darwin)
+  (setq browse-url-generic-program (executable-find "open")))
+(setq browse-url-browser-function 'browse-url-generic)
 
 ;;}}}
 
