@@ -19,4 +19,3 @@ export ALTERNATE_EDITOR="vim"
 
 # start ssh-agent
 eval $(keychain --agents ssh -q --eval id_rsa)
-ps aux | grep Emacs.app | grep -v grep >/dev/null || /Applications/Emacs.app/Contents/MacOS/Emacs --daemon
