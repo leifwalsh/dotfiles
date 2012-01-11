@@ -39,6 +39,7 @@
 .Trash
 .viminfo
 .zcompdump
+.zsh/
 .*_history
 Desktop
 Documents
