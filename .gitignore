@@ -74,6 +74,7 @@
 .xsession-errors
 .xsession-errors.old
 .zcompdump
+.zsh/
 Desktop
 Documents
 Downloads

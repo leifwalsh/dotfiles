@@ -2,12 +2,14 @@
 *.elc
 
 # elpa directory
-elpa
+elpa/
 
 # caches for various packages
+ac-comphist.dat
 auto-save-list
 tramp
 .org-id-locations
 ede-projects.el
 init.el.before_ecb*
 semanticdb
+eshell/
