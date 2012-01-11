@@ -119,8 +119,9 @@
   (modify-syntax-entry ?_ "w"))
 (add-hook 'after-change-major-mode-hook 'undumbify-underscores)
 ;;; change default browser
-(setq browse-url-generic-program (executable-find "open")
-      browse-url-browser-function 'browse-url-generic)
+(when (eq system-type 'darwin)
+  (setq browse-url-generic-program (executable-find "open")))
+(setq browse-url-browser-function 'browse-url-generic)
 
 ;;}}}
 
@@ -237,6 +238,30 @@ save the pointer marker if tag is found"
      (global-ede-mode 1)
      (ede-enable-generic-projects)
 
+     (ignore-errors
+       (mapc (lambda (file-and-attr)
+               (let ((dir (car file-and-attr))
+                     (attr (cdr file-and-attr)))
+                 (message "%s" dir)
+                 (when (and (car attr)
+                            (file-exists-p (concat "~/svn/tokutek/mysql.branches/" dir "/tokudb/Makefile")))
+                   (add-to-list 'semanticdb-project-roots
+                                (concat "~/svn/tokutek/mysql.branches/" dir "/tokudb"))
+                   (set (intern (format "tokudb-%s-project" dir))
+                        (ede-cpp-root-project
+                         (format "Tokudb %s" dir)
+                         :name (format "Tokudb %s" dir)
+                         :file (concat "~/svn/tokutek/mysql.branches/" dir "/tokudb/Makefile")
+                         :include-path '("/" "/include" "/linux" "/toku_include" "/newbrt" "/src" "/src/lock_tree" "/src/range_tree")
+                         :system-include-path '("/usr/include" "/usr/local/include")
+                         :spp-table '(("TOKUDB_REVISION" . "0")
+                                      ("_SVID_SOURCE" . "")
+                                      ("_FILE_OFFSET_BITS" . "64")
+                                      ("_LARGEFILE64_SOURCE" . "")
+                                      ("_XOPEN_SOURCE" . "600")
+                                      ("_THREAD_SAFE" . "")
+                                      ("TOKU_RT_NOOVERLAPS" . "")))))))
+             (directory-files-and-attributes "~/svn/tokutek/mysql.branches/")))
      (ignore-errors
        (mapc (lambda (file-and-attr)
                (let ((dir (car file-and-attr))

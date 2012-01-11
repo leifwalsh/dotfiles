@@ -15,7 +15,7 @@ fi
 export PATH=$HOME/bin:$HOME/local/bin:$HOME/local/sbin:/usr/local/bin:/usr/local/sbin:$PATH
 export INFOPATH=$HOME/local/share/info:$INFOPATH
 export PYTHONPATH=/Users/leif/local/lib/python2.7/site-packages/:$PYTHONPATH
-export EDITOR="emacsclient -c"
+export EDITOR="emacsclient -t"
 export ALTERNATE_EDITOR="vim"
 
 # start ssh-agent
