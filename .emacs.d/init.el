@@ -18,8 +18,10 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/ecb"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/git-emacs"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/auto-complete-1.3.1"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/color-theme-6.6.0"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/emacs-color-theme-solarized"))
+(if (< emacs-major-version 24)
+    (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/color-theme-6.6.0"))
+  (add-to-list 'custom-theme-load-path (expand-file-name "~/.emacs.d/vendor/emacs-color-theme-solarized/")))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/tuareg"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/org-7.6/lisp"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/org-7.6/contrib/lisp"))
@@ -82,13 +84,18 @@
 
 ;;{{{ color theme
 
-(require 'color-theme)
-(eval-after-load "color-theme"
-  '(progn
-     (color-theme-initialize)
-     (setq color-theme-is-global t)
-     (require 'color-theme-solarized)
-     (color-theme-solarized-dark)))
+(if (< emacs-major-version 24)
+    (progn
+      (require 'color-theme)
+      (eval-after-load "color-theme"
+        '(progn
+           (color-theme-initialize)
+           (setq color-theme-is-global t)
+           (require 'color-theme-solarized)
+           (color-theme-solarized-dark))))
+  (progn
+    (load-theme 'solarized-light t t)
+    (load-theme 'solarized-dark t nil)))
 
 ;;}}}
 
@@ -117,7 +124,7 @@
 ;;; Set underscore to word class for all modes
 (defun undumbify-underscores ()
   (modify-syntax-entry ?_ "w"))
-(add-hook 'after-change-major-mode-hook 'undumbify-underscores)
+;; (add-hook 'after-change-major-mode-hook 'undumbify-underscores)
 ;;; change default browser
 (when (eq system-type 'darwin)
   (setq browse-url-generic-program (executable-find "open")))
@@ -847,10 +854,10 @@ save the pointer marker if tag is found"
 ;;{{{ customize settings
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(LaTeX-command "xelatex")
  '(LaTeX-command-style (quote (("" "%(latex) %S%(PDFout)"))))
  '(ac-quick-help-prefer-x nil)
@@ -864,7 +871,7 @@ save the pointer marker if tag is found"
  '(c-echo-syntactic-information-p t)
  '(column-number-mode t)
  '(compilation-window-height 12)
- '(default-frame-alist (quote ((background-mode . dark) (tool-bar-lines . 0) (menu-bar-lines . 1) (cursor-type bar . 1))))
+ '(default-frame-alist (quote ((background-mode . dark) (tool-bar-lines . 0) (menu-bar-lines . 1))))
  '(display-battery-mode t)
  '(display-time-mode t)
  '(ecb-compilation-buffer-names (quote (("*Calculator*") ("*vc*") ("*vc-diff*") ("*Apropos*") ("*Occur*") ("*shell*") ("\\*[cC]ompilation.*\\*" . t) ("\\*i?grep.*\\*" . t) ("*JDEE Compile Server*") ("*Help*") ("*Completions*") ("*Backtrace*") ("*Compile-log*") ("*bsh*") ("*Messages*") ("\\*Symref.*" . t) ("*Ido Completions*"))))
@@ -876,7 +883,7 @@ save the pointer marker if tag is found"
  '(ecb-source-path (quote (("~/svn/tokutek/toku/tokudb" "mainline") ("~/svn/tokutek/toku/tokudb.3997" "cleaner threads"))))
  '(ecb-tip-of-the-day nil)
  '(ecb-windows-width 0.3)
- '(ede-locate-setup-options (quote (ede-locate-global ede-locate-cscope ede-locate-base)))
+ '(ede-locate-setup-options (quote (ede-locate-global ede-locate-cscope ede-locate-locate ede-locate-base)) t)
  '(erc-autojoin-channels-alist (quote (("foonetic.net" "#xkcd") ("freenode.net" "#emacs" "#lisp" "#haskell" "#clojure"))))
  '(erc-nick (quote ("Adlai" "leifw" "Adlai_" "leifw_" "Adlai__" "leifw__")))
  '(erc-nickserv-identify-mode (quote autodetect))
@@ -949,14 +956,17 @@ save the pointer marker if tag is found"
  '(whitespace-style (quote (face tabs trailing space-before-tab indentation empty space-after-tab tab-mark))))
 
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(ecb-default-highlight-face ((((class color) (background dark)) (:background "beige"))))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:height 120 :width normal :foundry "apple" :family "Menlo"))))
+ '(cursor ((t (:background "#708183" :foreground "#042028" :inverse-video t))))
+ '(ecb-default-highlight-face ((((class color) (background dark)) (:background "beige"))) t)
  '(erc-input-face ((t (:foreground "cyan"))))
  '(erc-my-nick-face ((t (:foreground "cyan" :weight bold))))
  '(hl-line ((t (:inherit highlight))))
+ '(org-todo ((t (:foreground "#c60007" :weight bold))) t)
  '(region ((t (:inherit isearch))))
  '(whitespace-indentation ((t nil)))
  '(whitespace-space-after-tab ((t nil)))
