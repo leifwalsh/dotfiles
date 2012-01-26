@@ -167,26 +167,28 @@
 
 (eval-after-load 'cedet
   '(progn
-     (require 'cedet-contrib-load)
+     ;; (require 'cedet-contrib-load)
      (if (not (boundp 'x-max-tooltip-size))
          (setq x-max-tooltip-size '(1000 . 1000)))
      (require 'semantic)
-     (require 'semantic-complete)
-     (semantic-load-enable-code-helpers)
+     (require 'semantic/complete)
      (semanticdb-enable-gnu-global-databases 'c-mode)
      (semanticdb-enable-gnu-global-databases 'c++-mode)
 
-     (global-semanticdb-minor-mode 1)
-     (global-semantic-decoration-mode 1)
-     (global-semantic-highlight-func-mode 1)
-     (global-semantic-idle-breadcrumbs-mode 1)
-     (global-semantic-idle-completions-mode -1)
-     (global-semantic-idle-local-symbol-highlight-mode 1)
-     (global-semantic-idle-scheduler-mode 1)
-     (global-semantic-idle-summary-mode 1)
-     (global-semantic-mru-bookmark-mode 1)
-     (global-semantic-stickyfunc-mode 1)
-     (global-senator-minor-mode 1)
+     (setq semantic-default-submodes
+           (append semantic-default-submodes
+                   '(global-semanticdb-minor-mode
+                     global-semantic-decoration-mode
+                     global-semantic-highlight-func-mode
+                     global-semantic-idle-breadcrumbs-mode
+                     global-semantic-idle-completions-mode
+                     global-semantic-idle-local-symbol-highlight-mode
+                     global-semantic-idle-scheduler-mode
+                     global-semantic-idle-summary-mode
+                     global-semantic-mru-bookmark-mode
+                     global-semantic-stickyfunc-mode
+                     global-senator-minor-mode)))
+     (semantic-mode 1)
 
      (setq semantic-complete-inline-analyzer-displayor-class 'semantic-displayor-traditional-with-focus-highlight)
      (setq semantic-decoration-styles '(("semantic-decoration-on-includes" . t) ("semantic-decoration-on-protected-members" . t) ("semantic-decoration-on-private-members" . t) ("semantic-tag-boundary" . t)))
@@ -254,13 +256,14 @@ save the pointer marker if tag is found"
      (add-hook 'erlang-mode-hook 'alexott/cedet-hook)
 
      (defun alexott/c-mode-cedet-hook ()
-       (local-set-key "\C-ct" 'eassist-switch-h-cpp)
-       (local-set-key "\C-xt" 'eassist-switch-h-cpp)
-       (local-set-key "\C-ce" 'eassist-list-methods)
+       ;; (local-set-key "\C-ct" 'eassist-switch-h-cpp)
+       ;; (local-set-key "\C-xt" 'eassist-switch-h-cpp)
+       ;; (local-set-key "\C-ce" 'eassist-list-methods)
        (local-set-key "\C-c\C-r" 'semantic-symref)
        )
      (add-hook 'c-mode-common-hook 'alexott/c-mode-cedet-hook)
 
+     (require 'ede)
      (setq ede-locate-setup-options
            '(ede-locate-global ede-locate-cscope ede-locate-locate ede-locate-base))
      (global-ede-mode 1)
@@ -343,10 +346,7 @@ save the pointer marker if tag is found"
              ecb-windows-width 0.3)))
      )
 
-(setq load-path
-      (remove (file-name-directory (locate-library "cedet"))
-              load-path))
-(load (expand-file-name "~/.emacs.d/vendor/cedet/common/cedet.el"))
+(load-file (expand-file-name "~/.emacs.d/vendor/cedet/cedet-devel-load.el"))
 
 ;;}}}
 
