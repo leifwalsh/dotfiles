@@ -35,7 +35,7 @@
 
 # Define here the correct path to your Emacs or XEmacs binary. Ensure you
 # have set this variable to 'xemacs' if you want byte-compile with XEmacs!
-EMACS=emacs
+EMACS?=emacs
 
 # In the following path-settings of this section use always FORWARD-SLASHES
 # as directory-separator even with MS Windows systems.

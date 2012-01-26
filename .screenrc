@@ -1,3 +1,4 @@
+startup_message off
 escape 'z'
 hardcopydir ~/.screen  # save hard copies to this dir
 altscreen on  # vim doesn't blow away the buffer
@@ -7,3 +8,5 @@ defutf8 on  # I guess this does too
 vbell off  # bells are stupid in general
 #shell -$SHELL  # set the login shell
 termcapinfo xterm-color|xterm-16color|xterm-88color|xterm-256color|rxvt* 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+caption always
+caption string "%{rk} %c %{dd} %{b}%n%{dd}  %-w%n* %t%+w%<"

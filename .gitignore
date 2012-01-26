@@ -1,3 +1,6 @@
+.CFUserTextEncoding
+.Trash
+.Xauthority
 .adobe
 .bash*
 .bazaar
@@ -24,7 +27,9 @@
 .config/user-dirs.locale
 .config/vlc/
 .cpan
+.config/gtk-2.0
 .cvspass
+.dir_colors
 .dbus/
 .dmrc
 .dropbox
@@ -76,6 +81,8 @@
 .xsession-errors
 .xsession-errors.old
 .zcompdump
+.zsh/
+.*_history
 Desktop
 Documents
 Downloads
