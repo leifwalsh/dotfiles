@@ -100,7 +100,7 @@ PS2PDF=/C/home/bin/ps2pdf
 
 # Set here the path of the info subdirectory of your (X)Emacs installation
 # which contains the dir file.
-EMACSINFOPATH=/Applications/Emacs.app/Contents/Resources/info
+EMACSINFOPATH=$(HOME)/local/share/info
 
 # If you want to install the info-format of the online-help in the
 # Top-directory of the info-directory of (X)Emacs (see above EMACSINFOPATH)
