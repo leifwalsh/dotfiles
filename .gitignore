@@ -58,6 +58,7 @@
 .pki/
 .pulse/
 .pulse-cookie
+.rnd
 .semanticdb
 .serverauth.*
 .shotwell/
