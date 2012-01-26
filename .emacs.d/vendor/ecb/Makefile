@@ -100,12 +100,12 @@ PS2PDF=/C/home/bin/ps2pdf
 
 # Set here the path of the info subdirectory of your (X)Emacs installation
 # which contains the dir file.
-EMACSINFOPATH=$(HOME)/local/share/info
+EMACSINFOPATH=/usr/local/share/info
 
 # If you want to install the info-format of the online-help in the
 # Top-directory of the info-directory of (X)Emacs (see above EMACSINFOPATH)
 # then you must specify the full path of the tool install-info.
-INSTALLINFO=/usr/bin/install-info
+INSTALLINFO=/usr/bin/ginstall-info
 
 # To install the online-help just call "make install-help"
 

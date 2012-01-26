@@ -14,7 +14,7 @@
 EMACS?=emacs
 
 # Where local software is found
-prefix=$(HOME)/local
+prefix=/usr/local
 
 # Where local lisp files go.
 lispdir   = $(prefix)/share/emacs/site-lisp
@@ -51,7 +51,7 @@ TEXI2HTMLNOPSLIT = makeinfo --html --no-split --number-sections
 CP = cp -p
 
 # Name of the program to install info files
-INSTALL_INFO=install-info
+INSTALL_INFO=ginstall-info
 
 ##----------------------------------------------------------------------
 ##  BELOW THIS LINE ON YOUR OWN RISK!
