@@ -13,3 +13,4 @@ ede-projects.el
 init.el.before_ecb*
 semanticdb
 eshell
+srecode-map.el

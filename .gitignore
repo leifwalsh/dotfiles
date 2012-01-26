@@ -9,6 +9,7 @@
 .cache/
 .ccache
 .compiz/
+.compiz-1/
 .config/autostart/
 .config/banshee-1/
 .config/compiz-1/
@@ -16,11 +17,14 @@
 .config/Empathy/
 .config/enchant/
 .config/evolution/
+.config/gedit/
 .config/google-chrome/
 .config/gtk-2.0/
 .config/gwibber/
 .config/menus/
+.config/nautilus/
 .config/software-center/
+.config/transmission/
 .config/Trolltech.conf
 .config/update-notifier/
 .config/user-dirs.dirs
@@ -30,6 +34,7 @@
 .config/gtk-2.0
 .cvspass
 .dir_colors
+.dircolors
 .dbus/
 .dmrc
 .dropbox
@@ -44,6 +49,7 @@
 .gem
 .ghc/
 .gitk
+.gksu.lock
 .gnome2/
 .gnupg
 .gpg-agent-info
@@ -57,8 +63,10 @@
 .lesshst
 .local
 .macromedia/
+.minecraft/
 .mission-control/
 .mozilla/
+.nvidia-settings-rc
 .passwd.gpg
 .pki/
 .pulse/
@@ -74,6 +82,7 @@
 .sudo_as_admin_successful
 .texmf-var/
 .thumbnails/
+.thunderbird/
 .Trash
 .viminfo
 .Xauthority
@@ -87,6 +96,7 @@ Desktop
 Documents
 Downloads
 Dropbox
+Games/
 ISOs
 Library
 Movies
@@ -102,5 +112,7 @@ bzr
 git
 hg
 local
+minecraft_server/
 src
 svn
+examples.desktop
