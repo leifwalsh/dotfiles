@@ -28,6 +28,7 @@
 .lesshst
 .local
 .passwd.gpg
+.rnd
 .semanticdb
 .serverauth.*
 .srecode
