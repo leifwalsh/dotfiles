@@ -176,6 +176,25 @@
      (semanticdb-enable-gnu-global-databases 'c-mode)
      (semanticdb-enable-gnu-global-databases 'c++-mode)
 
+     (global-semanticdb-minor-mode 1)
+     (global-semantic-decoration-mode 1)
+     (global-semantic-highlight-func-mode 1)
+     (global-semantic-idle-breadcrumbs-mode 1)
+     (global-semantic-idle-completions-mode -1)
+     (global-semantic-idle-local-symbol-highlight-mode 1)
+     (global-semantic-idle-scheduler-mode 1)
+     (global-semantic-idle-summary-mode 1)
+     (global-semantic-mru-bookmark-mode 1)
+     (global-semantic-stickyfunc-mode 1)
+     (global-senator-minor-mode 1)
+
+     (setq semantic-complete-inline-analyzer-displayor-class 'semantic-displayor-traditional-with-focus-highlight)
+     (setq semantic-decoration-styles '(("semantic-decoration-on-includes" . t) ("semantic-decoration-on-protected-members" . t) ("semantic-decoration-on-private-members" . t) ("semantic-tag-boundary" . t)))
+     (setq semantic-idle-breadcrumbs-format-tag-function 'semantic-format-tag-uml-prototype)
+     (setq semantic-idle-work-parse-neighboring-files-flag t)
+     (setq semantic-idle-work-update-headers-flag t)
+     (setq semanticdb-find-default-throttle '(local project unloaded system recursive omniscient))
+
      (defvar semantic-tags-location-ring (make-ring 20))
 
      (defun semantic-goto-definition-fast (point)
@@ -243,7 +262,7 @@ save the pointer marker if tag is found"
      (add-hook 'c-mode-common-hook 'alexott/c-mode-cedet-hook)
 
      (setq ede-locate-setup-options
-           '(ede-locate-global ede-locate-base))
+           '(ede-locate-global ede-locate-cscope ede-locate-locate ede-locate-base))
      (global-ede-mode 1)
      (ede-enable-generic-projects)
 
@@ -313,7 +332,16 @@ save the pointer marker if tag is found"
                            ("TOKU_RT_NOOVERLAPS" . "")))))
 
      (require 'ecb-autoloads)
-     ))
+     (eval-after-load "ecb"
+       (setq ecb-compilation-buffer-names (quote (("*Calculator*") ("*vc*") ("*vc-diff*") ("*Apropos*") ("*Occur*") ("*shell*") ("\\*[cC]ompilation.*\\*" . t) ("\\*i?grep.*\\*" . t) ("*JDEE Compile Server*") ("*Help*") ("*Completions*") ("*Backtrace*") ("*Compile-log*") ("*bsh*") ("*Messages*") ("\\*Symref.*" . t) ("*Ido Completions*")))
+             ecb-compile-window-height 6
+             ecb-compile-window-temporally-enlarge (quote both)
+             ecb-layout-name "left6"
+             ecb-options-version "2.40"
+             ecb-primary-secondary-mouse-buttons (quote mouse-1--C-mouse-1)
+             ecb-tip-of-the-day nil
+             ecb-windows-width 0.3)))
+     )
 
 (setq load-path
       (remove (file-name-directory (locate-library "cedet"))
@@ -873,15 +901,6 @@ save the pointer marker if tag is found"
  '(default-frame-alist (quote ((background-mode . dark) (tool-bar-lines . 0) (menu-bar-lines . 1))))
  '(display-battery-mode t)
  '(display-time-mode t)
- '(ecb-compilation-buffer-names (quote (("*Calculator*") ("*vc*") ("*vc-diff*") ("*Apropos*") ("*Occur*") ("*shell*") ("\\*[cC]ompilation.*\\*" . t) ("\\*i?grep.*\\*" . t) ("*JDEE Compile Server*") ("*Help*") ("*Completions*") ("*Backtrace*") ("*Compile-log*") ("*bsh*") ("*Messages*") ("\\*Symref.*" . t) ("*Ido Completions*"))))
- '(ecb-compile-window-height 6)
- '(ecb-compile-window-temporally-enlarge (quote both))
- '(ecb-layout-name "left6")
- '(ecb-options-version "2.40")
- '(ecb-primary-secondary-mouse-buttons (quote mouse-1--C-mouse-1))
- '(ecb-tip-of-the-day nil)
- '(ecb-windows-width 0.3)
- '(ede-locate-setup-options (quote (ede-locate-global ede-locate-cscope ede-locate-locate ede-locate-base)) t)
  '(erc-autojoin-channels-alist (quote (("foonetic.net" "#xkcd") ("freenode.net" "#emacs" "#lisp" "#haskell" "#clojure"))))
  '(erc-nick (quote ("Adlai" "leifw" "Adlai_" "leifw_" "Adlai__" "leifw__")))
  '(erc-nickserv-identify-mode (quote autodetect))
@@ -896,16 +915,6 @@ save the pointer marker if tag is found"
  '(gdb-use-separate-io-buffer t)
  '(global-auto-complete-mode t)
  '(global-hl-line-mode t)
- '(global-semantic-decoration-mode t nil (semantic-decorate-mode))
- '(global-semantic-highlight-func-mode t nil (semantic-util-modes))
- '(global-semantic-idle-breadcrumbs-mode t nil (semantic-idle))
- '(global-semantic-idle-completions-mode nil nil (semantic-idle))
- '(global-semantic-idle-local-symbol-highlight-mode t nil (semantic-idle))
- '(global-semantic-idle-scheduler-mode t nil (semantic-idle))
- '(global-semantic-idle-summary-mode t nil (semantic-idle))
- '(global-semantic-mru-bookmark-mode t nil (semantic-util-modes))
- '(global-semantic-stickyfunc-mode t nil (semantic-util-modes))
- '(global-senator-minor-mode t nil (senator))
  '(global-whitespace-mode t)
  '(ido-enable-flex-matching t)
  '(ido-everywhere t)
@@ -930,13 +939,6 @@ save the pointer marker if tag is found"
  '(org-use-sub-superscripts (quote {}))
  '(safe-local-variable-values (quote ((noweb-code-mode . c-mode) (js2-basic-offset . 4) (c-indentation-style . linux))))
  '(scroll-bar-mode nil)
- '(semantic-complete-inline-analyzer-displayor-class (quote semantic-displayor-traditional-with-focus-highlight))
- '(semantic-decoration-styles (quote (("semantic-decoration-on-includes" . t) ("semantic-decoration-on-protected-members" . t) ("semantic-decoration-on-private-members" . t) ("semantic-tag-boundary" . t))))
- '(semantic-idle-breadcrumbs-format-tag-function (quote semantic-format-tag-uml-prototype))
- '(semantic-idle-work-parse-neighboring-files-flag t)
- '(semantic-idle-work-update-headers-flag t)
- '(semanticdb-find-default-throttle (quote (local project unloaded system recursive omniscient)))
- '(semanticdb-global-mode t nil (semanticdb))
  '(show-paren-mode t)
  '(show-trailing-whitespace t)
  '(slime-net-coding-system (quote utf-8-unix))
@@ -954,7 +956,6 @@ save the pointer marker if tag is found"
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(cursor ((t (:background "#708183" :foreground "#042028" :inverse-video t))))
- '(default ((t (:height 120 :width normal :foundry "apple" :family "Menlo"))))
  '(ecb-default-highlight-face ((((class color) (background dark)) (:background "beige"))) t)
  '(erc-input-face ((t (:foreground "cyan"))))
  '(erc-my-nick-face ((t (:foreground "cyan" :weight bold))))
