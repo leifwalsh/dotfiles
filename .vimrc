@@ -3,7 +3,6 @@ set nocompatible
 source ~/.vim/vimrc-python.org
 let python_highlight_all=1
 
-set nowrap
 set tabstop=4
 set backspace=indent,eol,start
 
@@ -12,7 +11,6 @@ set cindent
 set copyindent
 set shiftwidth=4
 set softtabstop=4
-set shiftround
 set showmatch
 set ignorecase
 set smartcase
@@ -24,17 +22,13 @@ set ml
 
 set history=5000
 set undolevels=5000
-set wildignore=*.swp,*.bak,*.pyc,*.class
+set wildignore=*.swp,*.bak,*.pyc,*.class,*.o,*.so,*.la,*.a
 set title
 set visualbell
 set noerrorbells
 
-set nobackup
-
 filetype on
 filetype plugin indent on
-
-let vimclojure#NailgunClient = "/home/leif/bin/ng"
 
 set background=dark
 colorscheme solarized
@@ -56,3 +50,8 @@ let noweb_fold_code = 0
 
 " for latexsuite
 set grepprg=grep\ -nH\ $*
+
+" restore last position when opening a buffer
+set viminfo='1000,:1000,@1000,/1000
+au BufWinLeave /* mkview
+au VimEnter /* silent loadview
