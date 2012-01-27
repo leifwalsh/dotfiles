@@ -956,6 +956,8 @@ save the pointer marker if tag is found"
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(cursor ((t (:background "#708183" :foreground "#042028" :inverse-video t))))
+ '(diff-added ((t (:inherit diff-changed :foreground "SpringGreen4" :inverse-video t))))
+ '(diff-removed ((t (:inherit diff-changed :foreground "IndianRed4" :inverse-video t))))
  '(ecb-default-highlight-face ((((class color) (background dark)) (:background "beige"))) t)
  '(erc-input-face ((t (:foreground "cyan"))))
  '(erc-my-nick-face ((t (:foreground "cyan" :weight bold))))
