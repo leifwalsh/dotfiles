@@ -19,6 +19,10 @@
 \#*\#
 
 # tags and cscope files
+ID
+GTAGS
+GRTAGS
+GPATH
 TAGS
 tags
 cscope.out
