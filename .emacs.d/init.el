@@ -981,3 +981,4 @@ save the pointer marker if tag is found"
 ;(add-hook 'kill-emacs-hook #'recompile-emacs-dir)
 
 ;;}}}
+(put 'upcase-region 'disabled nil)

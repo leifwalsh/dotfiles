@@ -24,6 +24,7 @@
 .config/menus/
 .config/nautilus/
 .config/software-center/
+.config/tangerine/
 .config/transmission/
 .config/Trolltech.conf
 .config/update-notifier/
@@ -37,6 +38,7 @@
 .dircolors
 .dbus/
 .dmrc
+.dolphin-emu/
 .dropbox
 .dropbox-dist/
 .emacs-backups
@@ -80,11 +82,14 @@
 .ssh/config.bak
 .subversion
 .sudo_as_admin_successful
+.tangerine
+.tangerine-log*
 .texmf-var/
 .thumbnails/
 .thunderbird/
 .Trash
 .viminfo
+.vim/view/
 .Xauthority
 .Xmodmap
 .xsession-errors
