@@ -199,7 +199,11 @@ alias -g V="| vim -"
 # Aliases.
 if [ "$TERM"x != dumbx ]
 then
-    alias ls='ls --color=auto'
+    if [[ "$(uname -s)" = "Darwin" ]]; then
+        alias ls='ls -G'
+    else
+        alias ls='ls --color=auto'
+    fi
     alias grep='grep --color=auto'
 fi
 alias lsd='ls -d'
