@@ -23,6 +23,7 @@
     (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/color-theme-6.6.0"))
   (add-to-list 'custom-theme-load-path (expand-file-name "~/.emacs.d/vendor/emacs-color-theme-solarized/")))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/tuareg"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/org-7.6"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/org-7.6/lisp"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/org-7.6/contrib/lisp"))
 
@@ -669,14 +670,7 @@ save the pointer marker if tag is found"
 
 ;;{{{ org-mode
 
-(autoload 'org-mode "org-install"
-  "Org mode" t)
-(autoload 'org-store-link "org-install"
-  "Org mode" t)
-(autoload 'org-agenda "org-install"
-  "Org mode" t)
-(autoload 'org-iswitchb "org-install"
-  "Org mode" t)
+(require 'org-install)
 
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-cc" 'org-capture)
