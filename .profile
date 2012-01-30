@@ -3,8 +3,8 @@ if [ -f ${HOME}/.termcap ]; then
   export TERMCAP
 fi
 
-if [ -f /usr/local/Cellar/coreutils/8.14/aliases ]; then
-  source /usr/local/Cellar/coreutils/8.14/aliases
+if which brew &>/dev/null && [ -d $(brew --prefix coreutils)/libexec/gnubin ]; then
+    export PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
 fi
 
 export PATH=$HOME/bin:$HOME/local/bin:$HOME/local/sbin:/usr/local/bin:/usr/local/sbin:$PATH

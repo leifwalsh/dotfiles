@@ -1,13 +1,11 @@
 #!/bin/bash
 
-copy () {
-    if [[ $(uname -s) = "Darwin" ]]
-    then
-        pbcopy
-    else
-        xclip
-    fi
-}
+if [[ $(uname -s) = "Darwin" ]]
+then
+    COPY=pbcopy
+else
+    COPY=xclip
+fi
 
 if [[ $# -ne 1 ]]; then echo "Usage: $(basename $0) <site>" && exit 2; fi
-(gpg -q -d ~/.passwd.gpg; echo "$1") | sha256sum | cut -c-16 | xargs echo -n | copy
+(gpg -q -d ~/.passwd.gpg; echo "$1") | sha256sum | cut -c-16 | xargs echo -n | $COPY
