@@ -8,6 +8,7 @@
 .bzr.log
 .cache/
 .ccache
+.codereview_upload_cookies
 .compiz/
 .compiz-1/
 .config/autostart/
@@ -62,6 +63,7 @@
 .ICEauthority
 .ido.last
 .keychain
+.last_codereview_email_address
 .lesshst
 .local
 .macromedia/
