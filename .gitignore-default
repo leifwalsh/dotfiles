@@ -22,6 +22,10 @@
 .DS_Store
 
 # tags and cscope files
+ID
+GTAGS
+GRTAGS
+GPATH
 TAGS
 tags
 cscope.out
@@ -35,3 +39,6 @@ cscope.out
 *.ps
 *.pdf
 *.eps
+
+# mac per-folder junk
+.DS_Store

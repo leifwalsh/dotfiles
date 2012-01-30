@@ -3,9 +3,11 @@
 (setenv "PATH"
         (concat
          (expand-file-name "~/bin") ":"
+         (expand-file-name "~/local/bin") ":"
          "/usr/local/bin" ":"
          (getenv "PATH")))
 (add-to-list 'exec-path "/usr/local/bin")
+(add-to-list 'exec-path (expand-file-name "~/local/bin"))
 (add-to-list 'exec-path (expand-file-name "~/bin"))
 
 ;;}}}
@@ -15,6 +17,13 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/ecb"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/git-emacs"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/auto-complete-1.3.1"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/emacs-color-theme-solarized"))
+(if (< emacs-major-version 24)
+    (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/color-theme-6.6.0"))
+  (add-to-list 'custom-theme-load-path (expand-file-name "~/.emacs.d/vendor/emacs-color-theme-solarized/")))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/tuareg"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/org-7.6"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/org-7.6/lisp"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/org-7.6/contrib/lisp"))
 
@@ -76,12 +85,18 @@
 
 ;;{{{ color theme
 
-(require 'color-theme)
-(eval-after-load "color-theme"
-  '(progn
-     (setq color-theme-is-global t)
-     (require 'color-theme-solarized)
-     (color-theme-solarized-dark)))
+(if (< emacs-major-version 24)
+    (progn
+      (require 'color-theme)
+      (eval-after-load "color-theme"
+        '(progn
+           (color-theme-initialize)
+           (setq color-theme-is-global t)
+           (require 'color-theme-solarized)
+           (color-theme-solarized-dark))))
+  (progn
+    (load-theme 'solarized-light t t)
+    (load-theme 'solarized-dark t nil)))
 
 ;;}}}
 
@@ -110,10 +125,12 @@
 ;;; Set underscore to word class for all modes
 (defun undumbify-underscores ()
   (modify-syntax-entry ?_ "w"))
-(add-hook 'after-change-major-mode-hook 'undumbify-underscores)
+;; (add-hook 'after-change-major-mode-hook 'undumbify-underscores)
 ;;; change default browser
-(setq browse-url-generic-program (executable-find "xdg-open")
-      browse-url-browser-function 'browse-url-generic)
+(if (eq system-type 'darwin)
+    (setq browse-url-generic-program (executable-find "open"))
+  (setq browse-url-generic-program (executable-find "xdg-open")))
+(setq browse-url-browser-function 'browse-url-generic)
 
 ;;}}}
 
@@ -151,23 +168,35 @@
 
 (eval-after-load 'cedet
   '(progn
-     (setq semantic-default-submodes
-           '(global-semanticdb-minor-mode
-             global-semantic-idle-scheduler-mode
-             global-semantic-idle-summary-mode
-             global-semantic-idle-completions-mode
-             global-semantic-decoration-mode
-             global-semantic-highlight-func-mode
-             global-semantic-stickyfunc-mode
-             global-semantic-mru-bookmark-mode))
+     ;; (require 'cedet-contrib-load)
+     (if (not (boundp 'x-max-tooltip-size))
+         (setq x-max-tooltip-size '(1000 . 1000)))
      (require 'semantic)
-     (semantic-load-enable-excessive-code-helpers)
-     (semantic-load-enable-all-exuberent-ctags-support)
+     (require 'semantic/complete)
      (semanticdb-enable-gnu-global-databases 'c-mode)
      (semanticdb-enable-gnu-global-databases 'c++-mode)
 
-     (setq-mode-local c-mode semanticdb-find-default-throttle
-                      '(project unloaded system recursive))
+     (setq semantic-default-submodes
+           (append semantic-default-submodes
+                   '(global-semanticdb-minor-mode
+                     global-semantic-decoration-mode
+                     global-semantic-highlight-func-mode
+                     global-semantic-idle-breadcrumbs-mode
+                     global-semantic-idle-completions-mode
+                     global-semantic-idle-local-symbol-highlight-mode
+                     global-semantic-idle-scheduler-mode
+                     global-semantic-idle-summary-mode
+                     global-semantic-mru-bookmark-mode
+                     global-semantic-stickyfunc-mode
+                     global-senator-minor-mode)))
+     (semantic-mode 1)
+
+     (setq semantic-complete-inline-analyzer-displayor-class 'semantic-displayor-traditional-with-focus-highlight)
+     (setq semantic-decoration-styles '(("semantic-decoration-on-includes" . t) ("semantic-decoration-on-protected-members" . t) ("semantic-decoration-on-private-members" . t) ("semantic-tag-boundary" . t)))
+     (setq semantic-idle-breadcrumbs-format-tag-function 'semantic-format-tag-uml-prototype)
+     (setq semantic-idle-work-parse-neighboring-files-flag t)
+     (setq semantic-idle-work-update-headers-flag t)
+     (setq semanticdb-find-default-throttle '(local project unloaded system recursive omniscient))
 
      (defvar semantic-tags-location-ring (make-ring 20))
 
@@ -211,9 +240,6 @@ save the pointer marker if tag is found"
            (set-marker marker nil nil))))
 
      (defun alexott/cedet-hook ()
-       (local-set-key [(control return)] 'complete-symbol)
-       (local-set-key "\C-c?" 'semantic-ia-complete-symbol-menu)
-       ;;
        (local-set-key "\C-c>" 'semantic-complete-analyze-inline)
        (local-set-key "\C-c=" 'semantic-decoration-include-visit)
 
@@ -222,10 +248,8 @@ save the pointer marker if tag is found"
        (local-set-key (kbd "M-*") 'semantic-pop-tag-mark)
        (local-set-key "\C-cq" 'semantic-ia-show-doc)
        (local-set-key "\C-cm" 'semantic-symref)
-       (local-set-key "\C-cp" 'semantic-analyze-proto-impl-toggle)
-       (local-set-key "." 'semantic-complete-self-insert)
-       (local-set-key ">" 'semantic-complete-self-insert))
-     (add-hook 'semantic-init-hooks 'alexott/cedet-hook)
+       (local-set-key "\C-cp" 'semantic-analyze-proto-impl-toggle))
+     (add-hook 'semantic-init-hook 'alexott/cedet-hook)
      (add-hook 'c-mode-common-hook 'alexott/cedet-hook)
      (add-hook 'lisp-mode-hook 'alexott/cedet-hook)
      (add-hook 'scheme-mode-hook 'alexott/cedet-hook)
@@ -233,28 +257,68 @@ save the pointer marker if tag is found"
      (add-hook 'erlang-mode-hook 'alexott/cedet-hook)
 
      (defun alexott/c-mode-cedet-hook ()
-       ;; (local-set-key "." 'semantic-complete-self-insert)
-       ;; (local-set-key ">" 'semantic-complete-self-insert)
-       (local-set-key "\C-ct" 'eassist-switch-h-cpp)
-       (local-set-key "\C-xt" 'eassist-switch-h-cpp)
-       (local-set-key "\C-ce" 'eassist-list-methods)
+       ;; (local-set-key "\C-ct" 'eassist-switch-h-cpp)
+       ;; (local-set-key "\C-xt" 'eassist-switch-h-cpp)
+       ;; (local-set-key "\C-ce" 'eassist-list-methods)
        (local-set-key "\C-c\C-r" 'semantic-symref)
        )
      (add-hook 'c-mode-common-hook 'alexott/c-mode-cedet-hook)
-     (require 'eassist-autoloads)
 
-     ;; hooks, specific for semantic
-     (defun alexott/semantic-hook ()
-       ;; (semantic-tag-folding-mode 1)
-       (imenu-add-to-menubar "TAGS")
-       )
-     (add-hook 'semantic-init-hooks 'alexott/semantic-hook)
-
+     (require 'ede)
      (setq ede-locate-setup-options
-           '(ede-locate-global ede-locate-base))
+           '(ede-locate-global ede-locate-cscope ede-locate-locate ede-locate-base))
      (global-ede-mode 1)
      (ede-enable-generic-projects)
 
+     (ignore-errors
+       (mapc (lambda (file-and-attr)
+               (let ((dir (car file-and-attr))
+                     (attr (cdr file-and-attr)))
+                 (message "%s" dir)
+                 (when (and (car attr)
+                            (file-exists-p (concat "~/svn/tokutek/mysql.branches/" dir "/tokudb/Makefile")))
+                   (add-to-list 'semanticdb-project-roots
+                                (concat "~/svn/tokutek/mysql.branches/" dir "/tokudb"))
+                   (set (intern (format "tokudb-%s-project" dir))
+                        (ede-cpp-root-project
+                         (format "Tokudb %s" dir)
+                         :name (format "Tokudb %s" dir)
+                         :file (concat "~/svn/tokutek/mysql.branches/" dir "/tokudb/Makefile")
+                         :include-path '("/" "/include" "/linux" "/toku_include" "/newbrt" "/src" "/src/lock_tree" "/src/range_tree")
+                         :system-include-path '("/usr/include" "/usr/local/include")
+                         :spp-table '(("TOKUDB_REVISION" . "0")
+                                      ("_SVID_SOURCE" . "")
+                                      ("_FILE_OFFSET_BITS" . "64")
+                                      ("_LARGEFILE64_SOURCE" . "")
+                                      ("_XOPEN_SOURCE" . "600")
+                                      ("_THREAD_SAFE" . "")
+                                      ("TOKU_RT_NOOVERLAPS" . "")))))))
+             (directory-files-and-attributes "~/svn/tokutek/mysql.branches/")))
+     (ignore-errors
+       (mapc (lambda (file-and-attr)
+               (let ((dir (car file-and-attr))
+                     (attr (cdr file-and-attr)))
+                 (message "%s" dir)
+                 (when (and (car attr)
+                            (file-exists-p (concat "~/svn/tokutek/toku/" dir "/Makefile")))
+                   (let ((branch (substring dir 7)))
+                     (add-to-list 'semanticdb-project-roots
+                                  (concat "~/svn/tokutek/toku/" dir))
+                     (set (intern (format "tokudb-%s-project" branch))
+                          (ede-cpp-root-project
+                           (format "Tokudb %s" branch)
+                           :name (format "Tokudb %s" branch)
+                           :file (concat "~/svn/tokutek/toku/" dir "/Makefile")
+                           :include-path '("/" "/include" "/linux" "/toku_include" "/newbrt" "/src" "/src/lock_tree" "/src/range_tree")
+                           :system-include-path '("/usr/include" "/usr/local/include")
+                           :spp-table '(("TOKUDB_REVISION" . "0")
+                                        ("_SVID_SOURCE" . "")
+                                        ("_FILE_OFFSET_BITS" . "64")
+                                        ("_LARGEFILE64_SOURCE" . "")
+                                        ("_XOPEN_SOURCE" . "600")
+                                        ("_THREAD_SAFE" . "")
+                                        ("TOKU_RT_NOOVERLAPS" . ""))))))))
+             (directory-files-and-attributes "~/svn/tokutek/toku/" nil "tokudb\\..*")))
      (setq tokudb-mainline-project
            (ignore-errors
              (ede-cpp-root-project
@@ -262,7 +326,7 @@ save the pointer marker if tag is found"
               :name "Tokudb"
               :file "~/svn/tokutek/toku/tokudb/Makefile"
               :include-path '("/" "/include" "/linux" "/toku_include" "/newbrt" "/src" "/src/lock_tree" "/src/range_tree")
-              :system-include-path '("/usr/include/")
+              :system-include-path '("/usr/include" "/usr/local/include")
               :spp-table '(("TOKUDB_REVISION" . "0")
                            ("_SVID_SOURCE" . "")
                            ("_FILE_OFFSET_BITS" . "64")
@@ -270,12 +334,44 @@ save the pointer marker if tag is found"
                            ("_XOPEN_SOURCE" . "600")
                            ("_THREAD_SAFE" . "")
                            ("TOKU_RT_NOOVERLAPS" . "")))))
-     (eval-after-load 'ecb
-       '(ecb-layout-switch "left6"))
-     (require 'ecb-autoloads)
-     ))
 
-(ignore-errors (require 'cedet))
+     (require 'ecb-autoloads)
+     (eval-after-load "ecb"
+       (setq ecb-compilation-buffer-names (quote (("*Calculator*") ("*vc*") ("*vc-diff*") ("*Apropos*") ("*Occur*") ("*shell*") ("\\*[cC]ompilation.*\\*" . t) ("\\*i?grep.*\\*" . t) ("*JDEE Compile Server*") ("*Help*") ("*Completions*") ("*Backtrace*") ("*Compile-log*") ("*bsh*") ("*Messages*") ("\\*Symref.*" . t) ("*Ido Completions*")))
+             ecb-compile-window-height 6
+             ecb-compile-window-temporally-enlarge (quote both)
+             ecb-layout-name "left6"
+             ecb-options-version "2.40"
+             ecb-primary-secondary-mouse-buttons (quote mouse-1--C-mouse-1)
+             ecb-tip-of-the-day nil
+             ecb-windows-width 0.3)))
+     )
+
+(load-file (expand-file-name "~/.emacs.d/vendor/cedet/cedet-devel-load.el"))
+
+;;}}}
+
+;;{{{ auto-complete
+
+(require 'auto-complete-config)
+(add-hook 'emacs-lisp-mode-hook 'ac-emacs-lisp-mode-setup)
+(add-hook 'auto-complete-mode-hook 'ac-common-setup)
+(eval-after-load "semantic"
+  '(progn
+     (defun auto-complete-add-semantic-sources ()
+       (require 'auto-complete-config)
+       (setq ac-sources '(ac-source-semantic
+                          ac-source-semantic-raw))
+       (local-set-key [(control return)] 'auto-complete)
+       (local-set-key [(meta tab)] 'auto-complete))
+     (add-hook 'c-mode-common-hook 'auto-complete-add-semantic-sources)))
+
+;;}}}
+
+;;{{{ simple-wiki-mode
+
+(autoload 'simple-wiki-mode "simple-wiki" "Simple wiki mode." t)
+(add-to-list 'auto-mode-alist '("\\.wiki\\'" . simple-wiki-mode))
 
 ;;}}}
 
@@ -295,17 +391,29 @@ save the pointer marker if tag is found"
 
 ;;{{{ flymake-mode
 
-(require 'flymake)
-(eval-after-load "flymake"
+;(require 'flymake)
+;; (eval-after-load "flymake"
+;;   '(progn
+;;      (add-hook 'find-file-hook 'flymake-find-file-hook)
+;;      (defun my-flymake-show-help ()
+;;        (when (get-char-property (point)
+;;                                 'flymake-overlay)
+;;          (let ((help (get-char-property (point)
+;;                                         'help-echo)))
+;;            (if help
+;;                (message "%s" help)))))))
+
+;;}}}
+
+;;{{{ haskell-mode
+
+;;; http://code.haskell.org/haskellmode-emacs
+;(load "/usr/share/emacs/site-lisp/haskell-mode/haskell-site-file.el")
+(eval-after-load "haskell-mode"
   '(progn
-     (add-hook 'find-file-hook 'flymake-find-file-hook)
-     (defun my-flymake-show-help ()
-       (when (get-char-property (point)
-                                'flymake-overlay)
-         (let ((help (get-char-property (point)
-                                        'help-echo)))
-           (if help
-               (message "%s" help)))))))
+     (require 'inf-haskell)))
+(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 
 ;;}}}
 
@@ -339,10 +447,24 @@ save the pointer marker if tag is found"
 
 ;;}}}
 
+;;{{{ scala-mode
+
+;(require 'scala-mode-auto)
+
+;;}}}
+
 ;;{{{ uniquify
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'reverse)
+
+;;}}}
+
+;;{{{ folding
+
+;(require 'folding)
+(eval-after-load "folding"
+  '(folding-mode-add-find-file-hook))
 
 ;;}}}
 
@@ -361,15 +483,7 @@ save the pointer marker if tag is found"
 ;;{{{ compile
 
 (require 'compile)
-(setq mode-compile-always-save-buffer-p t
-      compilation-finish-functions
-      (list
-       (lambda (buf str)
-         (unless (string-match "exited abnormally" str)
-           (run-at-time
-            "2 sec" nil 'delete-windows-on
-            (get-buffer-create "*compilation*"))
-           (message "No compilation errors!")))))
+(setq mode-compile-always-save-buffer-p t)
 
 ;;}}}
 
@@ -556,14 +670,7 @@ save the pointer marker if tag is found"
 
 ;;{{{ org-mode
 
-(autoload 'org-mode "org-install"
-  "Org mode" t)
-(autoload 'org-store-link "org-install"
-  "Org mode" t)
-(autoload 'org-agenda "org-install"
-  "Org mode" t)
-(autoload 'org-iswitchb "org-install"
-  "Org mode" t)
+(require 'org-install)
 
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-cc" 'org-capture)
@@ -650,6 +757,31 @@ save the pointer marker if tag is found"
               (message "Starting swank server...")))))))
 
      ;;}}}
+
+;;}}}
+
+;;{{{ tuareg-mode (ocaml)
+
+(add-to-list 'auto-mode-alist '("\\.ml[ily]?$" . tuareg-mode))
+(add-to-list 'auto-mode-alist '("\\.topml$" . tuareg-mode))
+(autoload 'tuareg-mode "tuareg" "Major mode for editing Caml code" t)
+
+(eval-after-load "tuareg"
+  '(progn
+     (autoload 'camldebug "camldebug" "Run the Caml debugger" t)
+     (add-hook 'tuareg-mode-hook
+               (lambda () (c-like-keys tuareg-mode-map)))
+     ;; (autoload 'tuareg-imenu-set-imenu "tuareg-imenu"
+     ;;   "Configuration of imenu for tuareg" t)
+     (add-hook 'tuareg-mode-hook 'tuareg-imenu-set-imenu)
+     ))
+
+;;}}}
+
+;;{{{ nxhtml (html/php/js/etc)
+
+;;; http://ourcomments.org/cgi-bin/emacsw32-dl-latest.pl
+;(load (expand-file-name "~/.emacs.d/vendor/nxhtml/autostart.el"))
 
 ;;}}}
 
@@ -746,36 +878,36 @@ save the pointer marker if tag is found"
 ;;{{{ customize settings
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(LaTeX-command "xelatex")
  '(LaTeX-command-style (quote (("" "%(latex) %S%(PDFout)"))))
- '(align-rules-list (quote ((lisp-second-arg (regexp . "\\(^\\s-+[^(]\\|(\\(\\S-+\\)\\s-+\\)\\S-+\\(\\s-+\\)") (group . 3) (modes . align-lisp-modes) (run-if lambda nil current-prefix-arg)) (lisp-alist-dot (regexp . "\\(\\s-*\\)\\.\\(\\s-*\\)") (group 1 2) (modes . align-lisp-modes)) (open-comment (regexp lambda (end reverse) (funcall (if reverse (quote re-search-backward) (quote re-search-forward)) (concat "[^\\\\]" (regexp-quote comment-start) "\\(.+\\)$") end t)) (modes . align-open-comment-modes)) (c-macro-definition (regexp . "^\\s-*#\\s-*define\\s-+\\S-+\\(\\s-+\\)") (modes . align-c++-modes)) (c-comma-delimiter (regexp . ",\\(\\s-*\\)[^/]") (repeat . t) (modes . align-c++-modes) (run-if lambda nil current-prefix-arg)) (basic-comma-delimiter (regexp . ",\\(\\s-*\\)[^#]") (repeat . t) (modes append align-perl-modes (quote (python-mode))) (run-if lambda nil current-prefix-arg)) (c++-comment (regexp . "\\(\\s-*\\)\\(//.*\\|/\\*.*\\*/\\s-*\\)$") (modes . align-c++-modes) (column . comment-column) (valid lambda nil (save-excursion (goto-char (match-beginning 1)) (not (bolp))))) (c-chain-logic (regexp . "\\(\\s-*\\)\\(&&\\|||\\|\\<and\\>\\|\\<or\\>\\)") (modes . align-c++-modes) (valid lambda nil (save-excursion (goto-char (match-end 2)) (looking-at "\\s-*\\(/[*/]\\|$\\)")))) (perl-chain-logic (regexp . "\\(\\s-*\\)\\(&&\\|||\\|\\<and\\>\\|\\<or\\>\\)") (modes . align-perl-modes) (valid lambda nil (save-excursion (goto-char (match-end 2)) (looking-at "\\s-*\\(#\\|$\\)")))) (python-chain-logic (regexp . "\\(\\s-*\\)\\(\\<and\\>\\|\\<or\\>\\)") (modes quote (python-mode)) (valid lambda nil (save-excursion (goto-char (match-end 2)) (looking-at "\\s-*\\(#\\|$\\|\\\\\\)")))) (c-macro-line-continuation (regexp . "\\(\\s-*\\)\\\\$") (modes . align-c++-modes) (column . c-backslash-column)) (basic-line-continuation (regexp . "\\(\\s-*\\)\\\\$") (modes quote (python-mode makefile-mode))) (tex-record-separator (regexp lambda (end reverse) (align-match-tex-pattern "&" end reverse)) (group 1 2) (modes . align-tex-modes) (repeat . t)) (tex-tabbing-separator (regexp lambda (end reverse) (align-match-tex-pattern "\\\\[=>]" end reverse)) (group 1 2) (modes . align-tex-modes) (repeat . t) (run-if lambda nil (eq major-mode (quote latex-mode)))) (tex-record-break (regexp . "\\(\\s-*\\)\\\\\\\\") (modes . align-tex-modes)) (text-column (regexp . "\\(^\\|\\S-\\)\\([ 	]+\\)\\(\\S-\\|$\\)") (group . 2) (modes . align-text-modes) (repeat . t) (run-if lambda nil (and current-prefix-arg (not (eq (quote -) current-prefix-arg))))) (text-dollar-figure (regexp . "\\$?\\(\\s-+[0-9]+\\)\\.") (modes . align-text-modes) (justify . t) (run-if lambda nil (eq (quote -) current-prefix-arg))) (css-declaration (regexp . "^\\s-*\\w+:\\(\\s-*\\).*;") (group 1) (modes quote (css-mode html-mode))))))
+ '(ac-quick-help-prefer-x nil)
  '(backup-directory-alist (quote (("." . "~/.emacs-backups"))))
  '(c-basic-offset 4)
- '(c-cleanup-list (quote (brace-else-brace brace-elseif-brace brace-catch-brace empty-defun-braces one-liner-defun defun-close-semi list-close-comma scope-operator compact-empty-funcall comment-close-slash)))
  '(c-comment-prefix-regexp (quote set-from-style))
  '(c-default-style (quote ((c-mode . "stroustrup") (objc-mode . "objc") (java-mode . "java") (awk-mode . "awk") (other . "gnu"))))
  '(c-echo-syntactic-information-p t)
  '(column-number-mode t)
  '(compilation-window-height 12)
- '(default-frame-alist (quote ((background-mode . dark) (tool-bar-lines . 0) (menu-bar-lines . 1) (cursor-type bar . 1))))
+ '(default-frame-alist (quote ((background-mode . dark) (tool-bar-lines . 0) (menu-bar-lines . 1))))
  '(display-battery-mode t)
  '(display-time-mode t)
- '(ecb-auto-activate t)
- '(ecb-options-version "2.40")
- '(ecb-tip-of-the-day nil)
  '(erc-autojoin-channels-alist (quote (("foonetic.net" "#xkcd") ("freenode.net" "#emacs" "#lisp" "#haskell" "#clojure"))))
  '(erc-nick (quote ("Adlai" "leifw" "Adlai_" "leifw_" "Adlai__" "leifw__")))
  '(erc-nickserv-identify-mode (quote autodetect))
  '(fill-column 74)
  '(flymake-allowed-file-name-masks (quote (("\\.c\\'" flymake-simple-make-init flymake-simple-cleanup flymake-get-real-file-name) ("\\.cpp\\'" flymake-simple-make-init flymake-simple-cleanup flymake-get-real-file-name) ("\\.xml\\'" flymake-xml-init) ("\\.html?\\'" flymake-xml-init) ("\\.cs\\'" flymake-simple-make-init) ("\\.p[ml]\\'" flymake-perl-init) ("\\.php[345]?\\'" flymake-php-init) ("\\.h\\'" flymake-master-make-header-init flymake-master-cleanup) ("\\.java\\'" flymake-simple-make-java-init flymake-simple-java-cleanup) ("\\.idl\\'" flymake-simple-make-init))))
+ '(flymake-gui-warnings-enabled nil)
  '(flyspell-issue-welcome-flag nil)
  '(flyspell-sort-corrections nil)
  '(font-lock-maximum-decoration t)
  '(frame-title-format (concat invocation-name "@" system-name ": %b [%IB]") t)
+ '(gdb-many-windows t)
+ '(gdb-use-separate-io-buffer t)
+ '(global-auto-complete-mode t)
  '(global-hl-line-mode t)
  '(global-whitespace-mode t)
  '(ido-enable-flex-matching t)
@@ -787,7 +919,6 @@ save the pointer marker if tag is found"
  '(inhibit-startup-screen t)
  '(menu-bar-mode nil)
  '(message-fill-column 74)
- '(mumamo-major-modes (quote ((asp-js-mode js-mode javascript-mode espresso-mode ecmascript-mode) (asp-vb-mode visual-basic-mode) (javascript-mode js2-mode js-mode javascript-mode espresso-mode ecmascript-mode) (java-mode jde-mode java-mode) (groovy-mode groovy-mode) (nxhtml-mode nxhtml-mode html-mode))))
  '(org-agenda-files (list (concat org-directory "tokutek.org") (concat org-directory "home.org")))
  '(org-capture-templates (quote (("n" "Tokutek Note" entry (file+headline "~/Dropbox/org/tokutek.org" "notes") "** %?  %^G
    %a
@@ -796,16 +927,7 @@ save the pointer marker if tag is found"
    %i"))))
  '(org-default-notes-file (concat org-directory "notes.org"))
  '(org-directory (expand-file-name "~/Dropbox/org/"))
- '(org-export-latex-classes (quote (("article" "\\documentclass[11pt]{article} \\usepackage{fontspec} \\defaultfontfeatures{Mapping=tex-text} \\setromanfont{Palatino} \\setsansfont{Myriad Pro} \\setmonofont[Scale=0.8]{Monaco}" ("\\section{%s}" . "\\section*{%s}") ("\\subsection{%s}" . "\\subsection*{%s}") ("\\subsubsection{%s}" . "\\subsubsection*{%s}") ("\\paragraph{%s}" . "\\paragraph*{%s}") ("\\subparagraph{%s}" . "\\subparagraph*{%s}")) ("report" "\\documentclass[11pt]{report} \\usepackage{fontspec} \\defaultfontfeatures{Mapping=tex-text} \\setromanfont{Palatino} \\setsansfont{Myriad Pro} \\setmonofont[Scale=0.8]{Monaco}" ("\\part{%s}" . "\\part*{%s}") ("\\chapter{%s}" . "\\chapter*{%s}") ("\\section{%s}" . "\\section*{%s}") ("\\subsection{%s}" . "\\subsection*{%s}") ("\\subsubsection{%s}" . "\\subsubsection*{%s}")) ("book" "\\documentclass[11pt]{book} \\usepackage{fontspec} \\defaultfontfeatures{Mapping=tex-text} \\setromanfont{Palatino} \\setsansfont{Myriad Pro} \\setmonofont[Scale=0.8]{Monaco}" ("\\part{%s}" . "\\part*{%s}") ("\\chapter{%s}" . "\\chapter*{%s}") ("\\section{%s}" . "\\section*{%s}") ("\\subsection{%s}" . "\\subsection*{%s}") ("\\subsubsection{%s}" . "\\subsubsection*{%s}")) ("beamer" "\\documentclass{beamer} \\usepackage{fontspec} \\defaultfontfeatures{Mapping=tex-text} \\setromanfont{Palatino} \\setsansfont{Myriad Pro} \\setmonofont[Scale=0.8]{Monaco}" org-beamer-sectioning))))
- '(org-export-latex-default-packages-alist (quote (("AUTO" "inputenc" t) ("T1" "fontenc" t) ("" "fixltx2e" nil) ("" "graphicx" t) ("" "longtable" nil) ("" "float" nil) ("" "wrapfig" nil) ("" "soul" t) ("" "textcomp" t) ("" "marvosym" t) ("" "wasysym" t) ("" "latexsym" t) ("" "amssymb" t) ("" "hyperref" nil) "\\tolerance=1000")))
- '(org-export-latex-tag-markup "%s")
- '(org-latex-to-pdf-process (quote ("xelatex -interaction nonstopmode -output-directory %o %f" "xelatex -interaction nonstopmode -output-directory %o %f" "xelatex -interaction nonstopmode -output-directory %o %f")))
  '(org-log-done t)
- '(org-mobile-directory "~/Dropbox/org/mobile/")
- '(org-mobile-encryption-password "61795a79be616546")
- '(org-mobile-files (quote (org-agenda-files)))
- '(org-mobile-inbox-for-pull "~/Dropbox/org/from-mobile.org")
- '(org-mobile-use-encryption nil)
  '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-irc org-mac-message org-mew org-mhe org-rmail org-vm org-wl org-w3m org-mac-iCal org-mac-link-grabber)))
  '(org-pretty-entities t)
  '(org-use-sub-superscripts (quote {}))
@@ -814,21 +936,28 @@ save the pointer marker if tag is found"
  '(show-paren-mode t)
  '(show-trailing-whitespace t)
  '(slime-net-coding-system (quote utf-8-unix))
+ '(tags-revert-without-query t)
  '(tool-bar-mode nil)
  '(tooltip-mode nil)
- '(tramp-default-method "ssh")
+ '(tramp-default-method "rsyncc")
  '(user-mail-address "leif.walsh@gmail.com")
+ '(vc-handled-backends (quote (RCS CVS SVN git SCCS Bzr Git Hg Arch)))
  '(whitespace-style (quote (face tabs trailing space-before-tab indentation empty space-after-tab tab-mark))))
 
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(ecb-default-highlight-face ((((class color) (background dark)) (:background "beige"))))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(cursor ((t (:background "#708183" :foreground "#042028" :inverse-video t))))
+ '(diff-added ((t (:inherit diff-changed :foreground "SpringGreen4" :inverse-video t))))
+ '(diff-removed ((t (:inherit diff-changed :foreground "IndianRed4" :inverse-video t))))
+ '(ecb-default-highlight-face ((((class color) (background dark)) (:background "beige"))) t)
  '(erc-input-face ((t (:foreground "cyan"))))
  '(erc-my-nick-face ((t (:foreground "cyan" :weight bold))))
  '(hl-line ((t (:inherit highlight))))
+ '(org-todo ((t (:foreground "#c60007" :weight bold))) t)
+ '(region ((t (:inherit isearch))))
  '(whitespace-indentation ((t nil)))
  '(whitespace-space-after-tab ((t nil)))
  '(whitespace-space-before-tab ((t nil)))
@@ -846,3 +975,4 @@ save the pointer marker if tag is found"
 ;(add-hook 'kill-emacs-hook #'recompile-emacs-dir)
 
 ;;}}}
+(put 'upcase-region 'disabled nil)

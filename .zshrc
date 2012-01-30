@@ -199,7 +199,11 @@ alias -g V="| vim -"
 # Aliases.
 if [ "$TERM"x != dumbx ]
 then
-    alias ls='ls --color=auto'
+    if [[ "$(uname -s)" = "Darwin" ]]; then
+        alias ls='ls -G'
+    else
+        alias ls='ls --color=auto'
+    fi
     alias grep='grep --color=auto'
 fi
 alias lsd='ls -d'
@@ -327,23 +331,8 @@ title () {
     esac
 }
 
-check_make_status() {
-    make -qs 2>/dev/null
-    local _STATUS=$?
-    if [[ x"$_STATUS" = x"0" ]]
-    then
-        PROMPT_MAKE="%F{green}✔%f"
-    elif [[ x"$_STATUS" = x"1" ]]
-    then
-        PROMPT_MAKE="%F{red}✗%f"
-    else
-        PROMPT_MAKE="%F{blue}%#%f"
-    fi
-}
-
 precmd () {
     vcs_info prompt
-    check_make_status
     title zsh "[${TERM%-*}] zsh: ${(%):-%m@%n %~}"
 }
 
@@ -382,7 +371,7 @@ else
     ## gentoo tcsh style
     #PROMPT='%B%F{blue}(%f%(#.%F{red}.%F{green})%m%f%b:${vcs_info_msg_0_}%B%F{blue}) %(#.%F{red}.%F{green}%n)%#%f%b '
     ## gentoo bash/zsh style
-    PROMPT='%(#.%F{red}%B%m%b%f.%F{green}%n@%m%f) ${vcs_info_msg_0_}${PROMPT_MAKE} '
+    PROMPT='%(#.%F{red}%B%m%b%f.%F{green}%m%f) ${vcs_info_msg_0_}%F{blue}%#%f '
     RPROMPT="%F{blue}%(?..(%f%F{red}%?%f%F{blue}%) )%B[%b%f%F{yellow}%T%f%F{blue}%B]%b%f"
 fi
 
