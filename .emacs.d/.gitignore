@@ -2,7 +2,7 @@
 *.elc
 
 # elpa directory
-elpa
+elpa/
 
 # caches for various packages
 ac-comphist.dat
@@ -12,5 +12,5 @@ tramp
 ede-projects.el
 init.el.before_ecb*
 semanticdb
-eshell
+eshell/
 srecode-map.el

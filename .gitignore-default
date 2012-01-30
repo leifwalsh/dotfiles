@@ -18,6 +18,9 @@
 *~
 \#*\#
 
+# osx turds
+.DS_Store
+
 # tags and cscope files
 ID
 GTAGS
