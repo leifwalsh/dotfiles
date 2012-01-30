@@ -16,4 +16,7 @@ export EDITOR="emacsclient -t"
 export ALTERNATE_EDITOR="vim"
 
 # start ssh-agent
-eval $(keychain --agents ssh -q --eval id_rsa)
+if which keychain &>/dev/null
+then
+    eval $(keychain --agents ssh -q --eval id_rsa)
+fi
