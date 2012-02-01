@@ -33,177 +33,14 @@ setopt list_ambiguous # stop completing at ambiguities
 # Use emacs style editing
 bindkey -e
 
-# Fix moving/killing by words
-
-_my_extended_wordchars='*?_-.[]~=&;!#$%^(){}<>:@,\\';
-WORDCHARS=${_my_extended_wordchars}
-#'
-_my_extended_wordchars_space="${my_extended_wordchars} "
-_my_extended_wordchars_slash="${my_extended_wordchars}-/"
-
-# is the current position \-quoted ?
-function _is_quoted(){
-    test "${BUFFER[$CURSOR-1,CURSOR-1]}" = "\\"
-}
-
-_unquote-backward-delete-word(){
-    while  _is_quoted
-    do zle .backward-kill-word
-    done
-}
-
-_unquote-forward-delete-word(){
-    while  _is_quoted
-    do zle .kill-word
-    done
-}
-
-_unquote-backward-word(){
-    while  _is_quoted
-    do zle .backward-word
-    done
-}
-
-_unquote-forward-word(){
-    while _is_quoted
-    do zle .forward-word
-    done
-}
-
-_backward-delete-to-space() {
-    local WORDCHARS=${_my_extended_wordchars_slash}
-    zle .backward-kill-word
-    _unquote-backward-delete-word
-}
-
-_backward-delete-to-/ () {
-    local WORDCHARS=${_my_extended_wordchars}
-    zle .backward-kill-word
-    _unquote-backward-delete-word
-}
-
-_forward-delete-to-space() {
-    local WORDCHARS=${_my_extended_wordchars_slash}
-    zle .kill-word
-    _unquote-forward-delete-word
-}
-
-_forward-delete-to-/ () {
-    local WORDCHARS=${_my_extended_wordchars}
-    zle .kill-word
-    _unquote-forward-delete-word
-}
-
-_backward-to-space() {
-    local WORDCHARS=${_my_extended_wordchars_slash}
-    zle .backward-word
-    _unquote-backward-word
-}
-
-_forward-to-space() {
-    local WORDCHARS=${_my_extended_wordchars_slash}
-    zle .forward-word
-    _unquote-forward-word
-}
-
-_backward-to-/ () {
-    local WORDCHARS=${_my_extended_wordchars}
-    zle .backward-word
-    _unquote-backward-word
-}
-
-_forward-to-/ () {
-    local WORDCHARS=${_my_extended_wordchars}
-    zle .forward-word
-    _unquote-forward-word
-}
-
-zle -N _backward-delete-to-/
-zle -N _forward-delete-to-/
-zle -N _backward-delete-to-space
-zle -N _forward-delete-to-space
-zle -N _backward-to-/
-zle -N _forward-to-/
-zle -N _backward-to-space
-zle -N _forward-to-space
-#bindkey '^w'        _backward-delete-to-/
-#bindkey '^[^w'      _backward-delete-to-space
-#bindkey "^[^[[D"    _backward-to-/
-#bindkey "^[^[[C"    _forward-to-/
-
-bindkey "^[^b"       _backward-to-/
-#bindkey "^[^b"      _backward-to-space
-
-bindkey "^[^f"       _forward-to-/
-#bindkey "^[^f"      _forward-to-space
-
-#bindkey "\M\b"      _backward-delete-to-/
-#bindkey "^\b"       _backward-delete-to-/
-
-# C-Backspace and C-M-Backspace
-if [[ $TERM =~ "(rxvt-unicode|linux|screen)" ]]; then
-    bindkey "^\b"       _backward-delete-to-/
-    bindkey "^[^\b"     _backward-delete-to-space
-else
-    #bindkey ""    backward-kill-word  # no C-Backspace on gnome-terminal?
-    #bindkey "\e"      _backward-delete-to-/
-    bindkey "^" _backward-delete-to-/
-    bindkey "" backward-delete-char
-fi
-
-bindkey "^[^d"      _forward-delete-to-/
-
-# Delete, Home, End, arrow keys (udlr)
-if [[ $TERM =~ "(rxvt-unicode|linux|screen)" ]]; then
-    bindkey '[3~'     delete-char
-    bindkey '[7~'     beginning-of-line
-    bindkey '[8~'     end-of-line
-    bindkey '[1~'     beginning-of-line
-    bindkey '[4~'     end-of-line
-else
-    bindkey '\2333~'    delete-char
-    bindkey '\2333;5~'  _forward-delete-to-/
-    bindkey '\2333;3~'  _forward-delete-to-/
-    bindkey '\233H'     beginning-of-line
-    bindkey '[H'      beginning-of-line
-    bindkey '\233F'     end-of-line
-    bindkey '[F'      end-of-line
-    bindkey '\233D'     backward-char
-    bindkey '\233C'     forward-char
-    bindkey '\233A'     up-history
-    bindkey '\233B'     down-history
-fi
-
-#bindkey "\M^?"      _forward-delete-to-/
-#bindkey "^^?"       _forward-delete-to-/
-#bindkey "^[^^?"     _forward-delete-to-space
-
 ################################################################################
 # Aliases
 ################################################################################
 
-# Global aliases; expanded anywhere on the line.
-alias -g ...='../..'
-alias -g ....='../../..'
-alias -g .....='../../../..'
-alias -g CA="2>&1 | cat -A"
-alias -g C='| wc -l'
-alias -g G='| egrep'
-alias -g H='| head'
-alias -g M='| most'
-alias -g L='| less'
-alias -g MM="2>&1 | most"
-alias -g N="> /dev/null 2>&1"
-alias -g V="| vim -"
-
 # Aliases.
 if [ "$TERM"x != dumbx ]
 then
-    if [[ "$(uname -s)" = "Darwin" ]]; then
-        alias ls='ls -G'
-    else
-        alias ls='ls --color=auto'
-    fi
+    alias ls='ls --color=auto'
     alias grep='grep --color=auto'
 fi
 alias lsd='ls -d'
@@ -212,20 +49,9 @@ alias la='ls -a'
 alias lla='ls -la'
 alias l=ls
 
-# Shortcut aliases
-alias f='find 2>/dev/null | grep'
-alias g='grep -d recurse'
-alias m=most
-alias p='ps -aux'
-
 # dvorak/us
 alias aoeu='setxkbmap us'
 alias asdf='setxkbmap dvorak'
-
-# Debian specific aliases
-#alias apt='sudo aptitude'
-#alias apu='sudo aptitude update'
-#alias api='sudo aptitude install'
 
 setopt extended_glob
 preexec () {
@@ -366,16 +192,30 @@ if [[ $TERM == "dumb" && $EMACS == "t" ]]; then
     unsetopt prompt_subst
     unfunction precmd
     unfunction preexec
-    PROMPT="%n@%m %2~ %# "
+    PROMPT="%m %2~ %# "
 else
-    ## gentoo tcsh style
-    #PROMPT='%B%F{blue}(%f%(#.%F{red}.%F{green})%m%f%b:${vcs_info_msg_0_}%B%F{blue}) %(#.%F{red}.%F{green}%n)%#%f%b '
-    ## gentoo bash/zsh style
     PROMPT='%(#.%F{red}%B%m%b%f.%F{green}%m%f) ${vcs_info_msg_0_}%F{blue}%#%f '
-    RPROMPT="%F{blue}%(?..(%f%F{red}%?%f%F{blue}%) )%B[%b%f%F{yellow}%T%f%F{blue}%B]%b%f"
+    #RPROMPT="%F{blue}%(?..(%f%F{red}%?%f%F{blue}%) )%B[%b%f%F{yellow}%T%f%F{blue}%B]%b%f"
 fi
 
-# done setting up
+# The following lines were added by compinstall
 
-#fortune
+zstyle ':completion:*' auto-description 'specify: %d'
+zstyle ':completion:*' completer _expand _complete _ignored _approximate _prefix
+zstyle ':completion:*' format 'Completing %d'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' ignore-parents parent pwd
+zstyle ':completion:*' insert-unambiguous true
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
+zstyle ':completion:*' matcher-list '' 'm:{[:lower:]}={[:upper:]} r:|[._-]=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}'
+zstyle ':completion:*' menu select=long
+zstyle ':completion:*' original true
+zstyle ':completion:*' preserve-prefix '//[^/]##/'
+zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
+zstyle ':completion:*' verbose true
+zstyle :compinstall filename '/Users/leif/.zshrc'
 
+autoload -Uz compinit
+compinit
+# End of lines added by compinstall
