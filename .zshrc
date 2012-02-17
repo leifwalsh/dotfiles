@@ -53,6 +53,9 @@ alias l=ls
 alias aoeu='setxkbmap us'
 alias asdf='setxkbmap dvorak'
 
+# sane readline behavior
+export WORDCHARS='*?%^{}'
+
 setopt extended_glob
 preexec () {
     if [[ "$TERM" =~ "screen" ]]; then
