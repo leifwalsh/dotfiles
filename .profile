@@ -20,6 +20,12 @@ then
     export TERM=xterm-256color
 fi
 
+# add xcode 4.2 developer path
+if [[ -d /Developer/usr/bin ]]
+then
+    export PATH=$PATH:/Developer/usr/bin
+fi
+
 # start ssh-agent
 if which keychain &>/dev/null
 then
