@@ -15,6 +15,11 @@ export PYTHONPATH=$HOME/local/lib/python2.7/site-packages/:$PYTHONPATH
 export EDITOR="emacsclient -t"
 export ALTERNATE_EDITOR="vim"
 
+if [[ $TERM = "xterm" ]]
+then
+    export TERM=xterm-256color
+fi
+
 # start ssh-agent
 if which keychain &>/dev/null
 then
