@@ -19,6 +19,18 @@ if [[ $TERM = "xterm" ]]
 then
     export TERM=xterm-256color
 fi
+if [[ $TERM = "rxvt-unicode" ]]
+then
+    export TERM=xterm
+fi
+
+if pgrep polipo &>/dev/null
+then
+    export all_proxy=localhost:8123
+    export http_proxy=$all_proxy
+    export https_proxy=$all_proxy
+    export ftp_proxy=$all_proxy
+fi
 
 # add xcode 4.2 developer path
 if [[ -d /Developer/usr/bin ]]

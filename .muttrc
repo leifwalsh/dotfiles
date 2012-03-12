@@ -9,7 +9,7 @@ set smtp_url = "smtp://leif@localhost/"
 set from = "leif.walsh@gmail.com"
 set realname = "Leif Walsh"
 
-set folder = "imap://leif@localhost/"
+set folder = "~/Maildir/"
 set spoolfile = "+INBOX"
 #set folder = "imaps://imap.gmail.com:993"
 #set spoolfile = "+INBOX"

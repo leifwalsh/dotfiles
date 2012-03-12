@@ -20,7 +20,7 @@ user-id=leif.walsh@gmail.com
 user-domain=gmail.com
 
 # List of SMTP servers for sending mail. If blank: Unix Alpine uses sendmail.
-smtp-server=
+smtp-server=""
 #smtp-server=smtp.gmail.com:587/user=leif.walsh@gmail.com
 
 # NNTP server for posting news. Also sets news-collections for news reading.
@@ -28,7 +28,7 @@ nntp-server=
 
 # Path of (local or remote) INBOX, e.g. ={mail.somewhere.edu}inbox
 # Normal Unix default is the local INBOX (usually /usr/spool/mail/$USER).
-inbox-path={localhost.localdomain/novalidate-cert/user=leif}INBOX
+inbox-path=#md/Maildir/INBOX
 #inbox-path={imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}INBOX
 
 # List of folder pairs; the first indicates a folder to archive, and the
@@ -53,7 +53,7 @@ default-saved-msg-folder=
 # Over-rides default path for postponed messages folder, e.g. =pm (which uses
 # first folder collection dir) or ={host4}pm (using home dir on host4).
 # Default: postponed-msgs (Unix) or POSTPOND.MTX (PC) in default fldr coltn.
-postponed-folder={localhost.localdomain/novalidate-cert/user=leif}Drafts
+postponed-folder=Drafts
 #postponed-folder={imap.gmail.com/ssl/user=leif.walsh@gmail.com}Drafts
 
 # If set, specifies where already-read messages will be moved upon quitting.
@@ -209,7 +209,7 @@ unknown-character-set=
 editor=emacsclient -c
 
 # Specifies the program invoked by ^T in the Composer.
-speller=
+speller=/usr/bin/aspell -x -e -c
 
 # Specifies the column of the screen where the composer should wrap.
 composer-wrap-column=
@@ -232,7 +232,8 @@ composer-word-separators=
 empty-header-message=
 
 # Program to view images (e.g. GIF or TIFF attachments).
-image-viewer=/usr/local/bin/gloobus-preview
+image-viewer=
+#/usr/local/bin/gloobus-preview
 
 # If "user-domain" not set, strips hostname in FROM address. (Unix only)
 use-only-domain-name=
@@ -341,7 +342,8 @@ mailcap-search-path=
 mimetype-search-path=
 
 # List of programs to open Internet URLs (e.g. http or ftp references).
-url-viewers=xdg-open
+url-viewers=xdg-open,
+	/usr/bin/chromium
 
 # The maximum number of non-stayopen remote connections that Alpine will use
 max-remote-connections=
@@ -377,14 +379,15 @@ newmail-window-width=
 
 # List of incoming msg folders besides INBOX, e.g. ={host2}inbox, {host3}inbox
 # Syntax: optnl-label {optnl-imap-host-name}folder-path
-incoming-folders=Old-Inbox "{localhost.localdomain/novalidate-cert/user=leif}Old-Inbox",
-	Facebook "{localhost.localdomain/novalidate-cert/user=leif}Facebook",
-	Quora "{localhost.localdomain/novalidate-cert/user=leif}Quora",
-	Clojure "{localhost.localdomain/novalidate-cert/user=leif}Clojure",
-	Scala-user "{localhost.localdomain/novalidate-cert/user=leif}Scala-user",
-	RethinkDB "{localhost.localdomain/novalidate-cert/user=leif}RethinkDB",
-	FreeBSD-Questions "{localhost.localdomain/novalidate-cert/user=leif}FreeBSD-questions",
-	FreeBSD-STABLE "{localhost.localdomain/novalidate-cert/user=leif}FreeBSD-STABLE"
+incoming-folders=
+#Old-Inbox "{localhost.localdomain/novalidate-cert/user=leif}Old-Inbox",
+#	Facebook "{localhost.localdomain/novalidate-cert/user=leif}Facebook",
+#	Quora "{localhost.localdomain/novalidate-cert/user=leif}Quora",
+#	Clojure "{localhost.localdomain/novalidate-cert/user=leif}Clojure",
+#	Scala-user "{localhost.localdomain/novalidate-cert/user=leif}Scala-user",
+#	RethinkDB "{localhost.localdomain/novalidate-cert/user=leif}RethinkDB",
+#	FreeBSD-Questions "{localhost.localdomain/novalidate-cert/user=leif}FreeBSD-questions",
+#	FreeBSD-STABLE "{localhost.localdomain/novalidate-cert/user=leif}FreeBSD-STABLE"
 # incoming-folders=Old-Inbox "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}Old-Inbox",
 # 	Facebook "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}Facebook",
 # 	Quora "{imap.gmail.com:993/ssl/user=leif.walsh@gmail.com}Quora",
@@ -396,7 +399,8 @@ incoming-folders=Old-Inbox "{localhost.localdomain/novalidate-cert/user=leif}Old
 # List of directories where saved-message folders may be. First one is
 # the default for Saves. Example: Main {host1}mail/[], Desktop mail\[]
 # Syntax: optnl-label {optnl-imap-hostname}optnl-directory-path[]
-folder-collections=Gmail {localhost.localdomain/novalidate-cert/user=leif}[]
+folder-collections=Mail #md/Maildir/[]
+#Gmail {localhost.localdomain/novalidate-cert/user=leif}[]
 #folder-collections=Gmail {imap.gmail.com/ssl/user=leif.walsh@gmail.com}[]
 
 # List, only needed if nntp-server not set, or news is on a different host
@@ -416,7 +420,7 @@ address-book=.addressbook,
 global-address-book=
 
 # Set by Alpine; controls beginning-of-month sent-mail pruning.
-last-time-prune-questioned=111.3
+last-time-prune-questioned=112.3
 
 # Set by Alpine; controls display of "new version" message.
 last-version-used=6.02
@@ -429,7 +433,7 @@ last-version-used=6.02
 # The latter a script found in Alpine distribution's contrib/util directory.
 # NOTE: The program MUST read the message to be posted on standard input,
 #       AND operate in the style of sendmail's "-t" option.
-sendmail-path=
+sendmail-path=/usr/sbin/sendmail -oem -t -oi -f leif.walsh@gmail.com
 
 # This names the root of the tree to which the user is restricted when reading
 # and writing folders and files.  For example, on Unix ~/work confines the
@@ -682,3 +686,13 @@ wp-state=
 
 # Web Alpine preferred width for message display in characters
 wp-columns=
+
+# #Sets presentation order of threads in thread index. Choices:
+#arrival, and thread.
+thread-sort-key=
+
+# Location relative to your HOME directory of the directory where your INBOX
+# for the maildir format is located. Default value is "Maildir". If your
+# inbox is located at "~/Maildir" you do not need to change this value.
+# A common value is also ".maildir"
+maildir-location=

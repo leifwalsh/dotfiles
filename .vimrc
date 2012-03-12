@@ -30,13 +30,10 @@ set noerrorbells
 filetype on
 filetype plugin indent on
 
+syntax enable
 set background=dark
 colorscheme solarized
-if &t_Co > 2 || has("gui_running")
-    syntax on
-endif
 
-" load the types.vim highlighting file, if it exists
 autocmd BufRead,BufNewFile *.[ch] let fname = expand('<afile>:p:h') . '/types.vim'
 autocmd BufRead,BufNewFile *.[ch] if filereadable(fname)
 autocmd BufRead,BufNewFile *.[ch]   exe 'so ' . fname
