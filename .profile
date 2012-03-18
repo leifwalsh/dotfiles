@@ -1,4 +1,16 @@
 PATH=/usr/local/bin:/usr/local/sbin:$PATH
+
+# add xcode 4.2 developer path
+if [[ -d /Developer/usr/bin ]]
+then
+    PATH=$PATH:/Developer/usr/bin
+fi
+
+# add coreutils
+if which brew &>/dev/null && [ -d $(brew --prefix coreutils)/libexec/gnubin ]; then
+    PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
+fi
+
 PATH=$HOME/local/bin:$HOME/local/sbin:$PATH
 PATH=$HOME/bin:$PATH
 
@@ -22,10 +34,6 @@ if [ -f ${HOME}/.termcap ]; then
   export TERMCAP
 fi
 
-if which brew &>/dev/null && [ -d $(brew --prefix coreutils)/libexec/gnubin ]; then
-    PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
-fi
-
 if [[ $TERM = "xterm" ]]
 then
     export TERM=xterm-256color
@@ -40,12 +48,6 @@ then
     export http_proxy=$all_proxy
     export https_proxy=$all_proxy
     export ftp_proxy=$all_proxy
-fi
-
-# add xcode 4.2 developer path
-if [[ -d /Developer/usr/bin ]]
-then
-    PATH=$PATH:/Developer/usr/bin
 fi
 
 # start ssh-agent
