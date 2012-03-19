@@ -162,7 +162,7 @@ title () {
 
 precmd () {
     vcs_info prompt
-    title zsh "[${TERM%-*}] zsh: ${(%):-%m@%n %~}"
+    title zsh "${(%):-%m %~}"
 }
 
 preexec () {
@@ -178,14 +178,14 @@ preexec () {
             fi;;
         %*) cmd=(builtin jobs -l ${(Q)cmd[1]});;
         sudo|exec) shift cmd;&
-        *) title $cmd[1]:t "[${TERM%-*}] zsh: $cmd[1]:t $cmd[2,-1]"
+        *) title $cmd[1]:t "$cmd[1]:t $cmd[2,-1]"
             return;;
     esac
 
     local -A jt; jt=(${(kv)jobtexts})
     $cmd >>(read num rest
         cmd=(${(z)${(e):-\$jt$num}})
-        title $cmd[1]:t "[${TERM%-*}] zsh: $cmd[1]:t $cmd[2,-1]") 2>/dev/null
+        title $cmd[1]:t "$cmd[1]:t $cmd[2,-1]") 2>/dev/null
 }
 
 if [[ $TERM == "dumb" && $EMACS == "t" ]]; then
