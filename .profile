@@ -34,6 +34,9 @@ if [ -f ${HOME}/.termcap ]; then
   export TERMCAP
 fi
 
+# colorize less!
+export LESS="-R"
+
 if [[ $TERM = "xterm" ]]
 then
     export TERM=xterm-256color
