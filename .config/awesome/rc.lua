@@ -375,6 +375,7 @@ client.add_signal("unfocus", function(c) c.border_color = beautiful.border_norma
 
 awful.util.spawn_with_shell("pgrep -f gnome-settings-daemon &>/dev/null || /usr/lib/gnome-settings-daemon/gnome-settings-daemon")
 awful.util.spawn_with_shell("pgrep -f uevt &>/dev/null || uevt")
+awful.util.spawn_with_shell("pgrep -f gnome-sound-applet &>/dev/null || gnome-sound-applet")
 awful.util.spawn_with_shell("xrdb -merge $HOME/.Xresources")
 
 -- }}}
