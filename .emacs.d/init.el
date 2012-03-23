@@ -919,6 +919,7 @@ save the pointer marker if tag is found"
  '(flyspell-issue-welcome-flag nil)
  '(flyspell-sort-corrections nil)
  '(font-lock-maximum-decoration t)
+ '(font-use-system-font t)
  '(frame-title-format (concat invocation-name "@" system-name ": %b [%IB]") t)
  '(gdb-many-windows t)
  '(gdb-use-separate-io-buffer t)
@@ -964,9 +965,10 @@ save the pointer marker if tag is found"
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:family "DejaVu Sans Mono" :foundry "unknown" :slant normal :weight normal :height 98 :width normal))))
  '(cursor ((t (:background "#708183" :foreground "#042028" :inverse-video t))))
- '(diff-added ((t (:inherit diff-changed :foreground "SpringGreen4" :inverse-video t))))
- '(diff-removed ((t (:inherit diff-changed :foreground "IndianRed4" :inverse-video t))))
+ '(diff-added ((t (:inherit diff-changed :foreground "SpringGreen4" :inverse-video t))) t)
+ '(diff-removed ((t (:inherit diff-changed :foreground "IndianRed4" :inverse-video t))) t)
  '(ecb-default-highlight-face ((((class color) (background dark)) (:background "beige"))) t)
  '(erc-input-face ((t (:foreground "cyan"))))
  '(erc-my-nick-face ((t (:foreground "cyan" :weight bold))))
@@ -990,4 +992,3 @@ save the pointer marker if tag is found"
 ;(add-hook 'kill-emacs-hook #'recompile-emacs-dir)
 
 ;;}}}
-(put 'upcase-region 'disabled nil)
