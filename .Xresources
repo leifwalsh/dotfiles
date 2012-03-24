@@ -14,10 +14,10 @@ URxvt.termName: rxvt-unicode
 
 URxvt.iconFile: /usr/share/icons/hicolor/scalable/apps/Terminal.png
 
-URxvt.font: xft:Deja Vu Sans Mono-13,xft:Deja Vu Sans Mono-14:antialias=true:autohint=true,xft:Anonymous Pro-10:autohint=true,xft:Bitstream Vera Sans Mono-10:antialias=true:autohint=true
-URxvt.boldFont: xft:Deja Vu Sans Mono-13:bold,xft:Deja Vu Sans Mono-14:bold:antialias=true:autohint=true,xft:Anonymous Pro-10:bold:autohint=true,xft:Bitstream Vera Sans Mono-10:bold:antialias=true:autohint=true
-URxvt.italicFont: xft:Deja Vu Sans Mono-13:italic,xft:Deja Vu Sans Mono-14:italic:antialias=true:autohint=true,xft:Anonymous Pro-10:italic:autohint=true,xft:Bitstream Vera Sans Mono-10:italic:antialias=true:autohint=true
-URxvt.boldItalicFont: xft:Deja Vu Sans Mono-13:bold:italic,xft:Deja Vu Sans Mono-14:bold:italic:antialias=true:autohint=true,xft:Anonymous Pro-10:bold:italic:autohint=true,xft:Bitstream Vera Sans Mono-10:bold:italic:antialias=true:autohint=true
+URxvt.font: xft:Deja Vu Sans Mono-13
+URxvt.boldFont: xft:Deja Vu Sans Mono-13:bold
+URxvt.italicFont: xft:Deja Vu Sans Mono-13:italic
+URxvt.boldItalicFont: xft:Deja Vu Sans Mono-13:bold:italic
 !URxvt.letterSpace: -1
 
 URxvt.scrollBar: false
@@ -33,100 +33,8 @@ URxvt.depth: 32
 
 #include "/home/leif/git/adlaiff6-solarized/xresources-colors-solarized/Xresources-dark"
 URxvt.fading: 20
-! URxvt.background: rgba:3f3f/3f3f/3f3f/cccc /*rgba:2222/2222/2222/dddd*/
-! URxvt.foreground: #ffffff /*#dcdccc*/
-! URxvt.color0: rgba:3f3f/3f3f/3f3f/cccc /*#3f3f3f*/
-! URxvt.color1: #d65858
-! URxvt.color2: #3cb579
-! URxvt.color3: #ab714b
-! URxvt.color4: #38618a
-! URxvt.color5: #dc8cc3
-! URxvt.color6: #8cd0d3
-! URxvt.color7: #dcdccc
-! URxvt.color8: #709080
-! URxvt.color9: #dca3a3
-! URxvt.color10: #c3bf9f
-! URxvt.color11: #f0dfaf
-! URxvt.color12: #94bff3
-! URxvt.color13: #ec93d3
-! URxvt.color14: #93e0e3
-! URxvt.color15: #ffffff
-/*
-URxvt.foreground: white
-URxvt.background: rgba:2c2c/0000/1e1e/cccc
-URxvt.color0: #2e3436
-URxvt.color1: #cc0000
-URxvt.color2: #4e9a06
-URxvt.color3: #c4a000
-URxvt.color4: #3465a4
-URxvt.color5: #75507b
-URxvt.color6: #06989a
-URxvt.color7: #d3d7cf
-URxvt.color8: #555753
-URxvt.color9: #ef2929
-URxvt.color10: #8ae234
-URxvt.color11: #fce94f
-URxvt.color12: #729fcf
-URxvt.color13: #ad7fa8
-URxvt.color14: #34e2e2
-URxvt.color15: #eeeeec
-URxvt.hilightColor: white
-*/
 
 Fig.latexfonts: true
 Fig.specialtext: true
-
-xterm*customization: -color
-/** tango-ish colors
- * xterm*background: black
- * xterm*foreground: white
- * ! XTerm*vt100.color0: #2e3436
- * XTerm*vt100.color1: #cc0000
- * ! XTerm*vt100.color2: #4e9a06
- * XTerm*vt100.color3: #c4a000
- * XTerm*vt100.color4: #3465a4
- * XTerm*vt100.color5: #75507b
- * ! XTerm*vt100.color6: #06989a
- * ! XTerm*vt100.color7: #d3d7cf
- * ! XTerm*vt100.color8: #555753
- * XTerm*vt100.color9: #ef2929
- * ! XTerm*vt100.color10: #8ae234
- * XTerm*vt100.color11: #fce94f
- * XTerm*vt100.color12: #729fcf
- * XTerm*vt100.color13: #ad7fa8
- * ! XTerm*vt100.color14: #34e2e2
- * ! XTerm*vt100.color15: #eeeeec
- */
-
-/** zenburn colors */
-xterm*background: #3f3f3f
-xterm*foreground: #dcdccc
-XTerm*vt100.color0: #3f3f3f
-XTerm*vt100.color1: #705050
-XTerm*vt100.color2: #60b48a
-XTerm*vt100.color3: #dfaf8f
-XTerm*vt100.color4: #506070
-XTerm*vt100.color5: #dc8cc3
-XTerm*vt100.color6: #8cd0d3
-XTerm*vt100.color7: #dcdccc
-XTerm*vt100.color8: #709080
-XTerm*vt100.color9: #dca3a3
-XTerm*vt100.color10: #c3bf9f
-XTerm*vt100.color11: #f0dfaf
-XTerm*vt100.color12: #94bff3
-XTerm*vt100.color13: #ec93d3
-XTerm*vt100.color14: #93e0e3
-XTerm*vt100.color15: #ffffff
-XTerm*vt100.faceName: "Anonymous Pro"
-XTerm*vt100.faceSize: 11
-XTerm.termName: xterm-256color
-XTerm*vt100.utf8: 1
-XTerm*vt100.metaSendsEscape: true
-XTerm*vt100.saveLines: 8192
-XTerm*vt100.trimSelection: true
-XTerm*vt100.on2Clicks: regex [-_.A-Za-z0-9]+
-XTerm*vt100.on3Clicks: regex [-_/:=+?&@.A-Za-z0-9]+
-XTerm*vt100.on4Clicks: regex [^ ]+
-XTerm*vt100.on5Clicks: line
 
 Xcursor.theme: Vanilla-DMZ-AA
