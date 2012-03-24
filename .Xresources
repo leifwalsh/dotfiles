@@ -10,7 +10,7 @@ xpdf*background:        white
 !Xft.lcdfilter: lcddefault
 !Xft.rgba: rgb
 
-URxvt.termName: rxvt-unicode
+URxvt.termName: xterm-256color
 
 URxvt.iconFile: /usr/share/icons/hicolor/scalable/apps/Terminal.png
 
