@@ -69,12 +69,12 @@ preexec () {
 ################################################################################
 
 # export proper variables for ls and completion
-if [[ -f /etc/DIR_COLORS ]]
-then
-  eval $(dircolors /etc/DIR_COLORS)
-elif [[ -f ${HOME}/.dircolors ]]
+if [[ -f ${HOME}/.dircolors ]]
 then
   eval $(dircolors ${HOME}/.dircolors)
+elif [[ -f /etc/DIR_COLORS ]]
+then
+  eval $(dircolors /etc/DIR_COLORS)
 else
   eval $(dircolors -b)
 fi
