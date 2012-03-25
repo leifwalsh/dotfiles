@@ -40,9 +40,6 @@ export LESS="-R"
 if [[ $TERM = "xterm" ]]
 then
     export TERM=xterm-256color
-elif [[ $TERM = "rxvt-unicode" ]]
-then
-    export TERM=xterm
 fi
 
 if pgrep polipo &>/dev/null

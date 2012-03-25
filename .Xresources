@@ -31,7 +31,7 @@ URxvt.matcher.pattern.1: \\bwww\\.[\\w-]+\\.[\\w./?&@#-]*[\\w/-]
 
 URxvt.depth: 32
 
-#include "/home/leif/git/adlaiff6-solarized/xresources-colors-solarized/Xresources-dark"
+#include "/home/leif/git/solarized/xresources-colors-solarized/Xresources"
 URxvt.fading: 20
 
 Fig.latexfonts: true
