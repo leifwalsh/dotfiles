@@ -53,7 +53,8 @@ default-saved-msg-folder=
 # Over-rides default path for postponed messages folder, e.g. =pm (which uses
 # first folder collection dir) or ={host4}pm (using home dir on host4).
 # Default: postponed-msgs (Unix) or POSTPOND.MTX (PC) in default fldr coltn.
-postponed-folder={tokulocal.localdomain/novalidate-cert/user=tokuleif}Drafts
+postponed-folder=Tokudrafts
+#postponed-folder={tokulocal.localdomain/novalidate-cert/user=tokuleif}Drafts
 #postponed-folder={imap.gmail.com/ssl/user=leif.walsh@gmail.com}Drafts
 
 # If set, specifies where already-read messages will be moved upon quitting.
@@ -141,7 +142,7 @@ fcc-name-rule=
 # Sets presentation order of messages in Index. Choices:
 # Subject, From, Arrival, Date, Size, To, Cc, OrderedSubj, Score, and Thread.
 # Order may be reversed by appending /Reverse. Default: "Arrival".
-sort-key=tHread
+sort-key=Date
 
 # Sets presentation order of address book entries. Choices: dont-sort,
 # fullname-with-lists-last, fullname, nickname-with-lists-last, nickname
@@ -338,7 +339,8 @@ mailcap-search-path=
 mimetype-search-path=
 
 # List of programs to open Internet URLs (e.g. http or ftp references).
-url-viewers=xdg-open
+url-viewers=xdg-open,
+	/usr/bin/xdg-open
 
 # The maximum number of non-stayopen remote connections that Alpine will use
 max-remote-connections=
@@ -411,7 +413,7 @@ address-book=.addressbook-tokutek
 global-address-book=
 
 # Set by Alpine; controls beginning-of-month sent-mail pruning.
-last-time-prune-questioned=112.3
+last-time-prune-questioned=112.4
 
 # Set by Alpine; controls display of "new version" message.
 last-version-used=6.02
@@ -541,7 +543,7 @@ patterns-other=
 patterns-search=
 
 # Controls display of color
-color-style=force-xterm-256color
+color-style=use-termdef
 
 # Controls display of color for current index line
 current-indexline-style=
@@ -551,7 +553,7 @@ titlebar-color-style=default
 
 # Choose: black, blue, green, cyan, red, magenta, yellow, or white.
 normal-foreground-color=255,255,255
-normal-background-color=000,000,000
+normal-background-color=264,264,264
 reverse-foreground-color=
 reverse-background-color=
 title-foreground-color=
@@ -567,17 +569,17 @@ keyname-background-color=
 selectable-item-foreground-color=
 selectable-item-background-color=
 meta-message-foreground-color=175,175,135
-meta-message-background-color=000,000,000
+meta-message-background-color=264,264,264
 quote1-foreground-color=000,175,255
-quote1-background-color=000,000,000
+quote1-background-color=264,264,264
 quote2-foreground-color=000,255,095
-quote2-background-color=000,000,000
+quote2-background-color=264,264,264
 quote3-foreground-color=255,000,255
-quote3-background-color=000,000,000
+quote3-background-color=264,264,264
 incoming-unseen-foreground-color=
 incoming-unseen-background-color=
 signature-foreground-color=000,000,255
-signature-background-color=000,000,000
+signature-background-color=264,264,264
 prompt-foreground-color=
 prompt-background-color=
 header-general-foreground-color=
@@ -612,8 +614,8 @@ index-opening-foreground-color=
 index-opening-background-color=
 
 # When viewing messages, these are the header colors
-viewer-hdr-colors=/HDR=From/FG=255\x2C255\x2C000/BG=000\x2C000\x2C000,
-	/HDR=Subject/FG=255\x2C255\x2C000/BG=000\x2C000\x2C000
+viewer-hdr-colors=/HDR=From/FG=255\x2C255\x2C000/BG=264\x2C264\x2C264,
+	/HDR=Subject/FG=255\x2C255\x2C000/BG=264\x2C264\x2C264
 
 # Colors used to display keywords in the index
 keyword-colors=

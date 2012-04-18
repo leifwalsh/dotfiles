@@ -37,7 +37,7 @@ end
 beautiful.init(awful.util.getdir("config") .. "/themes/awesome-solarized/dark/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "gnome-terminal"
+terminal = "urxvt"
 editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -62,7 +62,7 @@ layouts =
     --awful.layout.suit.spiral.dwindle,
     awful.layout.suit.max,
     --awful.layout.suit.max.fullscreen,
-    --awful.layout.suit.magnifier
+    awful.layout.suit.magnifier
 }
 -- }}}
 
@@ -72,7 +72,7 @@ tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
     tags[s] = awful.tag({ '☁', 'ε', '%', '✉', 5, 6, 7, 8, 9 }, s,
-                        { layouts[6], layouts[6], layouts[2], layouts[6], layouts[2], layouts[2], layouts[2], layouts[2], layouts[2] })
+                        { layouts[6], layouts[6], layouts[2], layouts[6], layouts[2], layouts[2], layouts[2], layouts[2], layouts[6] })
 end
 -- }}}
 
