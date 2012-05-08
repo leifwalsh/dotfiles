@@ -413,7 +413,7 @@ address-book=.addressbook-tokutek
 global-address-book=
 
 # Set by Alpine; controls beginning-of-month sent-mail pruning.
-last-time-prune-questioned=112.4
+last-time-prune-questioned=112.5
 
 # Set by Alpine; controls display of "new version" message.
 last-version-used=6.02
