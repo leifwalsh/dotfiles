@@ -3,8 +3,9 @@
 ################################################################################
 
 [[ -f /etc/profile ]] && . /etc/profile
-[[ -f /etc/zsh/zprofile ]] && . /etc/zsh/zprofile
+[[ -f /etc/zprofile ]] && . /etc/zprofile
 [[ -f ~/.profile ]] && . ~/.profile
+[[ -f ~/.zprofile ]] && . ~/.zprofile
 
 # History options.
 export HISTFILE=~/.zsh_history
