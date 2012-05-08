@@ -551,7 +551,7 @@ patterns-other=
 patterns-search=
 
 # Controls display of color
-color-style=use-termdef
+color-style=force-xterm-256color
 
 # Controls display of color for current index line
 current-indexline-style=
@@ -561,7 +561,7 @@ titlebar-color-style=default
 
 # Choose: black, blue, green, cyan, red, magenta, yellow, or white.
 normal-foreground-color=255,255,255
-normal-background-color=264,264,264
+normal-background-color=064,064,064
 reverse-foreground-color=
 reverse-background-color=
 title-foreground-color=
