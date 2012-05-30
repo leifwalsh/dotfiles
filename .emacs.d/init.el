@@ -19,7 +19,6 @@
 ;;{{{ load-path
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/ecb"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/git-emacs"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/auto-complete-1.3.1"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/emacs-color-theme-solarized"))
@@ -27,9 +26,6 @@
     (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/color-theme-6.6.0"))
   (add-to-list 'custom-theme-load-path (expand-file-name "~/.emacs.d/vendor/emacs-color-theme-solarized/")))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/tuareg"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/org-7.6"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/org-7.6/lisp"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/org-7.6/contrib/lisp"))
 
 ;;}}}
 
@@ -46,8 +42,8 @@
 ;;{{{ elpa
 
 (package-initialize)
-(setq package-archives '(("ELPA" . "http://tromey.com/elpa/") 
-			 ("gnu" . "http://elpa.gnu.org/packages/")))
+(setq package-archives '(("ELPA" . "http://tromey.com/elpa/")
+                         ("gnu" . "http://elpa.gnu.org/packages/")))
 
 ;;; from elisp cookbook
 (defun walk-path (dir action)
@@ -164,188 +160,174 @@
 
 ;;{{{ cedet
 
-(eval-after-load 'cedet
-  '(progn
-     ;; (require 'cedet-contrib-load)
-     (if (not (boundp 'x-max-tooltip-size))
-         (setq x-max-tooltip-size '(1000 . 1000)))
-     (require 'semantic)
-     (require 'semantic/complete)
-     (semanticdb-enable-gnu-global-databases 'c-mode)
-     (semanticdb-enable-gnu-global-databases 'c++-mode)
+(if (not (boundp 'x-max-tooltip-size))
+    (setq x-max-tooltip-size '(1000 . 1000)))
+(require 'semantic)
+(semantic-default-c-setup)
+(semantic-gcc-setup)
+(require 'semantic/complete)
+(require 'semantic/symref/global)
+(semanticdb-enable-gnu-global-databases 'c-mode)
+(semanticdb-enable-gnu-global-databases 'c++-mode)
 
-     (setq semantic-default-submodes
-           (append semantic-default-submodes
-                   '(global-semanticdb-minor-mode
-                     global-semantic-decoration-mode
-                     global-semantic-highlight-func-mode
-                     global-semantic-idle-breadcrumbs-mode
-                     global-semantic-idle-completions-mode
-                     global-semantic-idle-local-symbol-highlight-mode
-                     global-semantic-idle-scheduler-mode
-                     global-semantic-idle-summary-mode
-                     global-semantic-mru-bookmark-mode
-                     global-semantic-stickyfunc-mode
-                     global-senator-minor-mode)))
-     (semantic-mode 1)
+(setq semantic-default-submodes
+      (append semantic-default-submodes
+              '(global-semanticdb-minor-mode
+                global-semantic-decoration-mode
+                global-semantic-highlight-func-mode
+                global-semantic-idle-breadcrumbs-mode
+                global-semantic-idle-completions-mode
+                global-semantic-idle-local-symbol-highlight-mode
+                global-semantic-idle-scheduler-mode
+                global-semantic-idle-summary-mode
+                global-semantic-mru-bookmark-mode
+                global-semantic-stickyfunc-mode
+                global-senator-minor-mode)))
+(semantic-mode 1)
 
-     (setq semantic-complete-inline-analyzer-displayor-class 'semantic-displayor-traditional-with-focus-highlight)
-     (setq semantic-decoration-styles '(("semantic-decoration-on-includes" . t) ("semantic-decoration-on-protected-members" . t) ("semantic-decoration-on-private-members" . t) ("semantic-tag-boundary" . t)))
-     (setq semantic-idle-breadcrumbs-format-tag-function 'semantic-format-tag-uml-prototype)
-     (setq semantic-idle-work-parse-neighboring-files-flag t)
-     (setq semantic-idle-work-update-headers-flag t)
-     (setq semanticdb-find-default-throttle '(local project unloaded system recursive omniscient))
+(setq semantic-complete-inline-analyzer-displayor-class 'semantic-displayor-traditional-with-focus-highlight)
+(setq semantic-decoration-styles '(("semantic-decoration-on-includes" . t) ("semantic-decoration-on-protected-members" . t) ("semantic-decoration-on-private-members" . t) ("semantic-tag-boundary" . t)))
+(setq semantic-idle-breadcrumbs-format-tag-function 'semantic-format-tag-uml-prototype)
+(setq semantic-idle-work-parse-neighboring-files-flag t)
+(setq semantic-idle-work-update-headers-flag t)
+(setq semanticdb-find-default-throttle '(local project unloaded system recursive omniscient))
 
-     (defvar semantic-tags-location-ring (make-ring 20))
+(defvar semantic-tags-location-ring (make-ring 20))
 
-     (defun semantic-goto-definition-fast (point)
-       "Goto definition using semantic-ia-fast-jump
+(defun semantic-goto-definition-fast (point)
+  "Goto definition using semantic-ia-fast-jump
 save the pointer marker if tag is found"
-       (interactive "def")
-       (condition-case err
-           (progn
-             (ring-insert semantic-tags-location-ring (point-marker))
-             (call-interactively 'semantic-ia-fast-jump))
-         (error
-          (set-marker (ring-remove semantic-tags-location-ring 0) nil nil)
-          (signal (car err) (cdr err)))))
+  (interactive "def")
+  (condition-case err
+      (progn
+        (ring-insert semantic-tags-location-ring (point-marker))
+        (call-interactively 'semantic-ia-fast-jump))
+    (error
+     (set-marker (ring-remove semantic-tags-location-ring 0) nil nil)
+     (signal (car err) (cdr err)))))
 
-     (defun semantic-goto-definition (point)
-       "Goto definition using semantic-complete-jump
+(defun semantic-goto-definition (point)
+  "Goto definition using semantic-complete-jump
 save the pointer marker if tag is found"
-       (interactive "def")
-       (condition-case err
-           (progn
-             (ring-insert semantic-tags-location-ring (point-marker))
-             (call-interactively 'semantic-complete-jump))
-         (error
-          ;;if not found remove the tag saved in the ring
-          (set-marker (ring-remove semantic-tags-location-ring 0) nil nil)
-          (signal (car err) (cdr err)))))
+  (interactive "def")
+  (condition-case err
+      (progn
+        (ring-insert semantic-tags-location-ring (point-marker))
+        (call-interactively 'semantic-complete-jump))
+    (error
+     ;;if not found remove the tag saved in the ring
+     (set-marker (ring-remove semantic-tags-location-ring 0) nil nil)
+     (signal (car err) (cdr err)))))
 
-     (defun semantic-pop-tag-mark ()
-       "popup the tag save by semantic-goto-definition"
-       (interactive)
-       (if (ring-empty-p semantic-tags-location-ring)
-           (message "%s" "No more tags available")
-         (let* ((marker (ring-remove semantic-tags-location-ring 0))
-                (buff (marker-buffer marker))
-                (pos (marker-position marker)))
-           (if (not buff)
-               (message "Buffer has been deleted")
-             (switch-to-buffer buff)
-             (goto-char pos))
-           (set-marker marker nil nil))))
+(defun semantic-pop-tag-mark ()
+  "popup the tag save by semantic-goto-definition"
+  (interactive)
+  (if (ring-empty-p semantic-tags-location-ring)
+      (message "%s" "No more tags available")
+    (let* ((marker (ring-remove semantic-tags-location-ring 0))
+           (buff (marker-buffer marker))
+           (pos (marker-position marker)))
+      (if (not buff)
+          (message "Buffer has been deleted")
+        (switch-to-buffer buff)
+        (goto-char pos))
+      (set-marker marker nil nil))))
 
-     (defun alexott/cedet-hook ()
-       (local-set-key "\C-c>" 'semantic-complete-analyze-inline)
-       (local-set-key "\C-c=" 'semantic-decoration-include-visit)
+(defun alexott/cedet-hook ()
+  (local-set-key "\C-c>" 'semantic-complete-analyze-inline)
+  (local-set-key "\C-c=" 'semantic-decoration-include-visit)
 
-       (local-set-key (kbd "M-.") 'semantic-goto-definition-fast)
-       (local-set-key "\C-cj" 'semantic-goto-definition)
-       (local-set-key (kbd "M-*") 'semantic-pop-tag-mark)
-       (local-set-key "\C-cq" 'semantic-ia-show-doc)
-       (local-set-key "\C-cm" 'semantic-symref)
-       (local-set-key "\C-cp" 'semantic-analyze-proto-impl-toggle))
-     (add-hook 'semantic-init-hook 'alexott/cedet-hook)
-     (add-hook 'c-mode-common-hook 'alexott/cedet-hook)
-     (add-hook 'lisp-mode-hook 'alexott/cedet-hook)
-     (add-hook 'scheme-mode-hook 'alexott/cedet-hook)
-     (add-hook 'emacs-lisp-mode-hook 'alexott/cedet-hook)
-     (add-hook 'erlang-mode-hook 'alexott/cedet-hook)
+  (local-set-key (kbd "M-.") 'semantic-goto-definition-fast)
+  (local-set-key "\C-cj" 'semantic-goto-definition)
+  (local-set-key (kbd "M-*") 'semantic-pop-tag-mark)
+  (local-set-key "\C-cq" 'semantic-ia-show-doc)
+  (local-set-key "\C-cm" 'semantic-symref)
+  (local-set-key "\C-cp" 'semantic-analyze-proto-impl-toggle))
+(add-hook 'semantic-init-hook 'alexott/cedet-hook)
+(add-hook 'c-mode-common-hook 'alexott/cedet-hook)
+(add-hook 'lisp-mode-hook 'alexott/cedet-hook)
+(add-hook 'scheme-mode-hook 'alexott/cedet-hook)
+(add-hook 'emacs-lisp-mode-hook 'alexott/cedet-hook)
+(add-hook 'erlang-mode-hook 'alexott/cedet-hook)
 
-     (defun alexott/c-mode-cedet-hook ()
-       ;; (local-set-key "\C-ct" 'eassist-switch-h-cpp)
-       ;; (local-set-key "\C-xt" 'eassist-switch-h-cpp)
-       ;; (local-set-key "\C-ce" 'eassist-list-methods)
-       (local-set-key "\C-c\C-r" 'semantic-symref)
-       )
-     (add-hook 'c-mode-common-hook 'alexott/c-mode-cedet-hook)
+(defun alexott/c-mode-cedet-hook ()
+  ;; (local-set-key "\C-ct" 'eassist-switch-h-cpp)
+  ;; (local-set-key "\C-xt" 'eassist-switch-h-cpp)
+  ;; (local-set-key "\C-ce" 'eassist-list-methods)
+  (local-set-key "\C-c\C-r" 'semantic-symref)
+  )
+(add-hook 'c-mode-common-hook 'alexott/c-mode-cedet-hook)
 
-     (require 'ede)
-     (setq ede-locate-setup-options
-           '(ede-locate-global ede-locate-cscope ede-locate-locate ede-locate-base))
-     (global-ede-mode 1)
-     (ede-enable-generic-projects)
+(require 'ede)
+(setq ede-locate-setup-options
+      '(ede-locate-global ede-locate-cscope ede-locate-locate ede-locate-base))
+(global-ede-mode 1)
+(ede-enable-generic-projects)
 
-     (ignore-errors
-       (mapc (lambda (file-and-attr)
-               (let ((dir (car file-and-attr))
-                     (attr (cdr file-and-attr)))
-                 (message "%s" dir)
-                 (when (and (car attr)
-                            (file-exists-p (concat "~/svn/tokutek/mysql.branches/" dir "/tokudb/Makefile")))
-                   (add-to-list 'semanticdb-project-roots
-                                (concat "~/svn/tokutek/mysql.branches/" dir "/tokudb"))
-                   (set (intern (format "tokudb-%s-project" dir))
-                        (ede-cpp-root-project
-                         (format "Tokudb %s" dir)
-                         :name (format "Tokudb %s" dir)
-                         :file (concat "~/svn/tokutek/mysql.branches/" dir "/tokudb/Makefile")
-                         :include-path '("/" "/include" "/linux" "/toku_include" "/newbrt" "/src" "/src/lock_tree" "/src/range_tree")
-                         :system-include-path '("/usr/include" "/usr/local/include")
-                         :spp-table '(("TOKUDB_REVISION" . "0")
-                                      ("_SVID_SOURCE" . "")
-                                      ("_FILE_OFFSET_BITS" . "64")
-                                      ("_LARGEFILE64_SOURCE" . "")
-                                      ("_XOPEN_SOURCE" . "600")
-                                      ("_THREAD_SAFE" . "")
-                                      ("TOKU_RT_NOOVERLAPS" . "")))))))
-             (directory-files-and-attributes "~/svn/tokutek/mysql.branches/")))
-     (ignore-errors
-       (mapc (lambda (file-and-attr)
-               (let ((dir (car file-and-attr))
-                     (attr (cdr file-and-attr)))
-                 (message "%s" dir)
-                 (when (and (car attr)
-                            (file-exists-p (concat "~/svn/tokutek/toku/" dir "/Makefile")))
-                   (let ((branch (substring dir 7)))
-                     (add-to-list 'semanticdb-project-roots
-                                  (concat "~/svn/tokutek/toku/" dir))
-                     (set (intern (format "tokudb-%s-project" branch))
-                          (ede-cpp-root-project
-                           (format "Tokudb %s" branch)
-                           :name (format "Tokudb %s" branch)
-                           :file (concat "~/svn/tokutek/toku/" dir "/Makefile")
-                           :include-path '("/" "/include" "/linux" "/toku_include" "/newbrt" "/src" "/src/lock_tree" "/src/range_tree")
-                           :system-include-path '("/usr/include" "/usr/local/include")
-                           :spp-table '(("TOKUDB_REVISION" . "0")
-                                        ("_SVID_SOURCE" . "")
-                                        ("_FILE_OFFSET_BITS" . "64")
-                                        ("_LARGEFILE64_SOURCE" . "")
-                                        ("_XOPEN_SOURCE" . "600")
-                                        ("_THREAD_SAFE" . "")
-                                        ("TOKU_RT_NOOVERLAPS" . ""))))))))
-             (directory-files-and-attributes "~/svn/tokutek/toku/" nil "tokudb\\..*")))
-     (setq tokudb-mainline-project
-           (ignore-errors
-             (ede-cpp-root-project
-              "Tokudb"
-              :name "Tokudb"
-              :file "~/svn/tokutek/toku/tokudb/Makefile"
-              :include-path '("/" "/include" "/linux" "/toku_include" "/newbrt" "/src" "/src/lock_tree" "/src/range_tree")
-              :system-include-path '("/usr/include" "/usr/local/include")
-              :spp-table '(("TOKUDB_REVISION" . "0")
-                           ("_SVID_SOURCE" . "")
-                           ("_FILE_OFFSET_BITS" . "64")
-                           ("_LARGEFILE64_SOURCE" . "")
-                           ("_XOPEN_SOURCE" . "600")
-                           ("_THREAD_SAFE" . "")
-                           ("TOKU_RT_NOOVERLAPS" . "")))))
-
-     (require 'ecb-autoloads)
-     (eval-after-load "ecb"
-       (setq ecb-compilation-buffer-names (quote (("*Calculator*") ("*vc*") ("*vc-diff*") ("*Apropos*") ("*Occur*") ("*shell*") ("\\*[cC]ompilation.*\\*" . t) ("\\*i?grep.*\\*" . t) ("*JDEE Compile Server*") ("*Help*") ("*Completions*") ("*Backtrace*") ("*Compile-log*") ("*bsh*") ("*Messages*") ("\\*Symref.*" . t) ("*Ido Completions*")))
-             ecb-compile-window-height 6
-             ecb-compile-window-temporally-enlarge (quote both)
-             ecb-layout-name "left6"
-             ecb-options-version "2.40"
-             ecb-primary-secondary-mouse-buttons (quote mouse-1--C-mouse-1)
-             ecb-tip-of-the-day nil
-             ecb-windows-width 0.3)))
-     )
-
-(load-file (expand-file-name "~/.emacs.d/vendor/cedet/cedet-devel-load.el"))
+(ignore-errors
+  (mapc (lambda (file-and-attr)
+          (let ((dir (car file-and-attr))
+                (attr (cdr file-and-attr)))
+            (message "%s" dir)
+            (when (and (car attr)
+                       (file-exists-p (concat "~/svn/tokutek/mysql.branches/" dir "/tokudb/Makefile")))
+              (add-to-list 'semanticdb-project-roots
+                           (concat "~/svn/tokutek/mysql.branches/" dir "/tokudb"))
+              (set (intern (format "tokudb-%s-project" dir))
+                   (ede-cpp-root-project
+                    (format "Tokudb %s" dir)
+                    :name (format "Tokudb %s" dir)
+                    :file (concat "~/svn/tokutek/mysql.branches/" dir "/tokudb/Makefile")
+                    :include-path '("/" "/include" "/linux" "/toku_include" "/newbrt" "/src" "/src/lock_tree" "/src/range_tree")
+                    :system-include-path '("/usr/include" "/usr/local/include")
+                    :spp-table '(("TOKUDB_REVISION" . "0")
+                                 ("_SVID_SOURCE" . "")
+                                 ("_FILE_OFFSET_BITS" . "64")
+                                 ("_LARGEFILE64_SOURCE" . "")
+                                 ("_XOPEN_SOURCE" . "600")
+                                 ("_THREAD_SAFE" . "")
+                                 ("TOKU_RT_NOOVERLAPS" . "")))))))
+        (directory-files-and-attributes "~/svn/tokutek/mysql.branches/")))
+(ignore-errors
+  (mapc (lambda (file-and-attr)
+          (let ((dir (car file-and-attr))
+                (attr (cdr file-and-attr)))
+            (message "%s" dir)
+            (when (and (car attr)
+                       (file-exists-p (concat "~/svn/tokutek/toku/" dir "/CMakeLists.txt")))
+              (let ((branch (substring dir 7)))
+                (add-to-list 'semanticdb-project-roots
+                             (concat "~/svn/tokutek/toku/" dir))
+                (set (intern (format "tokudb-%s-project" branch))
+                     (ede-cpp-root-project
+                      (format "Tokudb %s" branch)
+                      :name (format "Tokudb %s" branch)
+                      :file (concat "~/svn/tokutek/toku/" dir "/CMakeLists.txt")
+                      :include-path '("/" "/Debug/buildheader" "/Debug/toku_include" "/Debug/ft" "/include" "/portability" "/portability/tests" "/toku_include" "/ft" "/ft/tests" "/src" "/src/lock_tree" "/src/range_tree" "/src/tests")
+                      :system-include-path '("/usr/include" "/usr/local/include")
+                      :spp-table '(("TOKUDB_REVISION" . "0")
+                                   ("_SVID_SOURCE" . "")
+                                   ("_FILE_OFFSET_BITS" . "64")
+                                   ("_LARGEFILE64_SOURCE" . "")
+                                   ("_XOPEN_SOURCE" . "600")
+                                   ("_THREAD_SAFE" . "")
+                                   ("TOKU_RT_NOOVERLAPS" . ""))))))))
+        (directory-files-and-attributes "~/svn/tokutek/toku/" nil "tokudb\\..*")))
+(setq tokudb-mainline-project
+      (ignore-errors
+        (ede-cpp-root-project
+         "Tokudb"
+         :name "Tokudb"
+         :file "~/svn/tokutek/toku/tokudb/CMakeLists.txt"
+         :include-path ''("/" "/Debug/buildheader" "/Debug/toku_include" "/Debug/ft" "/include" "/portability" "/portability/tests" "/toku_include" "/ft" "/ft/tests" "/src" "/src/lock_tree" "/src/range_tree" "/src/tests")
+         :system-include-path '("/usr/include" "/usr/local/include")
+         :spp-table '(("TOKUDB_REVISION" . "0")
+                      ("_SVID_SOURCE" . "")
+                      ("_FILE_OFFSET_BITS" . "64")
+                      ("_LARGEFILE64_SOURCE" . "")
+                      ("_XOPEN_SOURCE" . "600")
+                      ("_THREAD_SAFE" . "")
+                      ("TOKU_RT_NOOVERLAPS" . "")))))
 
 ;;}}}
 
@@ -800,6 +782,46 @@ save the pointer marker if tag is found"
 
 ;;}}}
 
+;;{{{ sendmail
+
+(require 'sendmail)
+
+;;}}}
+
+;;{{{ message
+
+(require 'message)
+(defun my-message-insert-bcc-hook ()
+  (let ((str (buffer-string)))
+    (string-match "^From: \\(.*\\)$" str)
+    (concat "Bcc: " (match-string 1 str))))
+
+;;}}}
+
+;;{{{ notmuch
+
+(require 'notmuch)
+(global-set-key (kbd "C-c n") 'notmuch)
+(define-key notmuch-show-mode-map "d"
+  (lambda ()
+    "delete the current message"
+    (interactive)
+    (notmuch-show-tag-message "+deleted")
+    (notmuch-show-archive-message-then-next-or-next-thread)))
+(define-key notmuch-search-mode-map "q" (lambda ()
+                                          (interactive)
+                                          (call-process "update-mail" nil 0)
+                                          (notmuch-search-quit)))
+;;}}}
+
+;;{{{ notmuch-address
+
+(require 'notmuch-address)
+(setq notmuch-address-command "~/bin/nottoomuch-addresses.sh")
+(notmuch-address-message-insinuate)
+
+;;}}}
+
 ;;}}}
 
 ;;{{{ remaps
@@ -928,7 +950,14 @@ save the pointer marker if tag is found"
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(menu-bar-mode nil)
+ '(message-default-headers (quote my-message-insert-bcc-hook))
  '(message-fill-column 74)
+ '(message-required-mail-headers (quote (From Subject Date (optional . In-Reply-To) Message-ID (optional . User-Agent) Bcc)))
+ '(message-send-mail-function (quote message-send-mail-with-sendmail))
+ '(message-sendmail-envelope-from (quote header))
+ '(mm-text-html-renderer (quote gnus-w3m))
+ '(notmuch-fcc-dirs nil)
+ '(notmuch-saved-searches (quote (("inbox" . "tag:inbox") ("unread" . "tag:unread") ("toku" . "tag:toku and tag:inbox") ("personal" . "tag:personal and tag:inbox"))))
  '(org-agenda-files (list (concat org-directory "tokutek.org") (concat org-directory "home.org")))
  '(org-capture-templates (quote (("n" "Tokutek Note" entry (file+headline "~/Dropbox/org/tokutek.org" "notes") "** %?  %^G
    %a
@@ -944,7 +973,7 @@ save the pointer marker if tag is found"
  '(safe-local-variable-values (quote ((noweb-code-mode . c-mode) (js2-basic-offset . 4) (c-indentation-style . linux))))
  '(scroll-bar-mode nil)
  '(show-paren-mode t)
- '(show-trailing-whitespace t)
+ '(show-trailing-whitespace nil)
  '(slime-net-coding-system (quote utf-8-unix))
  '(tags-revert-without-query t)
  '(tool-bar-mode nil)
@@ -952,6 +981,7 @@ save the pointer marker if tag is found"
  '(tramp-default-method "rsyncc")
  '(user-mail-address "leif.walsh@gmail.com")
  '(vc-handled-backends (quote (RCS CVS SVN git SCCS Bzr Git Hg Arch)))
+ '(whitespace-global-modes (quote (not notmuch-show)))
  '(whitespace-style (quote (face tabs trailing space-before-tab indentation empty space-after-tab tab-mark))))
 
 (custom-set-faces
@@ -959,10 +989,9 @@ save the pointer marker if tag is found"
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "DejaVu Sans Mono" :foundry "unknown" :slant normal :weight normal :height 98 :width normal))))
  '(cursor ((t (:background "#708183" :foreground "#042028" :inverse-video t))))
- '(diff-added ((t (:inherit diff-changed :foreground "SpringGreen4" :inverse-video t))) t)
- '(diff-removed ((t (:inherit diff-changed :foreground "IndianRed4" :inverse-video t))) t)
+ '(diff-added ((t (:inherit diff-changed :foreground "SpringGreen4" :inverse-video t))))
+ '(diff-removed ((t (:inherit diff-changed :foreground "IndianRed4" :inverse-video t))))
  '(ecb-default-highlight-face ((((class color) (background dark)) (:background "beige"))) t)
  '(erc-input-face ((t (:foreground "cyan"))))
  '(erc-my-nick-face ((t (:foreground "cyan" :weight bold))))

@@ -10,7 +10,7 @@ remoterepository = PersonalRemote
 
 [Repository PersonalLocal]
 type = Maildir
-localfolders = ~/Maildir
+localfolders = ~/Mail/Personal
 
 [Repository PersonalRemote]
 type = Gmail
@@ -24,7 +24,7 @@ remoterepository = WorkRemote
 
 [Repository WorkLocal]
 type = Maildir
-localfolders = ~/Tokumaildir
+localfolders = ~/Mail/Tokutek
 
 [Repository WorkRemote]
 type = Gmail

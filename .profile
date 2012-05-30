@@ -42,14 +42,6 @@ then
     export TERM=xterm-256color
 fi
 
-if pgrep polipo &>/dev/null
-then
-    export all_proxy=localhost:8123
-    export http_proxy=$all_proxy
-    export https_proxy=$all_proxy
-    export ftp_proxy=$all_proxy
-fi
-
 # start ssh-agent
 if which keychain &>/dev/null
 then
