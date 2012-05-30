@@ -1,4 +1,5 @@
 .CFUserTextEncoding
+.Private
 .Trash
 .Xauthority
 .adobe
@@ -13,6 +14,7 @@
 .compiz-1/
 .config/autostart/
 .config/banshee-1/
+.config/chromium/
 .config/compiz-1/
 .config/dconf/
 .config/Empathy/
@@ -22,8 +24,10 @@
 .config/google-chrome/
 .config/gtk-2.0/
 .config/gwibber/
+.config/htop/
 .config/menus/
 .config/nautilus/
+.config/nottoomuch/
 .config/software-center/
 .config/tangerine/
 .config/transmission/
@@ -43,6 +47,7 @@
 .dolphin-emu/
 .dropbox
 .dropbox-dist/
+.ecryptfs
 .emacs-backups
 .emacs.bmk
 .esd_auth
@@ -66,13 +71,19 @@
 .keychain
 .last_codereview_email_address
 .lesshst
+.linuxmint/
 .local
 .macromedia/
 .minecraft/
 .mission-control/
 .mozilla/
+.mpd.conf
+.mpd/
+.nv/
 .nvidia-settings-rc
+.offlineimap/
 .passwd.gpg
+.pentadactyl/
 .pki/
 .pulse/
 .pulse-cookie
@@ -93,28 +104,32 @@
 .Trash
 .viminfo
 .vim/view/
+.w3m/
+.wine/
 .Xauthority
 .Xmodmap
+.xbmc/
 .xsession-errors
 .xsession-errors.old
 .zcompdump
 .zsh/
 .*_history
-Desktop
-Documents
-Downloads
-Dropbox
+Desktop/
+Documents/
+Downloads/
+Dropbox/
 Games/
-ISOs
-Library
-Movies
-Music
-Pictures
-Public
-Sites
-Ubuntu\ One
-Videos
-VirtualBox VMs
+ISOs/
+Library/
+Mail/
+Movies/
+Music/
+Pictures/
+Public/
+Sites/
+Ubuntu\ One/
+Videos/
+VirtualBox VMs/
 backgrounds
 bzr
 git
