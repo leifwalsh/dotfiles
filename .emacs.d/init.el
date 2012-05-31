@@ -800,25 +800,30 @@ save the pointer marker if tag is found"
 
 ;;{{{ notmuch
 
-(require 'notmuch)
-(global-set-key (kbd "C-c n") 'notmuch)
-(define-key notmuch-show-mode-map "d"
-  (lambda ()
-    "delete the current message"
-    (interactive)
-    (notmuch-show-tag-message "+deleted")
-    (notmuch-show-archive-message-then-next-or-next-thread)))
-(define-key notmuch-search-mode-map "q" (lambda ()
-                                          (interactive)
-                                          (call-process "update-mail" nil 0)
-                                          (notmuch-search-quit)))
+(eval-after-load "notmuch"
+  '(progn
+    (global-set-key (kbd "C-c n") 'notmuch)
+    (define-key notmuch-show-mode-map "d"
+      (lambda ()
+	"delete the current message"
+	(interactive)
+	(notmuch-show-tag-message "+deleted")
+	(notmuch-show-archive-message-then-next-or-next-thread)))
+    (define-key notmuch-search-mode-map "q" (lambda ()
+					      (interactive)
+					      (call-process "update-mail" nil 0)
+					      (notmuch-search-quit)))))
+(ignore-errors (require 'notmuch))
+
 ;;}}}
 
 ;;{{{ notmuch-address
 
-(require 'notmuch-address)
-(setq notmuch-address-command "~/bin/nottoomuch-addresses.sh")
-(notmuch-address-message-insinuate)
+(eval-after-load "notmuch-address"
+  '(progn
+     (setq notmuch-address-command "~/bin/nottoomuch-addresses.sh")
+     (notmuch-address-message-insinuate)))
+(ignore-errors (require 'notmuch-address))
 
 ;;}}}
 
