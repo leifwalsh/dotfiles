@@ -930,7 +930,7 @@ save the pointer marker if tag is found"
  '(default-frame-alist (quote ((background-mode . dark) (tool-bar-lines . 0) (menu-bar-lines . 0))))
  '(display-battery-mode t)
  '(display-time-mode t)
- '(ede-project-directories (quote ("/Users/leif/svn/tokutek/toku/tokudb.4413")))
+ '(ede-project-directories (quote ("/Users/leif/git/mongo/src/mongo" "/Users/leif/src/mongodb-src-r2.0.5" "/Users/leif/svn/tokutek/toku/tokudb.4413")))
  '(erc-autojoin-channels-alist (quote (("foonetic.net" "#xkcd") ("freenode.net" "#emacs" "#lisp" "#haskell" "#clojure"))))
  '(erc-nick (quote ("Adlai" "leifw" "Adlai_" "leifw_" "Adlai__" "leifw__")))
  '(erc-nickserv-identify-mode (quote autodetect))
