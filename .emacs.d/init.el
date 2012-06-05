@@ -37,6 +37,14 @@
 
 ;;}}}
 
+;;{{{ nice macros
+
+(defmacro* when-let ((var value) &rest body)
+  `(let ((,var ,value))
+     (when ,var ,@body)))
+
+;;}}}
+
 ;;}}}
 
 ;;{{{ elpa
@@ -165,6 +173,10 @@
 (require 'semantic)
 (semantic-default-c-setup)
 (semantic-gcc-setup)
+(require 'semantic/tag)
+(require 'semantic/analyze/complete)
+(require 'semantic/analyze/fcn)
+(require 'semantic/analyze/refs)
 (require 'semantic/complete)
 (require 'semantic/symref/global)
 (semanticdb-enable-gnu-global-databases 'c-mode)
@@ -328,6 +340,23 @@ save the pointer marker if tag is found"
                       ("_XOPEN_SOURCE" . "600")
                       ("_THREAD_SAFE" . "")
                       ("TOKU_RT_NOOVERLAPS" . "")))))
+
+(add-hook
+ 'c-mode-hook
+ (lambda ()
+   (when-let (prj (ede-toplevel))
+     (let ((top (ede-project-root-directory prj)))
+       (letf ((leif/make-compile-command-if-configured
+               (lambda (suffix)
+                 (let ((builddir (concat top suffix)))
+                   (when (and (file-directory-p builddir)
+                              (file-exists-p (concat builddir "/CMakeCache.txt")))
+                     (concat "cd " builddir "; make -k"))))))
+         (when-let (cmd (first (delq nil (mapcar leif/make-compile-command-if-configured
+                                                 '("Debug" "dbg" "gccdbg" "iccdbg" "clangdbg"
+                                                   "Release" "opt" "gccopt" "iccopt" "clangopt"
+                                                   "Coverage" "cov")))))
+           (set (make-local-variable 'compile-command) cmd)))))))
 
 ;;}}}
 
@@ -975,7 +1004,7 @@ save the pointer marker if tag is found"
  '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-irc org-mac-message org-mew org-mhe org-rmail org-vm org-wl org-w3m org-mac-iCal org-mac-link-grabber)))
  '(org-pretty-entities t)
  '(org-use-sub-superscripts (quote {}))
- '(safe-local-variable-values (quote ((noweb-code-mode . c-mode) (js2-basic-offset . 4) (c-indentation-style . linux))))
+ '(safe-local-variable-values (quote ((eval progn (put (quote when-let) (quote lisp-indent-function) 1) (font-lock-add-keywords nil (quote (("(\\(when-let\\)\\>" 1 font-lock-keyword-face))))) (noweb-code-mode . c-mode) (js2-basic-offset . 4) (c-indentation-style . linux))))
  '(scroll-bar-mode nil)
  '(show-paren-mode t)
  '(show-trailing-whitespace nil)
@@ -1020,3 +1049,7 @@ save the pointer marker if tag is found"
 ;(add-hook 'kill-emacs-hook #'recompile-emacs-dir)
 
 ;;}}}
+
+;;; Local Variables:
+;;; eval: (progn (put 'when-let 'lisp-indent-function 1) (font-lock-add-keywords nil '(("(\\(when-let\\)\\>" 1 font-lock-keyword-face))))
+;;; End:
