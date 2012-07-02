@@ -438,10 +438,10 @@ save the pointer marker if tag is found"
 
 ;;{{{ python-mode
 
-(autoload 'python-mode "python-mode" "Python Mode." t)
+(autoload 'python-mode "python" "Python Mode." t)
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
-(eval-after-load "python-mode"
+(eval-after-load "python"
   '(progn
      (add-hook 'python-mode-hook
                (lambda ()
