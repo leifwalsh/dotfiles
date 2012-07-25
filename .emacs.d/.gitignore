@@ -12,6 +12,7 @@ tramp
 ede-projects.el
 init.el.before_ecb*
 semanticdb
+session.*
 eshell/
 srecode-map.el
 url/
