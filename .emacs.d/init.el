@@ -147,7 +147,6 @@
 (mapc (lambda (hook)
         (add-hook hook 'turn-on-auto-fill))
       '(text-mode-hook
-        mail-mode-hook
         c-mode-hook
         c++-mode-hook))
 
@@ -402,7 +401,6 @@ save the pointer marker if tag is found"
 (eval-after-load 'noweb-mode
   '(add-hook 'noweb-mode-hook 'flyspell-mode))
 (add-hook 'text-mode-hook 'flyspell-mode)
-(add-hook 'mail-mode-hook 'flyspell-mode)
 (add-hook 'outline-mode-hook 'flyspell-mode)
 (add-hook 'org-mode-hook 'flyspell-mode)
 
@@ -821,38 +819,40 @@ save the pointer marker if tag is found"
 
 (require 'message)
 (defun my-message-insert-bcc-hook ()
+  (message "called my-message-insert-bcc-hook")
   (let ((str (buffer-string)))
     (string-match "^From: \\(.*\\)$" str)
     (concat "Bcc: " (match-string 1 str))))
 
 ;;}}}
 
-;;{{{ notmuch
+;;{{{ mu4e
 
-(eval-after-load "notmuch"
-  '(progn
-    (global-set-key (kbd "C-c n") 'notmuch)
-    (define-key notmuch-show-mode-map "d"
-      (lambda ()
-	"delete the current message"
-	(interactive)
-	(notmuch-show-tag-message "+deleted")
-	(notmuch-show-archive-message-then-next-or-next-thread)))
-    (define-key notmuch-search-mode-map "q" (lambda ()
-					      (interactive)
-					      (call-process "update-mail" nil 0)
-					      (notmuch-search-quit)))))
-(ignore-errors (require 'notmuch))
-
-;;}}}
-
-;;{{{ notmuch-address
-
-(eval-after-load "notmuch-address"
-  '(progn
-     (setq notmuch-address-command "~/bin/nottoomuch-addresses.sh")
-     (notmuch-address-message-insinuate)))
-(ignore-errors (require 'notmuch-address))
+(add-to-list 'load-path "/usr/share/emacs/site-lisp")
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+(require 'mu4e)
+(eval-after-load "mu4e"
+  (progn
+    (setq
+     ;; use offlineimap to get mail
+     mu4e-get-mail-command "offlineimap"
+     ;; bookmarks
+     mu4e-bookmarks '(
+                      ;; inboxen
+                      ("(\"maildir:/Personal/INBOX\" OR \"maildir:/Tokutek/INBOX\") AND NOT flag:trashed" "Inbox" ?i)
+                      ("\"maildir:/Personal/INBOX\" AND NOT flag:trashed" "Personal Inbox" ?P)
+                      ("\"maildir:/Tokutek/INBOX\" AND NOT flag:trashed" "Tokutek Inbox" ?T)
+                      ;; defaults
+                      ("flag:unread AND NOT flag:trashed AND (\"maildir:/Personal/INBOX\" OR \"maildir:/Tokutek/INBOX\")" "Unread messages" 117)
+                      ("date:today..now AND (\"maildir:/Personal/INBOX\" OR \"maildir:/Tokutek/INBOX\")" "Today's messages" 116)
+                      ("date:7d..now AND (\"maildir:/Personal/INBOX\" OR \"maildir:/Tokutek/INBOX\")" "Last 7 days" 119)
+                      ("mime:image/*" "Messages with images" 112)
+                      )
+     ;; don't copy to sent folder, gmail handles this
+     mu4e-sent-messages-behavior 'trash
+     ;; update every 10 minutes
+     mu4e-update-interval 600
+     )))
 
 ;;}}}
 
@@ -990,8 +990,6 @@ save the pointer marker if tag is found"
  '(message-send-mail-function (quote message-send-mail-with-sendmail))
  '(message-sendmail-envelope-from (quote header))
  '(mm-text-html-renderer (quote gnus-w3m))
- '(notmuch-fcc-dirs nil)
- '(notmuch-saved-searches (quote (("inbox" . "tag:inbox") ("unread" . "tag:unread") ("toku" . "tag:toku and tag:inbox") ("personal" . "tag:personal and tag:inbox"))))
  '(org-agenda-files (list (concat org-directory "tokutek.org") (concat org-directory "home.org")))
  '(org-capture-templates (quote (("n" "Tokutek Note" entry (file+headline "~/Dropbox/org/tokutek.org" "notes") "** %?  %^G
    %a
@@ -1013,9 +1011,9 @@ save the pointer marker if tag is found"
  '(tool-bar-mode nil)
  '(tooltip-mode nil)
  '(tramp-default-method "rsyncc")
+ '(user-full-name "Leif Walsh")
  '(user-mail-address "leif.walsh@gmail.com")
  '(vc-handled-backends (quote (RCS CVS SVN git SCCS Bzr Git Hg Arch)))
- '(whitespace-global-modes (quote (not notmuch-show)))
  '(whitespace-style (quote (face tabs trailing space-before-tab indentation empty space-after-tab tab-mark))))
 
 (custom-set-faces
