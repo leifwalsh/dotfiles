@@ -3,6 +3,7 @@
 .Trash
 .Xauthority
 .adobe
+.apport-ignore.xml
 .bash*
 .bazaar
 .bogofilter/
@@ -14,18 +15,22 @@
 .compiz-1/
 .config/autostart/
 .config/banshee-1/
+.config/caffeine/
 .config/chromium/
 .config/compiz-1/
 .config/dconf/
 .config/Empathy/
 .config/enchant/
+.config/eog/
 .config/evolution/
 .config/gedit/
 .config/google-chrome/
+.config/gtk-2.0
 .config/gtk-2.0/
 .config/gwibber/
 .config/htop/
 .config/menus/
+.config/MusicBrainz/
 .config/nautilus/
 .config/nottoomuch/
 .config/software-center/
@@ -36,8 +41,8 @@
 .config/user-dirs.dirs
 .config/user-dirs.locale
 .config/vlc/
+.config/whatpulse/
 .cpan
-.config/gtk-2.0
 .cups/
 .cvspass
 .dir_colors
@@ -61,6 +66,7 @@
 .gksu.lock
 .gnome2/
 .gnupg
+.goutputstream-*
 .gpg-agent-info
 .gstreamer-0.10/
 .gtk-bookmarks
@@ -70,6 +76,7 @@
 .ido.last
 .keychain
 .last_codereview_email_address
+.lastpass/
 .lesshst
 .lldb-history
 .linuxmint/
@@ -80,6 +87,7 @@
 .mozilla/
 .mpd.conf
 .mpd/
+.mu/
 .nv/
 .nvidia-settings-rc
 .offlineimap/
@@ -116,6 +124,7 @@
 .zsh/
 .*_history
 Desktop/
+Diablo III/
 Documents/
 Downloads/
 Dropbox/
@@ -123,6 +132,7 @@ Games/
 ISOs/
 Library/
 Mail/
+Maildir/
 Movies/
 Music/
 Pictures/
