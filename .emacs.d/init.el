@@ -43,34 +43,6 @@
 (setq package-archives '(("ELPA" . "http://tromey.com/elpa/")
                          ("gnu" . "http://elpa.gnu.org/packages/")))
 
-;;; from elisp cookbook
-(defun walk-path (dir action)
-  "walk DIR executing ACTION with (dir file)"
-  (cond ((file-directory-p dir)
-         (or (char-equal ?/ (aref dir(1- (length dir))))
-             (setq dir (file-name-as-directory dir)))
-         (let ((lst (directory-files dir nil nil t))
-               fullname file)
-           (while lst
-             (setq file (car lst))
-             (setq lst (cdr lst))
-             (cond ((member file '("." "..")))
-                   (t
-                    (and (funcall action dir file)
-                         (setq fullname (concat dir file))
-                         (file-directory-p fullname)
-                         (walk-path fullname action)))))))
-        (t
-         (funcall action
-                  (file-name-directory dir)
-                  (file-name-nondirectory dir)))))
-
-(walk-path (expand-file-name "~/.emacs.d/elpa/")
-           (lambda (dir file)
-             (if (string-match "-autoloads.el$" file)
-                 (load file)
-               t)))
-
 ;;}}}
 
 ;;{{{ color settings
@@ -126,19 +98,9 @@
 
 ;;}}}
 
-;;{{{ filetypes
-
-(add-to-list 'auto-mode-alist '("^/tmp/pico\\." . mail-mode))
-
-;;}}}
-
 ;;{{{ modes for auto-fill-mode
 
-(mapc (lambda (hook)
-        (add-hook hook 'turn-on-auto-fill))
-      '(text-mode-hook
-        c-mode-hook
-        c++-mode-hook))
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
 
 ;;}}}
 
@@ -157,8 +119,8 @@
 
 ;;{{{ cedet
 
-(if (not (boundp 'x-max-tooltip-size))
-    (setq x-max-tooltip-size '(1000 . 1000)))
+;; (if (not (boundp 'x-max-tooltip-size))
+;;     (setq x-max-tooltip-size '(1000 . 1000)))
 (require 'semantic)
 (semantic-default-c-setup)
 (semantic-gcc-setup)
@@ -186,12 +148,15 @@
                 global-senator-minor-mode)))
 (semantic-mode 1)
 
-(setq semantic-complete-inline-analyzer-displayor-class 'semantic-displayor-traditional-with-focus-highlight)
-(setq semantic-decoration-styles '(("semantic-decoration-on-includes" . t) ("semantic-decoration-on-protected-members" . t) ("semantic-decoration-on-private-members" . t) ("semantic-tag-boundary" . t)))
-(setq semantic-idle-breadcrumbs-format-tag-function 'semantic-format-tag-uml-prototype)
-(setq semantic-idle-work-parse-neighboring-files-flag t)
-(setq semantic-idle-work-update-headers-flag t)
-(setq semanticdb-find-default-throttle '(local project unloaded system recursive omniscient))
+(setq semantic-complete-inline-analyzer-displayor-class 'semantic-displayor-traditional-with-focus-highlight
+      semantic-decoration-styles '(("semantic-decoration-on-includes" . t)
+                                   ("semantic-decoration-on-protected-members" . t)
+                                   ("semantic-decoration-on-private-members" . t)
+                                   ("semantic-tag-boundary" . t))
+      semantic-idle-breadcrumbs-format-tag-function 'semantic-format-tag-uml-prototype
+      semantic-idle-work-parse-neighboring-files-flag t
+      semantic-idle-work-update-headers-flag t
+      semanticdb-find-default-throttle '(local project unloaded system recursive omniscient))
 
 (defvar semantic-tags-location-ring (make-ring 20))
 
@@ -260,8 +225,10 @@ save the pointer marker if tag is found"
 (add-hook 'c-mode-common-hook 'alexott/c-mode-cedet-hook)
 
 (require 'ede)
-(setq ede-locate-setup-options
-      '(ede-locate-global ede-locate-cscope ede-locate-locate ede-locate-base))
+(setq ede-locate-setup-options '(ede-locate-global
+                                 ede-locate-cscope
+                                 ede-locate-locate
+                                 ede-locate-base))
 (global-ede-mode 1)
 (ede-enable-generic-projects)
 
@@ -287,7 +254,27 @@ save the pointer marker if tag is found"
                                  ("_LARGEFILE64_SOURCE" . "")
                                  ("_XOPEN_SOURCE" . "600")
                                  ("_THREAD_SAFE" . "")
-                                 ("TOKU_RT_NOOVERLAPS" . "")))))))
+                                 ("TOKU_RT_NOOVERLAPS" . "")))))
+            (when (and (car attr)
+                       (file-exists-p (concat "~/svn/tokutek/mysql.branches/" dir "/tokudb/CMakeLists.txt")))
+              (add-to-list 'semanticdb-project-roots
+                           (concat "~/svn/tokutek/mysql.branches/" dir "/tokudb"))
+              (set (intern (format "tokudb-%s-project" dir))
+                   (ede-cpp-root-project
+                    (format "Tokudb %s" dir)
+                    :name (format "Tokudb %s" dir)
+                    :file (concat "~/svn/tokutek/mysql.branches/" dir "/tokudb/CMakeLists.txt")
+                    :include-path '("/" "/Debug/buildheader" "/Debug/toku_include" "/Debug/ft" "/include" "/portability" "/portability/tests" "/toku_include" "/ft" "/ft/tests" "/src" "/src/lock_tree" "/src/lock_tree/tests" "/src/range_tree" "/src/range_tree/tests" "/src/tests")
+                    :system-include-path '("/usr/include" "/usr/local/include")
+                    :spp-table '(("TOKUDB_REVISION" . "0")
+                                 ("_SVID_SOURCE" . "")
+                                 ("_FILE_OFFSET_BITS" . "64")
+                                 ("_LARGEFILE64_SOURCE" . "")
+                                 ("_XOPEN_SOURCE" . "600")
+                                 ("_THREAD_SAFE" . "")
+                                 ("TOKU_RT_NOOVERLAPS" . "")
+                                 ("__STDC_FORMAT_MACROS" . "")
+                                 ("__STDC_LIMIT_MACROS" . "")))))))
         (directory-files-and-attributes "~/svn/tokutek/mysql.branches/")))
 (ignore-errors
   (mapc (lambda (file-and-attr)
@@ -304,7 +291,7 @@ save the pointer marker if tag is found"
                       (format "Tokudb %s" branch)
                       :name (format "Tokudb %s" branch)
                       :file (concat "~/svn/tokutek/toku/" dir "/CMakeLists.txt")
-                      :include-path '("/" "/Debug/buildheader" "/Debug/toku_include" "/Debug/ft" "/include" "/portability" "/portability/tests" "/toku_include" "/ft" "/ft/tests" "/src" "/src/lock_tree" "/src/range_tree" "/src/tests")
+                      :include-path '("/" "/Debug/buildheader" "/Debug/toku_include" "/Debug/ft" "/include" "/portability" "/portability/tests" "/toku_include" "/ft" "/ft/tests" "/src" "/src/lock_tree" "/src/lock_tree/tests" "/src/range_tree" "/src/range_tree/tests" "/src/tests")
                       :system-include-path '("/usr/include" "/usr/local/include")
                       :spp-table '(("TOKUDB_REVISION" . "0")
                                    ("_SVID_SOURCE" . "")
@@ -312,7 +299,9 @@ save the pointer marker if tag is found"
                                    ("_LARGEFILE64_SOURCE" . "")
                                    ("_XOPEN_SOURCE" . "600")
                                    ("_THREAD_SAFE" . "")
-                                   ("TOKU_RT_NOOVERLAPS" . ""))))))))
+                                   ("TOKU_RT_NOOVERLAPS" . "")
+                                   ("__STDC_FORMAT_MACROS" . "")
+                                   ("__STDC_LIMIT_MACROS" . ""))))))))
         (directory-files-and-attributes "~/svn/tokutek/toku/" nil "tokudb\\..*")))
 (setq tokudb-mainline-project
       (ignore-errors
@@ -320,7 +309,7 @@ save the pointer marker if tag is found"
          "Tokudb"
          :name "Tokudb"
          :file "~/svn/tokutek/toku/tokudb/CMakeLists.txt"
-         :include-path ''("/" "/Debug/buildheader" "/Debug/toku_include" "/Debug/ft" "/include" "/portability" "/portability/tests" "/toku_include" "/ft" "/ft/tests" "/src" "/src/lock_tree" "/src/range_tree" "/src/tests")
+         :include-path ''("/" "/Debug/buildheader" "/Debug/toku_include" "/Debug/ft" "/include" "/portability" "/portability/tests" "/toku_include" "/ft" "/ft/tests" "/src" "/src/lock_tree" "/src/lock_tree/tests" "/src/range_tree" "/src/range_tree/tests" "/src/tests")
          :system-include-path '("/usr/include" "/usr/local/include")
          :spp-table '(("TOKUDB_REVISION" . "0")
                       ("_SVID_SOURCE" . "")
@@ -328,24 +317,9 @@ save the pointer marker if tag is found"
                       ("_LARGEFILE64_SOURCE" . "")
                       ("_XOPEN_SOURCE" . "600")
                       ("_THREAD_SAFE" . "")
-                      ("TOKU_RT_NOOVERLAPS" . "")))))
-
-(add-hook
- 'c-mode-hook
- (lambda ()
-   (when-let (prj (ede-toplevel))
-     (let ((top (ede-project-root-directory prj)))
-       (letf ((leif/make-compile-command-if-configured
-               (lambda (suffix)
-                 (let ((builddir (concat top suffix)))
-                   (when (and (file-directory-p builddir)
-                              (file-exists-p (concat builddir "/CMakeCache.txt")))
-                     (concat "cd " builddir "; make -k"))))))
-         (when-let (cmd (first (delq nil (mapcar leif/make-compile-command-if-configured
-                                                 '("Debug" "dbg" "gccdbg" "iccdbg" "clangdbg"
-                                                   "Release" "opt" "gccopt" "iccopt" "clangopt"
-                                                   "Coverage" "cov")))))
-           (set (make-local-variable 'compile-command) cmd)))))))
+                      ("TOKU_RT_NOOVERLAPS" . "")
+                      ("__STDC_FORMAT_MACROS" . "")
+                      ("__STDC_LIMIT_MACROS" . "")))))
 
 ;;}}}
 
@@ -354,15 +328,14 @@ save the pointer marker if tag is found"
 (require 'auto-complete-config)
 (add-hook 'emacs-lisp-mode-hook 'ac-emacs-lisp-mode-setup)
 (add-hook 'auto-complete-mode-hook 'ac-common-setup)
-(eval-after-load "semantic"
-  '(progn
-     (defun auto-complete-add-semantic-sources ()
-       (require 'auto-complete-config)
-       (setq ac-sources '(ac-source-semantic
-                          ac-source-semantic-raw))
-       (local-set-key [(control return)] 'auto-complete)
-       (local-set-key [(meta tab)] 'auto-complete))
-     (add-hook 'c-mode-common-hook 'auto-complete-add-semantic-sources)))
+(global-set-key [(control return)] 'auto-complete)
+(setq ac-sources '(ac-source-gtags
+                   ac-source-semantic
+                   ac-source-semantic-raw
+                   ac-source-functions
+                   ac-source-variables
+                   ac-source-symbols)
+      global-auto-complete-mode t)
 
 ;;}}}
 
@@ -454,12 +427,6 @@ save the pointer marker if tag is found"
 
 ;;}}}
 
-;;{{{ scala-mode
-
-;(require 'scala-mode-auto)
-
-;;}}}
-
 ;;{{{ uniquify
 
 (require 'uniquify)
@@ -467,17 +434,13 @@ save the pointer marker if tag is found"
 
 ;;}}}
 
-;;{{{ folding
+;;{{{ frame parameters
 
-;(require 'folding)
-(eval-after-load "folding"
-  '(folding-mode-add-find-file-hook))
-
-;;}}}
-
-;;{{{ tramp
-
-(require 'tramp)
+(scroll-bar-mode -1)
+(when (not (eq system-type 'darwin))
+  (progn
+    (menu-bar-mode -1)
+    (tool-bar-mode -1)))
 
 ;;}}}
 
@@ -582,6 +545,11 @@ save the pointer marker if tag is found"
 ;;{{{ ido
 
 (require 'ido)
+(ido-mode 'both)
+(ido-everywhere)
+(setq ido-enable-flex-matching t
+      ido-rotate-file-list-default t
+      ido-use-filename-at-point 'guess)
 
 ;;}}}
 
@@ -785,20 +753,6 @@ save the pointer marker if tag is found"
 
 ;;}}}
 
-;;{{{ nxhtml (html/php/js/etc)
-
-;;; http://ourcomments.org/cgi-bin/emacsw32-dl-latest.pl
-;(load (expand-file-name "~/.emacs.d/vendor/nxhtml/autostart.el"))
-
-;;}}}
-
-;;{{{ EasyPG
-
-(require 'epa-file)
-(epa-file-enable)
-
-;;}}}
-
 ;;{{{ sendmail
 
 (require 'sendmail)
@@ -870,9 +824,11 @@ save the pointer marker if tag is found"
 
 (defun fullscreen ()
   (interactive)
-  (x-send-client-message
-   nil 0 nil "_NET_WM_STATE" 32
-   '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
+  (if (eq system-type 'darwin)
+      (ns-toggle-fullscreen)
+    (x-send-client-message
+     nil 0 nil "_NET_WM_STATE" 32
+     '(2 "_NET_WM_STATE_FULLSCREEN" 0))))
 (global-set-key [(meta return)] 'fullscreen)
 
 (defun c-like-keys (map)
@@ -946,19 +902,16 @@ save the pointer marker if tag is found"
  ;; If there is more than one, they won't work right.
  '(LaTeX-command "xelatex")
  '(LaTeX-command-style (quote (("" "%(latex) %S%(PDFout)"))))
- '(ac-quick-help-prefer-x nil)
  '(backup-directory-alist (quote (("." . "~/.emacs-backups"))))
- '(c-basic-offset 4)
  '(c-comment-prefix-regexp (quote set-from-style))
- '(c-default-style (quote ((c-mode . "stroustrup") (objc-mode . "objc") (java-mode . "java") (awk-mode . "awk") (other . "gnu"))))
+ '(c-default-style (quote ((c-mode . "bsd") (c-mode . "stroustrup") (objc-mode . "objc") (java-mode . "java") (awk-mode . "awk") (other . "gnu"))))
  '(c-echo-syntactic-information-p t)
  '(column-number-mode t)
  '(compilation-window-height 12)
- '(default-frame-alist (quote ((background-mode . dark))))
  '(display-battery-mode t)
  '(display-time-mode t)
- '(ede-project-directories (quote ("/Users/leif/git/mongo/src/mongo" "/Users/leif/src/mongodb-src-r2.0.5" "/Users/leif/svn/tokutek/toku/tokudb.4413")))
- '(erc-autojoin-channels-alist (quote (("foonetic.net" "#xkcd") ("freenode.net" "#emacs" "#lisp" "#haskell" "#clojure"))))
+ '(ede-project-directories (quote ("/Users/leif/git/mongo/src/mongo" "/Users/leif/src/mongodb-src-r2.0.5")))
+ '(erc-autojoin-channels-alist (quote (("freenode.net" "#emacs" "#lisp" "#haskell" "#clojure" "##c" "#linux"))))
  '(erc-nick (quote ("Adlai" "leifw" "Adlai_" "leifw_" "Adlai__" "leifw__")))
  '(erc-nickserv-identify-mode (quote autodetect))
  '(fill-column 74)
@@ -968,20 +921,15 @@ save the pointer marker if tag is found"
  '(flyspell-sort-corrections nil)
  '(font-lock-maximum-decoration t)
  '(font-use-system-font t)
- '(frame-title-format (concat invocation-name "@" system-name ": %b [%IB]") t)
+ '(frame-title-format (concat invocation-name "@" system-name " %b [%IB]") t)
  '(gdb-many-windows t)
  '(gdb-use-separate-io-buffer t)
- '(global-auto-complete-mode t)
  '(global-hl-line-mode t)
  '(global-whitespace-mode t)
- '(ido-enable-flex-matching t)
- '(ido-everywhere t)
- '(ido-mode (quote both) nil (ido))
- '(ido-rotate-file-list-default t)
- '(ido-use-filename-at-point (quote guess))
+ '(gud-gdb-command-name "gdb --annotate=1")
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
- '(menu-bar-mode nil)
+ '(large-file-warning-threshold nil)
  '(message-default-headers (quote my-message-insert-bcc-hook))
  '(message-fill-column 74)
  '(message-required-mail-headers (quote (From Subject Date (optional . In-Reply-To) Message-ID (optional . User-Agent) Bcc)))
@@ -999,13 +947,9 @@ save the pointer marker if tag is found"
  '(org-pretty-entities t)
  '(org-use-sub-superscripts (quote {}))
  '(safe-local-variable-values (quote ((c-file-style . bsd) (eval progn (put (quote when-let) (quote lisp-indent-function) 1) (font-lock-add-keywords nil (quote (("(\\(when-let\\)\\>" 1 font-lock-keyword-face))))) (noweb-code-mode . c-mode) (js2-basic-offset . 4) (c-indentation-style . linux))))
- '(scroll-bar-mode nil)
  '(show-paren-mode t)
- '(show-trailing-whitespace nil)
+ '(show-trailing-whitespace t)
  '(slime-net-coding-system (quote utf-8-unix))
- '(tags-revert-without-query t)
- '(tool-bar-mode nil)
- '(tooltip-mode nil)
  '(tramp-default-method "rsyncc")
  '(user-full-name "Leif Walsh")
  '(user-mail-address "leif.walsh@gmail.com")
@@ -1017,30 +961,12 @@ save the pointer marker if tag is found"
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(cursor ((t (:background "#708183" :foreground "#042028" :inverse-video t))))
- '(diff-added ((t (:inherit diff-changed :foreground "SpringGreen4" :inverse-video t))) t)
- '(diff-removed ((t (:inherit diff-changed :foreground "IndianRed4" :inverse-video t))) t)
- '(ecb-default-highlight-face ((((class color) (background dark)) (:background "beige"))) t)
- '(erc-input-face ((t (:foreground "cyan"))))
- '(erc-my-nick-face ((t (:foreground "cyan" :weight bold))))
  '(hl-line ((t (:inherit highlight))))
- '(org-todo ((t (:foreground "#c60007" :weight bold))))
  '(region ((t (:inherit isearch))))
  '(whitespace-indentation ((t nil)))
  '(whitespace-space-after-tab ((t nil)))
  '(whitespace-space-before-tab ((t nil)))
  '(whitespace-tab ((t nil))))
-
-;;}}}
-
-;;{{{ recompile on exit
-
-(require 'bytecomp)
-
-(defun recompile-emacs-dir ()
-  (interactive)
-  (byte-recompile-directory (expand-file-name "~/.emacs.d") 0))
-;(add-hook 'kill-emacs-hook #'recompile-emacs-dir)
 
 ;;}}}
 
