@@ -1,1 +1,8 @@
+"hg6812
+
+loadplugins '\.(js|penta)$'
+group user
+
 set hintkeys=euthoanspgyfid
+
+" vim: set ft=pentadactyl:

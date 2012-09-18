@@ -78,6 +78,7 @@
 .last_codereview_email_address
 .lastpass/
 .lesshst
+.lldb-history
 .linuxmint/
 .local
 .macromedia/
@@ -143,6 +144,7 @@ VirtualBox VMs/
 backgrounds
 bzr
 git
+gitsvn
 hg
 local
 minecraft_server/
