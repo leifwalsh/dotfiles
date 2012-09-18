@@ -15,7 +15,8 @@
 
 ;;{{{ common-lisp
 
-(require 'cl)
+(eval-when-compile
+  (require 'cl))
 
 ;;}}}
 
@@ -91,7 +92,7 @@
   (set-frame-parameter
    nil 'alpha
    (if (= 100
-          (or (cadr (find 'alpha (frame-parameters nil) :key #'car)) 100))
+          (or (cadr (cl-find 'alpha (frame-parameters nil) :key #'car)) 100))
        '(93 93)
      '(100 100))))
 (global-set-key (kbd "C-c C-t") 'toggle-transparency)
@@ -812,7 +813,6 @@ save the pointer marker if tag is found"
 
 (add-to-list 'load-path "/usr/share/emacs/site-lisp")
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
-(require 'mu4e)
 (eval-after-load "mu4e"
   (progn
     (setq
@@ -835,6 +835,7 @@ save the pointer marker if tag is found"
      ;; update every 10 minutes
      mu4e-update-interval 600
      )))
+(ignore-errors (require 'mu4e))
 
 ;;}}}
 
@@ -1032,4 +1033,5 @@ save the pointer marker if tag is found"
 
 ;;; Local Variables:
 ;;; eval: (progn (put 'when-let 'lisp-indent-function 1) (font-lock-add-keywords nil '(("(\\(when-let\\)\\>" 1 font-lock-keyword-face))))
+;;; byte-compile-warnings: (not cl-functions)
 ;;; End:
