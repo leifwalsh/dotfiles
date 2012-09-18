@@ -24,7 +24,7 @@ if which brew &>/dev/null && [ -d $(brew --prefix coreutils)/libexec/gnubin ]; t
     PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
 fi
 
-if [[ -d $HOME/local/plan9 ]]
+if [ -d $HOME/local/plan9 ]
 then
     PLAN9=$HOME/local/plan9
     export PLAN9
@@ -32,27 +32,24 @@ then
     MANPATH=$MANPATH:$PLAN9/man
 fi
 
-PATH=$HOME/bin:$HOME/local/bin:$HOME/local/sbin:/usr/local/bin:/usr/local/sbin:$PATH
+PATH=$HOME/local/bin:$HOME/local/sbin:/usr/local/bin:/usr/local/sbin:$PATH
 PKG_CONFIG_PATH=$HOME/local/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 INFOPATH=$HOME/local/share/info:/usr/local/share/info:$INFOPATH
 MANPATH=$HOME/local/share/man:/usr/local/share/man:$MANPATH
 PYTHONPATH=$HOME/local/lib64/python:$HOME/local/lib/python2.7/site-packages:$PYTHONPATH
 
+if [ -f $HOME/local/.profile ]
+then
+    . $HOME/local/.profile
+fi
+
+PATH=$HOME/bin:$PATH
+
 EDITOR="emacsclient -t"
 ALTERNATE_EDITOR="vim"
 
-# colorize less!
-export LESS="-R"
-
-if [[ $TERM = "xterm" ]]
-then
-    export TERM=xterm-256color
-fi
-
-# start ssh-agent
-if which keychain &>/dev/null
-then
-    eval $(keychain --agents ssh -q --eval id_rsa)
-fi
-
 export PATH C_INCLUDE_PATH CPLUS_INCLUDE_PATH PKG_CONFIG_PATH INFOPATH MANPATH PYTHONPATH EDITOR ALTERNATE_EDITOR
+
+# colorize less!
+LESS="-R"
+export LESS

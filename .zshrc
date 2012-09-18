@@ -202,6 +202,12 @@ else
     #RPROMPT="%F{blue}%(?..(%f%F{red}%?%f%F{blue}%) )%B[%b%f%F{yellow}%T%f%F{blue}%B]%b%f"
 fi
 
+# start ssh-agent
+if which keychain &>/dev/null
+then
+    eval $(keychain --agents ssh -q --eval id_rsa)
+fi
+
 # The following lines were added by compinstall
 
 zstyle ':completion:*' auto-description 'specify: %d'

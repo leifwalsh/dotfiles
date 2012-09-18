@@ -818,31 +818,39 @@ save the pointer marker if tag is found"
 
 ;;{{{ mu4e
 
-(add-to-list 'load-path "/usr/share/emacs/site-lisp")
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
 (eval-after-load "mu4e"
-  (progn
-    (setq
-     ;; use offlineimap to get mail
-     mu4e-get-mail-command "offlineimap"
-     ;; bookmarks
-     mu4e-bookmarks '(
-                      ;; inboxen
-                      ("(\"maildir:/Personal/INBOX\" OR \"maildir:/Tokutek/INBOX\") AND NOT flag:trashed" "Inbox" ?i)
-                      ("\"maildir:/Personal/INBOX\" AND NOT flag:trashed" "Personal Inbox" ?P)
-                      ("\"maildir:/Tokutek/INBOX\" AND NOT flag:trashed" "Tokutek Inbox" ?T)
-                      ;; defaults
-                      ("flag:unread AND NOT flag:trashed AND (\"maildir:/Personal/INBOX\" OR \"maildir:/Tokutek/INBOX\")" "Unread messages" 117)
-                      ("date:today..now AND (\"maildir:/Personal/INBOX\" OR \"maildir:/Tokutek/INBOX\")" "Today's messages" 116)
-                      ("date:7d..now AND (\"maildir:/Personal/INBOX\" OR \"maildir:/Tokutek/INBOX\")" "Last 7 days" 119)
-                      ("mime:image/*" "Messages with images" 112)
-                      )
-     ;; don't copy to sent folder, gmail handles this
-     mu4e-sent-messages-behavior 'trash
-     ;; update every 10 minutes
-     mu4e-update-interval 600
-     )))
-(ignore-errors (require 'mu4e))
+  '(progn
+     (setq
+      ;; make mu4e the default user agent
+      mail-user-agent 'mu4e-user-agent
+      ;; use offlineimap to get mail
+      mu4e-get-mail-command "offlineimap"
+      ;; bookmarks
+      mu4e-bookmarks '(
+                       ;; inboxen
+                       ("(\"maildir:/Personal/INBOX\" OR \"maildir:/Tokutek/INBOX\") AND NOT flag:trashed" "Inbox" ?i)
+                       ("\"maildir:/Personal/INBOX\" AND NOT flag:trashed" "Personal Inbox" ?P)
+                       ("\"maildir:/Tokutek/INBOX\" AND NOT flag:trashed" "Tokutek Inbox" ?T)
+                       ;; defaults
+                       ("flag:unread AND NOT flag:trashed AND (\"maildir:/Personal/INBOX\" OR \"maildir:/Tokutek/INBOX\")" "Unread messages" 117)
+                       ("date:today..now AND (\"maildir:/Personal/INBOX\" OR \"maildir:/Tokutek/INBOX\")" "Today's messages" 116)
+                       ("date:7d..now AND (\"maildir:/Personal/INBOX\" OR \"maildir:/Tokutek/INBOX\")" "Last 7 days" 119)
+                       ("mime:image/*" "Messages with images" 112)
+                       )
+      ;; don't copy to sent folder, gmail handles this
+      mu4e-sent-messages-behavior 'trash
+      ;; match myself
+      mu4e-user-mail-address-regexp "^\\(leif.walsh@gmail.com\\|leif@tokutek.com\\|rlwalsh@ic.sunysb.edu\\)$"
+      ;; update every 10 minutes
+      mu4e-update-interval 600
+      ;; use sendmail (msmtp)
+      message-send-mail-function 'message-send-mail-with-sendmail
+      ;; get envelope from out of header
+      message-sendmail-envelope-from 'header
+      )))
+(when (file-directory-p "/home/leif/local/mu-0.9.8.5")
+  (add-to-list 'load-path "/home/leif/local/mu-0.9.8.5/share/emacs/site-lisp/mu4e")
+  (require 'mu4e))
 
 ;;}}}
 
@@ -946,7 +954,7 @@ save the pointer marker if tag is found"
  '(c-echo-syntactic-information-p t)
  '(column-number-mode t)
  '(compilation-window-height 12)
- '(default-frame-alist (quote ((background-mode . dark) (tool-bar-lines . 0) (menu-bar-lines . 0))))
+ '(default-frame-alist (quote ((background-mode . dark))))
  '(display-battery-mode t)
  '(display-time-mode t)
  '(ede-project-directories (quote ("/Users/leif/git/mongo/src/mongo" "/Users/leif/src/mongodb-src-r2.0.5" "/Users/leif/svn/tokutek/toku/tokudb.4413")))
@@ -977,8 +985,6 @@ save the pointer marker if tag is found"
  '(message-default-headers (quote my-message-insert-bcc-hook))
  '(message-fill-column 74)
  '(message-required-mail-headers (quote (From Subject Date (optional . In-Reply-To) Message-ID (optional . User-Agent) Bcc)))
- '(message-send-mail-function (quote message-send-mail-with-sendmail))
- '(message-sendmail-envelope-from (quote header))
  '(mm-text-html-renderer (quote gnus-w3m))
  '(org-agenda-files (list (concat org-directory "tokutek.org") (concat org-directory "home.org")))
  '(org-capture-templates (quote (("n" "Tokutek Note" entry (file+headline "~/Dropbox/org/tokutek.org" "notes") "** %?  %^G
@@ -992,7 +998,7 @@ save the pointer marker if tag is found"
  '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-irc org-mac-message org-mew org-mhe org-rmail org-vm org-wl org-w3m org-mac-iCal org-mac-link-grabber)))
  '(org-pretty-entities t)
  '(org-use-sub-superscripts (quote {}))
- '(safe-local-variable-values (quote ((eval progn (put (quote when-let) (quote lisp-indent-function) 1) (font-lock-add-keywords nil (quote (("(\\(when-let\\)\\>" 1 font-lock-keyword-face))))) (noweb-code-mode . c-mode) (js2-basic-offset . 4) (c-indentation-style . linux))))
+ '(safe-local-variable-values (quote ((c-file-style . bsd) (eval progn (put (quote when-let) (quote lisp-indent-function) 1) (font-lock-add-keywords nil (quote (("(\\(when-let\\)\\>" 1 font-lock-keyword-face))))) (noweb-code-mode . c-mode) (js2-basic-offset . 4) (c-indentation-style . linux))))
  '(scroll-bar-mode nil)
  '(show-paren-mode t)
  '(show-trailing-whitespace nil)
@@ -1012,13 +1018,13 @@ save the pointer marker if tag is found"
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(cursor ((t (:background "#708183" :foreground "#042028" :inverse-video t))))
- '(diff-added ((t (:inherit diff-changed :foreground "SpringGreen4" :inverse-video t))))
- '(diff-removed ((t (:inherit diff-changed :foreground "IndianRed4" :inverse-video t))))
+ '(diff-added ((t (:inherit diff-changed :foreground "SpringGreen4" :inverse-video t))) t)
+ '(diff-removed ((t (:inherit diff-changed :foreground "IndianRed4" :inverse-video t))) t)
  '(ecb-default-highlight-face ((((class color) (background dark)) (:background "beige"))) t)
  '(erc-input-face ((t (:foreground "cyan"))))
  '(erc-my-nick-face ((t (:foreground "cyan" :weight bold))))
  '(hl-line ((t (:inherit highlight))))
- '(org-todo ((t (:foreground "#c60007" :weight bold))) t)
+ '(org-todo ((t (:foreground "#c60007" :weight bold))))
  '(region ((t (:inherit isearch))))
  '(whitespace-indentation ((t nil)))
  '(whitespace-space-after-tab ((t nil)))
