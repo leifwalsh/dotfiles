@@ -1,3 +1,10 @@
+;;{{{ PATH
+
+(when (eq system-type 'darwin)
+  (require 'fixpath))
+
+;;}}}
+
 ;;{{{ load-path
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor"))
