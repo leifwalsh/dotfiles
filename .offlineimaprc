@@ -16,6 +16,7 @@ localfolders = ~/Maildir/Personal
 type = Gmail
 remoteuser = leif.walsh@gmail.com
 remotepass = emvucchwqueijjfn
+cert_fingerprint = f3043dd689a2e7dddfbef82703a6c65ea9b634c1
 folderfilter = lambda foldername: foldername in ['INBOX']
 
 [Account Work]
@@ -30,4 +31,5 @@ localfolders = ~/Maildir/Tokutek
 type = Gmail
 remoteuser = leif@tokutek.com
 remotepass = 7af1504d1a14b36f
+cert_fingerprint = f3043dd689a2e7dddfbef82703a6c65ea9b634c1
 folderfilter = lambda foldername: foldername in ['INBOX']
