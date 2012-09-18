@@ -8,7 +8,7 @@ fi
 platpath=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/usr
 if [[ -d $platpath ]]
 then
-    PATH=$PATH:$platpath/bin
+    #PATH=$PATH:$platpath/bin
     C_INCLUDE_PATH=$C_INCLUDE_PATH:$platpath/include
     CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:$platpath/include
 fi
@@ -22,6 +22,14 @@ fi
 # add coreutils
 if which brew &>/dev/null && [ -d $(brew --prefix coreutils)/libexec/gnubin ]; then
     PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
+fi
+
+if [[ -d $HOME/local/plan9 ]]
+then
+    PLAN9=$HOME/local/plan9
+    export PLAN9
+    PATH=$PATH:$PLAN9/bin
+    MANPATH=$MANPATH:$PLAN9/man
 fi
 
 PATH=$HOME/bin:$HOME/local/bin:$HOME/local/sbin:/usr/local/bin:/usr/local/sbin:$PATH
