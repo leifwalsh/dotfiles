@@ -1,10 +1,3 @@
-;;{{{ PATH
-
-(when (eq system-type 'darwin)
-  (require 'fixpath))
-
-;;}}}
-
 ;;{{{ load-path
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor"))
@@ -15,6 +8,13 @@
     (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/color-theme-6.6.0"))
   (add-to-list 'custom-theme-load-path (expand-file-name "~/.emacs.d/vendor/emacs-color-theme-solarized/")))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/tuareg"))
+
+;;}}}
+
+;;{{{ PATH
+
+(when (eq system-type 'darwin)
+  (require 'fixpath))
 
 ;;}}}
 
