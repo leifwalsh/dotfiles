@@ -27,14 +27,22 @@
 .config/google-chrome/
 .config/gtk-2.0
 .config/gtk-2.0/
+.config/gtk-3.0/
+.config/gvbam/
 .config/gwibber/
 .config/htop/
+.config/libaccounts-glib/
+.config/libreoffice/
 .config/menus/
+.config/monitors.xml
+.config/mupen64plus/
 .config/MusicBrainz/
 .config/nautilus/
 .config/nottoomuch/
+.config/pcsx2/
 .config/software-center/
 .config/tangerine/
+.config/totem/
 .config/transmission/
 .config/Trolltech.conf
 .config/update-notifier/
@@ -53,6 +61,7 @@
 .dropbox
 .dropbox-dist/
 .ecryptfs
+.elinks/
 .emacs-backups
 .emacs.bmk
 .esd_auth
@@ -66,10 +75,12 @@
 .gksu.lock
 .gnome2/
 .gnupg
+.gnuplot-wxt
 .goutputstream-*
 .gpg-agent-info
 .gstreamer-0.10/
 .gtk-bookmarks
+.gvba/
 .*_history
 .htoprc
 .ICEauthority
@@ -77,6 +88,7 @@
 .keychain
 .last_codereview_email_address
 .lastpass/
+.launchpadlib/
 .lesshst
 .lldb-history
 .linuxmint/
@@ -92,6 +104,7 @@
 .nvidia-settings-rc
 .offlineimap/
 .passwd.gpg
+.pcsx/
 .pentadactyl/
 .pki/
 .pulse/
@@ -100,6 +113,7 @@
 .semanticdb
 .serverauth.*
 .shotwell/
+.signon/
 .Skype/
 .srecode
 .ssh/config.bak
@@ -122,6 +136,7 @@
 .xsession-errors.old
 .zcompdump
 .zsh/
+.zsnes/
 .*_history
 Desktop/
 Diablo III/
