@@ -1,18 +1,7 @@
 ;;{{{ PATH
 
-(setenv "PATH"
-        (concat
-         (expand-file-name "~/bin") ":"
-         (expand-file-name "~/local/bin") ":"
-         "/usr/local/bin" ":"
-         (if (file-directory-p "/Applications/Xcode.app/Contents/Developer/usr/bin")
-             "/Applications/Xcode.app/Contents/Developer/usr/bin:"
-           "")
-         (getenv "PATH")))
-(add-to-list 'exec-path "/usr/local/bin")
-(when (file-directory-p "/Applications/Xcode.app/Contents/Developer/usr/bin") (add-to-list 'exec-path "/Applications/Xcode.app/Contents/Developer/usr/bin"))
-(add-to-list 'exec-path (expand-file-name "~/local/bin"))
-(add-to-list 'exec-path (expand-file-name "~/bin"))
+(when (eq system-type 'darwin)
+  (require 'fixpath))
 
 ;;}}}
 
