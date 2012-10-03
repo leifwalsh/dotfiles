@@ -4,7 +4,7 @@ if [[ $(uname -s) = "Darwin" ]]
 then
     COPY=pbcopy
 else
-    COPY=xclip
+    COPY="xclip -sel clipboard"
 fi
 
 if [[ $# -ne 1 ]]; then echo "Usage: $(basename $0) <site>" && exit 2; fi
