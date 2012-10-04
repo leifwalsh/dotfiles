@@ -43,8 +43,6 @@
 
 URxvt*background: S_base03
 URxvt*foreground: S_base0
-URxvt*fading: 40
-URxvt*fadeColor: S_base03
 URxvt*cursorColor: S_base1
 URxvt*pointerColorBackground:S_base01
 URxvt*pointerColorForeground:S_base1
@@ -93,16 +91,20 @@ xpdf*background:        white
 !Xft.lcdfilter: lcddefault
 !Xft.rgba: rgb
 
-URxvt.termName: xterm-256color
+URxvt.termName: rxvt-unicode-256color
 URxvt.iconFile: /usr/share/icons/Humanity/apps/128/gnome-terminal.svg
-URxvt.font: xft:Ubuntu Mono-12
-URxvt.boldFont: xft:Ubuntu Mono-12:bold
-URxvt.italicFont: xft:Ubuntu Mono-12:italic
-URxvt.boldItalicFont: xft:Ubuntu Mono-12:bold:italic
+URxvt.font: xft:Deja Vu Sans Mono-10
+URxvt.boldFont: xft:Deja Vu Sans Mono-10:bold
+URxvt.italicFont: xft:Deja Vu Sans Mono-10:italic
+URxvt.boldItalicFont: xft:Deja Vu Sans Mono-10:bold:italic
 
 URxvt.scrollBar: false
 URxvt.saveLines: 8192
 URxvt.secondaryScroll: true
+
+URxvt*scrollTtyOutput: false
+URxvt*scrollWithBuffer: true
+URxvt*scrollTtyKeypress: true
 
 Fig.latexfonts: true
 Fig.specialtext: true
