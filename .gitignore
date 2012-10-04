@@ -39,9 +39,11 @@
 .config/MusicBrainz/
 .config/nautilus/
 .config/nottoomuch/
+.config/orage/
 .config/pcsx2/
 .config/software-center/
 .config/tangerine/
+.config/Thunar/
 .config/totem/
 .config/transmission/
 .config/Trolltech.conf
@@ -50,6 +52,7 @@
 .config/user-dirs.locale
 .config/vlc/
 .config/whatpulse/
+.config/xfce4/
 .cpan
 .cups/
 .cvspass
@@ -81,6 +84,7 @@
 .gstreamer-0.10/
 .gtk-bookmarks
 .gvba/
+.history
 .*_history
 .htoprc
 .ICEauthority
@@ -130,14 +134,15 @@
 .w3m/
 .wine/
 .Xauthority
+.Xclients
 .Xmodmap
 .xbmc/
+.xsession
 .xsession-errors
 .xsession-errors.old
 .zcompdump
 .zsh/
 .zsnes/
-.*_history
 Desktop/
 Diablo III/
 Documents/
