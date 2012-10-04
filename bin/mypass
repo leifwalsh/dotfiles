@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [[ $(uname -s) = "Darwin" ]]
 then
@@ -6,6 +6,10 @@ then
 else
     COPY="xclip -sel clipboard"
 fi
+SHA256=$(which sha256sum)
+if [ $? != 0 ] ; then
+    SHA256=$(which sha256)
+fi
 
 if [[ $# -ne 1 ]]; then echo "Usage: $(basename $0) <site>" && exit 2; fi
-(gpg -q -d ~/.passwd.gpg; echo "$1") | sha256sum | cut -c-16 | xargs echo -n | $COPY
+(gpg -q -d ~/.passwd.gpg; echo "$1") | $SHA256 | cut -c-16 | xargs echo -n | $COPY
