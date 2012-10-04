@@ -9,9 +9,10 @@
 
 # History options.
 export HISTFILE=~/.zsh_history
-export HISTSIZE=5000
-export SAVEHIST=5000
+export HISTSIZE=10000
+export SAVEHIST=10000
 setopt hist_ignore_dups # ignore same commands run twice+
+setopt hist_ignore_space
 setopt appendhistory    # don't overwrite history 
 setopt sharehistory histappend # share history between open shells
 
@@ -41,7 +42,7 @@ bindkey -e
 # Aliases.
 if [ "$TERM"x != dumbx ]
 then
-    alias ls='ls --color=auto'
+    alias ls='ls -FG'
     alias grep='grep --color=auto'
 fi
 alias lsd='ls -d'
@@ -70,16 +71,18 @@ preexec () {
 ################################################################################
 
 # export proper variables for ls and completion
-if [[ -f ${HOME}/.dircolors ]]
-then
-  eval $(dircolors ${HOME}/.dircolors)
-elif [[ -f /etc/DIR_COLORS ]]
-then
-  eval $(dircolors /etc/DIR_COLORS)
-else
-  eval $(dircolors -b)
+if which dircolors >/dev/null ; then
+    if [[ -f ${HOME}/.dircolors ]]
+    then
+        eval $(dircolors ${HOME}/.dircolors)
+    elif [[ -f /etc/DIR_COLORS ]]
+    then
+        eval $(dircolors /etc/DIR_COLORS)
+    else
+        eval $(dircolors -b)
+    fi
+    export ZLS_COLORS=${LS_COLORS}
 fi
-export ZLS_COLORS=${LS_COLORS}
 
 # complete!
 autoload -U compinit; compinit
