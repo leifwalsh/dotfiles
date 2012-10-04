@@ -774,11 +774,14 @@ save the pointer marker if tag is found"
 ;;{{{ message
 
 (require 'message)
-(defun my-message-insert-bcc-hook ()
-  (message "called my-message-insert-bcc-hook")
+(defun my-message-send-hook ()
   (let ((str (buffer-string)))
     (string-match "^From: \\(.*\\)$" str)
-    (concat "Bcc: " (match-string 1 str))))
+    (let ((email (match-string 1 str)))
+      (goto-char (point-min))
+      (search-forward-regexp "^Subject:")
+      (replace-match (concat "Bcc: " email "\n\\&")))))
+(add-hook 'message-send-hook #'my-message-send-hook)
 
 ;;}}}
 
@@ -814,8 +817,9 @@ save the pointer marker if tag is found"
       ;; get envelope from out of header
       message-sendmail-envelope-from 'header
       )))
-(when (file-directory-p "/home/leif/local/mu-0.9.8.5")
-  (add-to-list 'load-path "/home/leif/local/mu-0.9.8.5/share/emacs/site-lisp/mu4e")
+(when (file-directory-p (expand-file-name "~/local/mu-0.9.8.5"))
+  (add-to-list 'load-path (expand-file-name "~/local/mu-0.9.8.5/share/emacs/site-lisp/mu4e"))
+  (setq mu4e-mu-binary (expand-file-name "~/local/mu-0.9.8.5/bin/mu"))
   (require 'mu4e))
 
 ;;}}}
@@ -941,7 +945,6 @@ save the pointer marker if tag is found"
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(large-file-warning-threshold nil)
- '(message-default-headers (quote my-message-insert-bcc-hook))
  '(message-fill-column 74)
  '(message-required-mail-headers (quote (From Subject Date (optional . In-Reply-To) Message-ID (optional . User-Agent) Bcc)))
  '(mm-text-html-renderer (quote gnus-w3m))
