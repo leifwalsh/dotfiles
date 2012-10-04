@@ -1,3 +1,8 @@
+if [[ -f $HOME/.system_profile ]]
+then
+    . $HOME/.system_profile
+fi
+
 # add xcode 4.4 developer path
 tcpath=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr
 if [[ -d $tcpath ]]
