@@ -654,6 +654,18 @@ save the pointer marker if tag is found"
 
 ;;}}}
 
+;;{{{ tramp
+
+(require 'tramp)
+(setq tramp-default-method "rsyncc"
+      tramp-remote-path '(tramp-own-remote-path
+                          tramp-default-remote-path
+                          "/usr/local/bin" "/usr/local/sbin"
+                          "/usr/bin" "/usr/sbin"
+                          "/bin"))
+
+;;}}}
+
 ;;{{{ paredit
 
 (autoload 'paredit-mode "paredit"
@@ -949,7 +961,6 @@ save the pointer marker if tag is found"
  '(show-paren-mode t)
  '(show-trailing-whitespace t)
  '(slime-net-coding-system (quote utf-8-unix))
- '(tramp-default-method "rsyncc")
  '(user-full-name "Leif Walsh")
  '(user-mail-address "leif.walsh@gmail.com")
  '(vc-handled-backends (quote (RCS CVS SVN git SCCS Bzr Git Hg Arch)))

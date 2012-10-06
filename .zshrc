@@ -12,6 +12,7 @@ export HISTFILE=~/.zsh_history
 export HISTSIZE=50000
 export SAVEHIST=50000
 setopt hist_ignore_dups # ignore same commands run twice+
+setopt hist_ignore_space
 setopt appendhistory    # don't overwrite history 
 setopt sharehistory histappend # share history between open shells
 
@@ -68,16 +69,18 @@ preexec () {
 ################################################################################
 
 # export proper variables for ls and completion
-if [[ -f ${HOME}/.dircolors ]]
-then
-  eval $(dircolors ${HOME}/.dircolors)
-elif [[ -f /etc/DIR_COLORS ]]
-then
-  eval $(dircolors /etc/DIR_COLORS)
-else
-  eval $(dircolors -b)
+if which dircolors >/dev/null ; then
+    if [[ -f ${HOME}/.dircolors ]]
+    then
+        eval $(dircolors ${HOME}/.dircolors)
+    elif [[ -f /etc/DIR_COLORS ]]
+    then
+        eval $(dircolors /etc/DIR_COLORS)
+    else
+        eval $(dircolors -b)
+    fi
+    export ZLS_COLORS=${LS_COLORS}
 fi
-export ZLS_COLORS=${LS_COLORS}
 
 # complete!
 autoload -U compinit; compinit
