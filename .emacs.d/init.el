@@ -2,6 +2,7 @@
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/git-emacs"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/workgroups"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/auto-complete-1.3.1"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/emacs-color-theme-solarized"))
 (if (< emacs-major-version 24)
@@ -349,6 +350,30 @@ save the pointer marker if tag is found"
 
 ;;}}}
 
+;;{{{ w3m-mode
+
+(autoload 'w3m "w3m" "Emacs interface to w3m." t)
+(eval-after-load "w3m"
+  '(progn
+     (setq w3m-use-cookies t
+           w3m-cookie-accept-bad-cookies 'ask)
+     (add-hook 'w3m-display-hook
+               (lambda (url)
+                 (let ((buffer-read-only nil))
+                   (delete-trailing-whitespace))))))
+
+;;}}}
+
+;;{{{ browse-url
+
+(require 'browse-url)
+(setq browse-url-browser-function 'w3m-browse-url
+      browse-url-new-window-flag t)
+(autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
+(global-set-key "\C-xm" 'browse-url-at-point)
+
+;;}}}
+
 ;;{{{ simple-wiki-mode
 
 (autoload 'simple-wiki-mode "simple-wiki" "Simple wiki mode." t)
@@ -366,6 +391,14 @@ save the pointer marker if tag is found"
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'outline-mode-hook 'flyspell-mode)
 (add-hook 'org-mode-hook 'flyspell-mode)
+
+;;}}}
+
+;;{{{ workgroups
+
+(require 'workgroups)
+(setq wg-prefix-key (kbd "C-c w"))
+(workgroups-mode 1)
 
 ;;}}}
 
@@ -651,6 +684,8 @@ save the pointer marker if tag is found"
 (global-set-key "\C-cc" 'org-capture)
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
+(global-set-key "\C-cL" 'org-insert-link-global)
+(global-set-key "\C-co" 'org-open-at-point-global)
 
 ;;}}}
 
@@ -947,7 +982,7 @@ save the pointer marker if tag is found"
  '(large-file-warning-threshold nil)
  '(message-fill-column 74)
  '(message-required-mail-headers (quote (From Subject Date (optional . In-Reply-To) Message-ID (optional . User-Agent) Bcc)))
- '(mm-text-html-renderer (quote gnus-w3m))
+ '(mm-text-html-renderer (quote w3m))
  '(org-agenda-files (list (concat org-directory "tokutek.org") (concat org-directory "home.org")))
  '(org-capture-templates (quote (("n" "Tokutek Note" entry (file+headline "~/Dropbox/org/tokutek.org" "notes") "** %?  %^G
    %a
