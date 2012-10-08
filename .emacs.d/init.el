@@ -15,7 +15,7 @@
 ;;{{{ PATH
 
 (when (eq system-type 'darwin)
-  (require 'fixpath))
+  (load "fixpath.el"))
 
 ;;}}}
 
@@ -111,6 +111,15 @@
 ;(setq mouse-wheel-progressive-speed 1) ;; don't accelerate scrolling
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 (setq scroll-step 1) ;; keyboard scroll one line at a time
+
+;;}}}
+
+;;{{{ sticky-buffers
+
+(define-minor-mode sticky-buffer-mode
+  "Make the current window always display this buffer."
+  nil " sticky" nil
+  (set-window-dedicated-p (selected-window) sticky-buffer-mode))
 
 ;;}}}
 
@@ -388,6 +397,7 @@ save the pointer marker if tag is found"
 (add-hook 'TeX-mode-hook 'flyspell-mode)
 (eval-after-load 'noweb-mode
   '(add-hook 'noweb-mode-hook 'flyspell-mode))
+(add-hook 'message-mode-hook 'flyspell-mode)
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'outline-mode-hook 'flyspell-mode)
 (add-hook 'org-mode-hook 'flyspell-mode)
@@ -486,13 +496,6 @@ save the pointer marker if tag is found"
 ;;{{{ compile
 
 (require 'compile)
-(setq mode-compile-always-save-buffer-p t)
-
-;;}}}
-
-;;{{{ etags
-
-(require 'etags)
 
 ;;}}}
 
@@ -565,7 +568,6 @@ save the pointer marker if tag is found"
 ;;{{{ parenface
 
 (require 'parenface)
-(set-face-foreground 'paren-face "#777")
 
 ;;}}}
 
@@ -976,7 +978,6 @@ save the pointer marker if tag is found"
  '(gdb-use-separate-io-buffer t)
  '(global-hl-line-mode t)
  '(global-whitespace-mode t)
- '(gud-gdb-command-name "gdb --annotate=1")
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(large-file-warning-threshold nil)
@@ -1009,8 +1010,6 @@ save the pointer marker if tag is found"
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(hl-line ((t (:inherit highlight))))
- '(region ((t (:inherit isearch))))
  '(whitespace-indentation ((t nil)))
  '(whitespace-space-after-tab ((t nil)))
  '(whitespace-space-before-tab ((t nil)))

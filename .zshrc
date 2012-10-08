@@ -9,8 +9,8 @@
 
 # History options.
 export HISTFILE=~/.zsh_history
-export HISTSIZE=10000
-export SAVEHIST=10000
+export HISTSIZE=50000
+export SAVEHIST=50000
 setopt hist_ignore_dups # ignore same commands run twice+
 setopt hist_ignore_space
 setopt appendhistory    # don't overwrite history 
@@ -28,7 +28,6 @@ setopt completeinword # not just at the end
 setopt alwaystoend    # when complete from middle, move cursor
 setopt promptsubst    # do varaible fu in prompt
 setopt extendedglob   # Nice things like *~*.c globs all but .c files
-setopt correctall     # more correction
 setopt multios        # makes "foo <file1 <file2 >out1 >out2 |grep" possible
 setopt list_ambiguous # stop completing at ambiguities
 
@@ -43,7 +42,6 @@ bindkey -e
 if [ "$TERM"x != dumbx ]
 then
     alias ls='ls -FG'
-    alias grep='grep --color=auto'
 fi
 alias lsd='ls -d'
 alias ll='ls -l'
