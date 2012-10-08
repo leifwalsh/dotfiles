@@ -106,5 +106,7 @@ URxvt*scrollTtyOutput: false
 URxvt*scrollWithBuffer: true
 URxvt*scrollTtyKeypress: true
 
+emacs.font: DejaVu Sans Mono-10
+
 Fig.latexfonts: true
 Fig.specialtext: true
