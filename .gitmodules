@@ -19,3 +19,6 @@
 [submodule ".emacs.d/vendor/emacs-color-theme-solarized"]
 	path = .emacs.d/vendor/emacs-color-theme-solarized
 	url = git://github.com/sellout/emacs-color-theme-solarized
+[submodule ".emacs.d/vendor/workgroups"]
+	path = .emacs.d/vendor/workgroups
+	url = git://github.com/tlh/workgroups.el
