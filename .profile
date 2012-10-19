@@ -45,7 +45,14 @@ PYTHONPATH=$HOME/local/lib64/python:$HOME/local/lib/python2.7/site-packages:$PYT
 
 if [ -f $HOME/local/.profile ]
 then
+    # for packages underneath ~/local/
     . $HOME/local/.profile
+fi
+
+if [ -f $HOME/.local/.profile ]
+then
+    # for local settings
+    . $HOME/.local/.profile
 fi
 
 PATH=$HOME/bin:$PATH
