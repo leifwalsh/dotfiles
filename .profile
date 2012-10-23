@@ -14,8 +14,7 @@ platpath=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/De
 if [[ -d $platpath ]]
 then
     #PATH=$PATH:$platpath/bin
-    C_INCLUDE_PATH=$C_INCLUDE_PATH:$platpath/include
-    CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:$platpath/include
+    CPATH=$CPATH:$platpath/include
 fi
 devpath=/Applications/Xcode.app/Contents/Developer/usr
 if [[ -d $devpath ]]
@@ -60,7 +59,7 @@ PATH=$HOME/bin:$PATH
 EDITOR="emacsclient -t"
 ALTERNATE_EDITOR="vim"
 
-export PATH C_INCLUDE_PATH CPLUS_INCLUDE_PATH PKG_CONFIG_PATH INFOPATH MANPATH PYTHONPATH EDITOR ALTERNATE_EDITOR
+export PATH CPATH PKG_CONFIG_PATH INFOPATH MANPATH PYTHONPATH EDITOR ALTERNATE_EDITOR
 
 # colorize ls, less, grep
 CLICOLOR=on
