@@ -22,3 +22,6 @@
 [submodule ".emacs.d/vendor/workgroups"]
 	path = .emacs.d/vendor/workgroups
 	url = git://github.com/tlh/workgroups.el
+[submodule ".emacs.d/vendor/auto-complete-clang"]
+	path = .emacs.d/vendor/auto-complete-clang
+	url = git://github.com/YorkZ/auto-complete-clang.git
