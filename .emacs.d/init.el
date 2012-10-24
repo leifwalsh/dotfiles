@@ -324,11 +324,11 @@ save the pointer marker if tag is found"
   (dir-locals-set-class-variables 'leif/tokudb-dir-class
                                   `((c-mode . ((ac-clang-flags . ,toku-cflags)))
                                     (c++-mode . ((ac-clang-flags . ,toku-cflags)))))
+  (dir-locals-set-directory-class "~/svn/tokutek/toku" 'leif/tokudb-dir-class)
 
   (flet ((set-fractal-tree-directory
              (dir file name)
              (add-to-list 'semanticdb-project-roots dir)
-             (dir-locals-set-directory-class dir 'leif/tokudb-dir-class)
 
              (let ((strname (format "Tokudb %s" name))
                    (symbol (intern (format "tokudb-%s-project" name))))
@@ -337,7 +337,8 @@ save the pointer marker if tag is found"
                                           :name strname
                                           :file (concat dir file)
                                           :include-path toku-root-include-paths
-                                          :system-include-path (append (split-string (getenv "CPATH") ":" t)
+                                          :system-include-path (append (when-let (cpath (getenv "CPATH"))
+                                                                         (split-string cpath ":" t))
                                                                        '("/usr/local/include"
                                                                          "/usr/include"))
                                           :spp-table toku-preprocessor-symbols)))))
