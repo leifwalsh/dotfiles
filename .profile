@@ -66,3 +66,7 @@ CLICOLOR=on
 LESS="-R"
 GREP_COLOR=auto
 export CLICOLOR GREP_COLOR LESS
+
+if [ -f $HOME/.shell_utils ]; then
+    . $HOME/.shell_utils
+fi

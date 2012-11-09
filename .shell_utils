@@ -1,0 +1,3 @@
+myip () {
+	curl -s echo.httpkit.com | awk -F: '/ip/{gsub(/"|\s|,/,"");print $2}'
+}
