@@ -23,6 +23,8 @@ then
     MANPATH=$MANPATH:$devpath/share/man
 fi
 
+PATH=/usr/local/bin:/usr/local/sbin:$PATH
+
 # add coreutils
 if which brew &>/dev/null && [ -d $(brew --prefix coreutils)/libexec/gnubin ]; then
     PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
@@ -36,7 +38,7 @@ then
     MANPATH=$MANPATH:$PLAN9/man
 fi
 
-PATH=$HOME/local/bin:$HOME/local/sbin:/usr/local/bin:/usr/local/sbin:$PATH
+PATH=$HOME/local/bin:$HOME/local/sbin:$PATH
 PKG_CONFIG_PATH=$HOME/local/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 INFOPATH=$HOME/local/share/info:/usr/local/share/info:$INFOPATH
 MANPATH=$HOME/local/share/man:/usr/local/share/man:$MANPATH
@@ -56,7 +58,7 @@ fi
 
 PATH=$HOME/bin:$PATH
 
-EDITOR="emacsclient -t"
+EDITOR=emacsclient
 ALTERNATE_EDITOR="vim"
 
 export PATH CPATH PKG_CONFIG_PATH INFOPATH MANPATH PYTHONPATH EDITOR ALTERNATE_EDITOR
