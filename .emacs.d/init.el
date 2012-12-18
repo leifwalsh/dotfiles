@@ -401,6 +401,12 @@ save the pointer marker if tag is found"
 
 ;;}}}
 
+;;{{{ doc-mode
+
+(autoload 'doc-mode "doc-mode")
+
+;;}}}
+
 ;;{{{ simple-wiki-mode
 
 (autoload 'simple-wiki-mode "simple-wiki" "Simple wiki mode." t)
