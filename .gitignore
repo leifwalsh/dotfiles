@@ -1,6 +1,7 @@
 .CFUserTextEncoding
 .Private
 .Trash
+.VirtualBox/
 .Xauthority
 .adobe
 .apport-ignore.xml
@@ -31,7 +32,10 @@
 .config/gvbam/
 .config/gwibber/
 .config/htop/
+.config/LightTable/
+.config/leafpad/
 .config/libaccounts-glib/
+.config/libimobiledevice/
 .config/libreoffice/
 .config/menus/
 .config/monitors.xml
@@ -57,6 +61,7 @@
 .cpan
 .cups/
 .cvspass
+.debug/
 .dir_colors
 .dircolors
 .dbus/
@@ -71,11 +76,13 @@
 .esd_auth
 .eshell
 .fontconfig
+.fonts/
 .gconf/
 .gconfd/
 .gem
 .ghc/
 .gimp-2.6/
+.gimp-2.8/
 .gitk
 .gksu.lock
 .gnome2/
@@ -86,9 +93,11 @@
 .gstreamer-0.10/
 .gtk-bookmarks
 .gvba/
+.gvoice
 .history
 .*_history
 .htoprc
+.huludesktop
 .ICEauthority
 .ido.last
 .keychain
@@ -97,10 +106,12 @@
 .launchpadlib/
 .lesshst
 .lldb-history
+.lighttable/
 .linuxmint/
 .local
 .login
 .login_conf
+.m2/
 .macromedia/
 .mail_aliases
 .mailrc
@@ -111,6 +122,7 @@
 .mpd/
 .mplayer/
 .mu/
+.netflix-desktop/
 .nv/
 .nvidia-settings-rc
 .offlineimap/
@@ -118,8 +130,10 @@
 .pcsx/
 .pentadactyl/
 .pki/
+.processing/
 .pulse/
 .pulse-cookie
+.racket/
 .rhosts
 .rnd
 .semanticdb
@@ -147,6 +161,7 @@
 .Xclients
 .Xmodmap
 .xbmc/
+.xscreensaver
 .xsession
 .xsession-errors
 .xsession-errors.old
