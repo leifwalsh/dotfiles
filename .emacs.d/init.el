@@ -401,12 +401,6 @@ save the pointer marker if tag is found"
 
 ;;}}}
 
-;;{{{ doc-mode
-
-(autoload 'doc-mode "doc-mode")
-
-;;}}}
-
 ;;{{{ simple-wiki-mode
 
 (autoload 'simple-wiki-mode "simple-wiki" "Simple wiki mode." t)
@@ -425,6 +419,17 @@ save the pointer marker if tag is found"
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'outline-mode-hook 'flyspell-mode)
 (add-hook 'org-mode-hook 'flyspell-mode)
+
+;;}}}
+
+;;{{{ asciidoc
+
+(autoload 'doc-mode "doc-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.adoc$" . doc-mode))
+(add-hook 'doc-mode-hook
+          '(lambda ()
+             (turn-on-auto-fill)
+             (require 'asciidoc)))
 
 ;;}}}
 
