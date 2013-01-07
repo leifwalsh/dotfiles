@@ -3,6 +3,7 @@
 
 [general]
 accounts = Personal,Work
+pythonfile = ~/.offlineimap.py
 
 [Account Personal]
 localrepository = PersonalLocal
@@ -15,9 +16,9 @@ localfolders = ~/Maildir/Personal
 [Repository PersonalRemote]
 type = Gmail
 remoteuser = leif.walsh@gmail.com
-remotepass = emvucchwqueijjfn
-cert_fingerprint = f3043dd689a2e7dddfbef82703a6c65ea9b634c1
+remotepasseval = get_authinfo_password("imap.gmail.com", "leif.walsh@gmail.com", 993)
 folderfilter = lambda foldername: foldername in ['INBOX']
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
 
 [Account Work]
 localrepository = WorkLocal
@@ -30,6 +31,10 @@ localfolders = ~/Maildir/Tokutek
 [Repository WorkRemote]
 type = Gmail
 remoteuser = leif@tokutek.com
-remotepass = 7af1504d1a14b36f
-cert_fingerprint = f3043dd689a2e7dddfbef82703a6c65ea9b634c1
+remotepasseval = get_authinfo_password("imap.gmail.com", "leif@tokutek.com", 993)
 folderfilter = lambda foldername: foldername in ['INBOX']
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+
+# Local Variables:
+# mode: Conf
+# End:
