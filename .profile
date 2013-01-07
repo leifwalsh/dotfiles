@@ -72,3 +72,9 @@ export CLICOLOR GREP_COLOR LESS
 if [ -f $HOME/.shell_utils ]; then
     . $HOME/.shell_utils
 fi
+
+if which ssh-add &>/dev/null && [ ! -z "$SSH_AGENT_PID" ] && ps ax | grep "$SSH_AGENT_PID" | grep -q -v grep; then
+    if ! ssh-add -l | grep -q .ssh/id_rsa; then
+        ssh-add
+    fi
+fi
