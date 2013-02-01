@@ -11,13 +11,15 @@
 .bzr.log
 .cache/
 .ccache
+.codeblocks/
 .codereview_upload_cookies
 .compiz/
 .compiz-1/
 .config/autostart/
 .config/banshee-1/
 .config/caffeine/
-.config/chromium/
+.config/chromium
+.config/chromium-backup
 .config/compiz-1/
 .config/dconf/
 .config/Empathy/
@@ -44,8 +46,11 @@
 .config/nautilus/
 .config/nottoomuch/
 .config/orage/
+.config/pavucontrol.ini
 .config/pcsx2/
+.config/pulse/
 .config/ristretto/
+.config/rox.sourceforge.net/
 .config/software-center/
 .config/tangerine/
 .config/Thunar/
@@ -65,6 +70,7 @@
 .dir_colors
 .dircolors
 .dbus/
+.dmenu_cache
 .dmrc
 .dolphin-emu/
 .dropbox
@@ -73,8 +79,10 @@
 .elinks/
 .emacs-backups
 .emacs.bmk
+.emacs.d/abbrev_defs
 .esd_auth
 .eshell
+.fehbg
 .fontconfig
 .fonts/
 .gconf/
@@ -99,6 +107,7 @@
 .htoprc
 .huludesktop
 .ICEauthority
+.icons/
 .ido.last
 .keychain
 .last_codereview_email_address
@@ -122,6 +131,7 @@
 .mpd/
 .mplayer/
 .mu/
+.netrc
 .netflix-desktop/
 .nv/
 .nvidia-settings-rc
@@ -142,6 +152,8 @@
 .shrc
 .signon/
 .Skype/
+.skyped/
+.smb/
 .srecode
 .ssh/config.bak
 .subversion
