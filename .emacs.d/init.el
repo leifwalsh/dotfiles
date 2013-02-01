@@ -250,6 +250,22 @@ save the pointer marker if tag is found"
 
 ;;}}}
 
+;;{{{ pkgbuild
+
+(autoload 'pkgbuild-mode "pkgbuild-mode.el" "PKGBUILD mode." t)
+(setq auto-mode-alist (append '(("/PKGBUILD$" . pkgbuild-mode)) auto-mode-alist))
+
+;;}}}
+
+;;{{{ auctex
+
+(ignore-errors
+  (progn
+    (load "auctex.el" nil t t)
+    (load "preview-latex.el" nil t t)))
+
+;;}}}
+
 ;;{{{ auto-complete
 
 (require 'auto-complete-config)
@@ -379,7 +395,8 @@ save the pointer marker if tag is found"
 
 ;;{{{ w3m-mode
 
-(autoload 'w3m "w3m" "Emacs interface to w3m." t)
+(when (not (require 'w3m-load))
+    (autoload 'w3m "w3m" "Emacs interface to w3m." t))
 (eval-after-load "w3m"
   '(progn
      (setq w3m-use-cookies t
@@ -466,6 +483,13 @@ save the pointer marker if tag is found"
      (require 'inf-haskell)))
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+
+;;}}}
+
+;;{{{ lua-mode
+
+(autoload 'lua-mode "lua-mode" "Lua editing mode." t)
+(setq auto-mode-alist (cons '("\.lua$" . lua-mode) auto-mode-alist))
 
 ;;}}}
 
@@ -691,7 +715,7 @@ save the pointer marker if tag is found"
        (save-window-excursion
          (shell-command
           (format
-           "notify-send -i emacs23 '%s' '%s'"
+           "notify-send -i emacs '%s' '%s'"
            id (erc-xml-escape msg)))))
 
      (defun erc-notify-osd
@@ -875,9 +899,24 @@ save the pointer marker if tag is found"
       ;; don't copy to sent folder, gmail handles this
       mu4e-sent-messages-behavior 'trash
       ;; match myself
+      mu4e-user-mail-address-list '("leif.walsh@gmail.com"
+                                    "leif@tokutek.com"
+                                    "rlwalsh@ic.sunysb.edu")
       mu4e-user-mail-address-regexp "^\\(leif.walsh@gmail.com\\|leif@tokutek.com\\|rlwalsh@ic.sunysb.edu\\)$"
       ;; update every 10 minutes
       mu4e-update-interval 600
+      ;; use fancy chars
+      mu4e-use-fancy-chars t
+      ;; get keys
+      mu4e-auto-retrieve-keys t
+      ;; include related messages (threads) for searches
+      mu4e-headers-include-related t
+      ;; don't show duplicate messages
+      mu4e-headers-skip-duplicates t
+      ;; show images in message
+      mu4e-show-images t
+      ;; convert html
+      mu4e-html2text-command "html2text -utf8 -width 72"
       ;; use sendmail (msmtp)
       message-send-mail-function 'message-send-mail-with-sendmail
       ;; get envelope from out of header
@@ -885,8 +924,8 @@ save the pointer marker if tag is found"
       )))
 (when (file-directory-p (expand-file-name "~/local/mu-0.9.8.5"))
   (add-to-list 'load-path (expand-file-name "~/local/mu-0.9.8.5/share/emacs/site-lisp/mu4e"))
-  (setq mu4e-mu-binary (expand-file-name "~/local/mu-0.9.8.5/bin/mu"))
-  (require 'mu4e))
+  (setq mu4e-mu-binary (expand-file-name "~/local/mu-0.9.8.5/bin/mu")))
+(ignore-errors (require 'mu4e))
 
 ;;}}}
 
@@ -1039,6 +1078,7 @@ save the pointer marker if tag is found"
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(trailing-whitespace ((t (:background "red1" :foreground "gray17" :inverse-video t :underline nil :slant normal :weight normal))))
  '(whitespace-indentation ((t nil)))
  '(whitespace-space-after-tab ((t nil)))
  '(whitespace-space-before-tab ((t nil)))
