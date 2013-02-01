@@ -69,6 +69,13 @@ LESS="-R"
 GREP_COLOR=auto
 export CLICOLOR GREP_COLOR LESS
 
+# move chromium cache to tmpfs
+if [ -f /etc/chromium/default ]; then
+    . /etc/chromium/default
+    CHROMIUM_USER_FLAGS=" --disk-cache-dir=/tmp/chromium-cache-leif ${CHROMIUM_FLAGS}"
+    export CHROMIUM_USER_FLAGS
+fi
+
 if [ -f $HOME/.shell_utils ]; then
     . $HOME/.shell_utils
 fi
