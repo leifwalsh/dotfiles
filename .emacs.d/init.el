@@ -725,7 +725,63 @@ save the pointer marker if tag is found"
        (when (string= matched-type "current-nick")
          (erc-osd-display (erc-extract-nick nick) msg)))
 
-     (add-hook 'erc-text-matched-hook 'erc-notify-osd)))
+     (add-hook 'erc-text-matched-hook 'erc-notify-osd)
+     (defmacro unpack-color (color red green blue &rest body)
+       `(let ((,red   (car ,color))
+              (,green (car (cdr ,color)))
+              (,blue  (car (cdr (cdr ,color)))))
+          ,@body))
+
+     (defun rgb-to-html (color)
+       (unpack-color color red green blue
+                     (concat "#" (format "%02x%02x%02x" red green blue))))
+
+     (defun hexcolor-luminance (color)
+       (unpack-color color red green blue
+                     (floor (+ (* 0.299 red)
+                               (* 0.587 green)
+                               (* 0.114 blue)))))
+
+     (defun invert-color (color)
+       (unpack-color color red green blue
+                     `(,(- 255 red)
+                       ,(- 255 green)
+                       ,(- 255 blue))))
+
+     (defun erc-get-color-for-nick (nick dark)
+       (let* ((hash     (md5 (downcase nick)))
+              (red      (mod (string-to-number (substring hash 0 10)
+                                               16)
+                             256))
+              (blue     (mod (string-to-number (substring hash 10 20)
+                                               16)
+                             256))
+              (green    (mod (string-to-number (substring hash 20 30)
+                                               16)
+                             256))
+              (color    `(,red ,green ,blue)))
+         (rgb-to-html (if (if dark (< (hexcolor-luminance color)
+                                      85)
+                            (> (hexcolor-luminance color)
+                               170))
+                          (invert-color color)
+                        color))))
+
+     (defun erc-highlight-nicknames ()
+       (save-excursion
+         (goto-char (point-min))
+         (while (re-search-forward "\\w+" nil t)
+           (let* ((bounds (bounds-of-thing-at-point 'word))
+                  (nick   (buffer-substring-no-properties (car bounds)
+                                                          (cdr bounds))))
+             (when (erc-get-server-user nick)
+               (put-text-property
+                (car bounds)
+                (cdr bounds)
+                'face
+                (cons 'foreground-color (erc-get-color-for-nick nick 't))))))))
+
+     (add-hook 'erc-insert-modify-hook 'erc-highlight-nicknames)))
 
 ;;}}}
 
@@ -861,6 +917,21 @@ save the pointer marker if tag is found"
 
 ;;}}}
 
+;;{{{ trailing whitespace
+
+(defun leif/unset-show-trailing-whitespace ()
+  (setq show-trailing-whitespace nil))
+
+(mapc (lambda (hook)
+        (add-hook hook #'leif/unset-show-trailing-whitespace))
+      '(term-mode-hook
+        eshell-mode-hook
+        mail-mode-hook
+        message-mode-hook
+        w3m-mode-hook))
+
+;;}}}
+
 ;;{{{ message
 
 (require 'message)
@@ -879,6 +950,11 @@ save the pointer marker if tag is found"
 
 (eval-after-load "mu4e"
   '(progn
+     (mapc (lambda (hook)
+             (add-hook hook #'leif/unset-show-trailing-whitespace))
+           '(mu4e-compose-mode-hook
+             mu4e-headers-mode-hook
+             mu4e-view-mode-hook))
      (setq
       ;; make mu4e the default user agent
       mail-user-agent 'mu4e-user-agent
@@ -1032,7 +1108,7 @@ save the pointer marker if tag is found"
  '(display-time-mode t)
  '(ede-project-directories (quote ("/Users/leif/git/mongo/src/mongo" "/Users/leif/src/mongodb-src-r2.0.5")))
  '(erc-autojoin-channels-alist (quote (("freenode.net" "#mariadb") ("foonetic.net" "#xkcd"))))
- '(erc-nick (quote ("leifw" "leifw_" "leifw__")))
+ '(erc-nick (quote ("Adlai" "leifw" "Adlai_" "leifw_" "Adlai__" "leifw__")))
  '(erc-nickserv-identify-mode (quote autodetect))
  '(fill-column 74)
  '(flymake-allowed-file-name-masks (quote (("\\.c\\'" flymake-simple-make-init flymake-simple-cleanup flymake-get-real-file-name) ("\\.cpp\\'" flymake-simple-make-init flymake-simple-cleanup flymake-get-real-file-name) ("\\.xml\\'" flymake-xml-init) ("\\.html?\\'" flymake-xml-init) ("\\.cs\\'" flymake-simple-make-init) ("\\.p[ml]\\'" flymake-perl-init) ("\\.php[345]?\\'" flymake-php-init) ("\\.h\\'" flymake-master-make-header-init flymake-master-cleanup) ("\\.java\\'" flymake-simple-make-java-init flymake-simple-java-cleanup) ("\\.idl\\'" flymake-simple-make-init))))
