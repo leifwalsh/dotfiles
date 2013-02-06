@@ -25,6 +25,9 @@ fi
 
 PATH=/usr/local/bin:/usr/local/sbin:$PATH
 
+if [[ -d /usr/lib64/distcc/bin ]]; then
+    PATH=/usr/lib64/distcc/bin:$PATH
+fi
 if [[ -d /usr/lib/ccache ]]; then
     PATH=/usr/lib/ccache:$PATH
 fi
