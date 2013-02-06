@@ -27,9 +27,12 @@ PATH=/usr/local/bin:/usr/local/sbin:$PATH
 
 if [[ -d /usr/lib/ccache ]]; then
     PATH=/usr/lib/ccache:$PATH
-    if which distcc &>/dev/null; then
-        CCACHE_PREFIX="distcc"
-    fi
+fi
+if [[ -d /usr/lib/ccache/bin ]]; then
+    PATH=/usr/lib/ccache/bin:$PATH
+fi
+if which distcc &>/dev/null; then
+    CCACHE_PREFIX="distcc"
 fi
 
 # add coreutils
