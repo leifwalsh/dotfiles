@@ -25,6 +25,13 @@ fi
 
 PATH=/usr/local/bin:/usr/local/sbin:$PATH
 
+if [[ -d /usr/lib/ccache ]]; then
+    PATH=/usr/lib/ccache:$PATH
+    if which distcc &>/dev/null; then
+        CCACHE_PREFIX="distcc"
+    fi
+fi
+
 # add coreutils
 if which brew &>/dev/null && [ -d $(brew --prefix coreutils)/libexec/gnubin ]; then
     PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
