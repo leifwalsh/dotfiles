@@ -255,7 +255,8 @@ save the pointer marker if tag is found"
 
 (nyan-mode 1)
 (nyan-start-animation)
-(setq nyan-wavy-trail t)
+(setq nyan-wavy-trail t
+      nyan-bar-length 16)
 
 ;;}}}
 
