@@ -25,6 +25,19 @@ fi
 
 PATH=/usr/local/bin:/usr/local/sbin:$PATH
 
+if [[ -d /usr/lib64/distcc/bin ]]; then
+    PATH=/usr/lib64/distcc/bin:$PATH
+fi
+if [[ -d /usr/lib/ccache ]]; then
+    PATH=/usr/lib/ccache:$PATH
+fi
+if [[ -d /usr/lib/ccache/bin ]]; then
+    PATH=/usr/lib/ccache/bin:$PATH
+fi
+if which distcc &>/dev/null; then
+    CCACHE_PREFIX="distcc"
+fi
+
 # add coreutils
 if which brew &>/dev/null && [ -d $(brew --prefix coreutils)/libexec/gnubin ]; then
     PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
@@ -68,6 +81,13 @@ CLICOLOR=on
 LESS="-R"
 GREP_COLOR=auto
 export CLICOLOR GREP_COLOR LESS
+
+# move chromium cache to tmpfs
+if [ -f /etc/chromium/default ]; then
+    . /etc/chromium/default
+    CHROMIUM_USER_FLAGS=" --disk-cache-dir=/tmp/chromium-cache-leif ${CHROMIUM_FLAGS}"
+    export CHROMIUM_USER_FLAGS
+fi
 
 if [ -f $HOME/.shell_utils ]; then
     . $HOME/.shell_utils

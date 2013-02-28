@@ -92,11 +92,10 @@ xpdf*background:        white
 !Xft.rgba: rgb
 
 URxvt.termName: rxvt-unicode-256color
-URxvt.iconFile: /usr/share/icons/Humanity/apps/128/gnome-terminal.svg
-URxvt.font: xft:Deja Vu Sans Mono-10
-URxvt.boldFont: xft:Deja Vu Sans Mono-10:bold
-URxvt.italicFont: xft:Deja Vu Sans Mono-10:italic
-URxvt.boldItalicFont: xft:Deja Vu Sans Mono-10:bold:italic
+URxvt.font: xft:Terminus-12
+URxvt.boldFont: xft:Terminus-12:bold
+URxvt.italicFont: xft:Terminus-12:italic
+URxvt.boldItalicFont: xft:Terminus-12:bold:italic
 
 URxvt.scrollBar: false
 URxvt.saveLines: 8192
@@ -106,7 +105,7 @@ URxvt*scrollTtyOutput: false
 URxvt*scrollWithBuffer: true
 URxvt*scrollTtyKeypress: true
 
-emacs.font: DejaVu Sans Mono-10
+emacs.font: Terminus-10
 
 Fig.latexfonts: true
 Fig.specialtext: true

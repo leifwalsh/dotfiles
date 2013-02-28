@@ -1,3 +1,6 @@
 myip () {
 	curl -s echo.httpkit.com | awk -F: '/x-forwarded-for/{gsub(/"|\s|,/,"");print $2}'
 }
+bat () { 
+    acpitool -b | cut -d: -f2 | cut -d, -f2 | sed -e 's/^\s*\|\s*$//g'
+}

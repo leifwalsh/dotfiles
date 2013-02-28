@@ -190,18 +190,8 @@ preexec () {
         title $cmd[1]:t "$cmd[1]:t $cmd[2,-1]") 2>/dev/null
 }
 
-if [[ $TERM == "dumb" && $EMACS == "t" ]]; then
-    # emacs is dumb
-    unsetopt zle
-    unsetopt prompt_cr
-    unsetopt prompt_subst
-    unfunction precmd
-    unfunction preexec
-    PROMPT="%m %2~ %# "
-else
-    PROMPT='%(#.%F{red}%B%m%b%f.%F{green}%m%f) ${vcs_info_msg_0_}%F{blue}%#%f '
-    #RPROMPT="%F{blue}%(?..(%f%F{red}%?%f%F{blue}%) )%B[%b%f%F{yellow}%T%f%F{blue}%B]%b%f"
-fi
+PROMPT='%(#.%F{red}%B%m%b%f.%F{green}%m%f) ${vcs_info_msg_0_}%F{blue}%#%f '
+#RPROMPT="%F{blue}%(?..(%f%F{red}%?%f%F{blue}%) )%B[%b%f%F{yellow}%T%f%F{blue}%B]%b%f"
 
 # start ssh-agent
 if which keychain &>/dev/null
