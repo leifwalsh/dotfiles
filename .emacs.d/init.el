@@ -351,7 +351,7 @@ save the pointer marker if tag is found"
                                     (c++-mode . ((ac-clang-flags . ,toku-cflags)))))
   (dir-locals-set-directory-class "~/svn/tokutek/toku" 'leif/tokudb-dir-class)
 
-  (cl-flet ((set-fractal-tree-directory
+  (flet ((set-fractal-tree-directory
              (dir file name)
              (add-to-list 'semanticdb-project-roots dir)
 
@@ -652,10 +652,12 @@ save the pointer marker if tag is found"
 
 ;;{{{ erc
 
-(require 'erc)
-(autoload 'erc "erc-join" "Custom joining stuff for ERC.")
+(autoload 'start-irc "erc" "Configure and start IRC." t)
+
 (eval-after-load "erc"
   '(progn
+
+     (autoload 'erc-networks-mode "erc-networks" "Provide data about IRC networks.")
 
      ;;{{{ prompt
 
@@ -675,122 +677,183 @@ save the pointer marker if tag is found"
 
      ;;{{{ url regex
 
-     (setq erc-button-url-regexp
-           "\\([-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]+\\.\\)+[-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]*[-a-zA-Z0-9\\/]")
+     (when nil
+       (setq erc-button-url-regexp
+             "\\([-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]+\\.\\)+[-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]*[-a-zA-Z0-9\\/]"))
 
      ;;}}}
 
-     ;;{{{ truncate
+     ;;{{{ modules
 
-     (setq erc-max-buffer-size 5000)
-     (defvar erc-insert-post-hook)
-     (add-hook 'erc-insert-post-hook
-               'erc-truncate-buffer)
-     (setq erc-truncate-buffer-on-save t)
+     (unless (package-installed-p 'erc-hl-nicks)
+       (package-install 'erc-hl-nicks))
+
+     (erc-autoaway-mode 1)
+     (erc-autojoin-mode 1)
+     (erc-completion-mode 1)
+     (erc-fill-mode 1)
+     (erc-log-mode 1)
+     (erc-networks-mode 1)
+     (erc-netsplit-mode 1)
+     (erc-services-mode 1)
+     (erc-spelling-mode 1)
+     (erc-track-mode 1)
+     (erc-truncate-mode 1)
 
      ;;}}}
 
-     ;;{{{ nick/servers/chans
+     ;;{{{ variables
 
-     (eval-after-load "erc-join"
-       '(progn
-          (setq erc-server-history-list
-                '("localhost"
-                  "irc.foonetic.net"
-                  "irc.freenode.net"))))
+     (setq
+      ;; colors
+      erc-interpret-mirc-color t
+
+      ;; ignore annoying stuff
+      erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
+                                "324" "329" "332" "333" "353" "477")
+
+      ;; autoaway
+      erc-auto-discard-away t
+      erc-autoaway-idle-seconds 600
+      erc-autoaway-idle-method 'irc
+
+      ;; misc
+      erc-server-coding-system '(utf-8 . utf-8)
+      erc-user-full-name "Leif Walsh"
+      )
+
+     ;;}}}
+
+     ;;{{{ logging
+
+     (setq
+      erc-log-channels-directory "~/.emacs.d/erc/logs/"
+      erc-save-buffer-on-part t)
+     (if (not (file-exists-p erc-log-channels-directory))
+         (mkdir erc-log-channels-directory t))
+     (defadvice save-buffers-kill-emacs (before save-logs (arg) activate)
+       (save-some-buffers t (lambda () (when (eq major-mode 'erc-mode) t))))
 
      ;;}}}
 
      ;;{{{ notify
 
-     (defun erc-xml-escape
-       (s)
-       "Escape unsafe characters from xml stuff."
-       (reduce (lambda (s regex-pair)
-                 (let ((match (car regex-pair))
-                       (replacement (cdr regex-pair)))
-                   (replace-regexp-in-string match replacement s)))
-               '(("'" . "&apos;")
-                 ("\"" . "&quot;")
-                 ("&" . "&amp;")
-                 ("<" . "&lt;")
-                 (">" . "&gt;")
-                 ("~A" . " "))
-               :initial-value s))
+     (defun clean-message (s)
+       (setq s (replace-regexp-in-string "'" "&apos;"
+               (replace-regexp-in-string "\"" "&quot;"
+               (replace-regexp-in-string "&" "&amp;"
+               (replace-regexp-in-string "<" "&lt;"
+               (replace-regexp-in-string ">" "&gt;" s)))))))
 
-     (defun erc-osd-display
-       (id msg)
-       "Display a message msg using OSD."
-       (save-window-excursion
-         (shell-command
-          (format
-           "notify-send -i emacs '%s' '%s'"
-           id (erc-xml-escape msg)))))
+     (defun call-libnotify (matched-type nick msg)
+       (let* ((cmsg  (split-string (clean-message msg)))
+              (nick   (first (split-string nick "!")))
+              (msg    (mapconcat 'identity (rest cmsg) " ")))
+         (shell-command-to-string
+          (format "notify-send -u critical '%s says:' '%s'" nick msg))))
 
-     (defun erc-notify-osd
-       (matched-type nick msg)
-       "Hook to add into erc-text-matched-hook in order to remind the user that a message from erc has come their way."
+     (add-hook 'erc-text-matched-hook 'call-libnotify)
+
+     (defvar erc-notify-nick-alist nil
+       "Alist of nicks and the last time they tried to trigger a
+notification")
+
+     (defvar erc-notify-timeout 10
+       "Number of seconds that must elapse between notifications from
+the same person.")
+
+     (defun erc-notify-allowed-p (nick &optional delay)
+       "Return non-nil if a notification should be made for NICK.
+If DELAY is specified, it will be the minimum time in seconds
+that can occur between two notifications.  The default is
+`erc-notify-timeout'."
+       (unless delay (setq delay erc-notify-timeout))
+       (let ((cur-time (time-to-seconds (current-time)))
+             (cur-assoc (assoc nick erc-notify-nick-alist))
+             (last-time nil))
+         (if cur-assoc
+             (progn
+               (setq last-time (cdr cur-assoc))
+               (setcdr cur-assoc cur-time)
+               (> (abs (- cur-time last-time)) delay))
+           (push (cons nick cur-time) erc-notify-nick-alist)
+           t)))
+
+     ;; private message notification
+     (defun erc-notify-on-private-msg (proc parsed)
+       (let ((nick (car (erc-parse-user (erc-response.sender parsed))))
+             (target (car (erc-response.command-args parsed)))
+             (msg (erc-response.contents parsed)))
+         (when (and (erc-current-nick-p target)
+                    (not (erc-is-message-ctcp-and-not-action-p msg))
+                    (erc-notify-allowed-p nick))
+           (shell-command-to-string
+            (format "notify-send -u critical '%s says:' '%s'" nick msg))
+           nil)))
+
+     (add-hook 'erc-server-PRIVMSG-functions 'erc-notify-on-private-msg)
+
+     ;;}}}
+
+     ;;{{{ nick/servers/chans
+
+     (load "~/.emacs.d/secrets.el.gpg")
+     (add-to-list 'erc-networks-alist '(tokutek "tokutek.irc.grove.io"))
+     (add-to-list 'erc-nickserv-alist
+                  '(tokutek
+                    "NickServ@tokutek.irc.grove.io"
+                    "This nickname is registered. Please identify via"
+                    "NickServ"
+                    "IDENTIFY"
+                    nil
+                    'privmsg
+                    "You are now identified for"
+                    ))
+
+     (add-to-list 'erc-networks-alist '(bitlbee "localhost"))
+
+     (setq
+      erc-prompt-for-nickserv-password nil
+      erc-nickserv-passwords `((freenode (("leifw" . ,leif/erc/freenode/nickserv-password)))
+                               (foonetic (("Adlai" . ,leif/erc/foonetic/nickserv-password)))
+                               (tokutek  (("leif"  . ,leif/erc/tokutek/nickserv-password))))
+      )
+
+     (add-hook 'erc-join-hook 'bitlbee-identify)
+     (defun bitlbee-identify ()
+       "If we're on the bitlbee server, send the identify command to the
+&bitlbee channel."
+       (when (and (string= "localhost" erc-session-server)
+                  (string= "&bitlbee" (buffer-name)))
+         (erc-message "PRIVMSG" (format "%s identify %s"
+                                        (erc-default-target)
+                                        leif/erc/bitlbee/password))))
+     (defun start-irc ()
+       "Connect to IRC."
        (interactive)
-       (when (string= matched-type "current-nick")
-         (erc-osd-display (erc-extract-nick nick) msg)))
+       (erc :server "irc.freenode.net" :port 6667 :nick "leifw")
+       (erc :server "irc.foonetic.net" :port 6667 :nick "Adlai")
+       (erc :server "tokutek.irc.grove.io" :port 6667 :nick "leif" :password leif/erc/tokutek/server-password)
+       (when (executable-find "bitlbee")
+         (erc :server "localhost" :port 6667 :nick "leif"))
+       (setq erc-autojoin-channels-alist
+             '(("freenode.net" "#clojure" "#emacs")
+               ("foonetic.net" "#xkcd")
+               ("tokutek.irc.grove.io" "#tokutek"))))
+     (defun stop-irc ()
+       "Disconnect from IRC."
+       (interactive)
+       (dolist (buffer (delq nil
+                             (mapcar
+                              (lambda (x) (and (erc-server-buffer-p x) x))
+                              (buffer-list))))
+         (message "Server buffer: %s" (buffer-name buffer))
+         (with-current-buffer buffer
+           (erc-quit-server "blasting off again!"))))
 
-     (add-hook 'erc-text-matched-hook 'erc-notify-osd)
-     (defmacro unpack-color (color red green blue &rest body)
-       `(let ((,red   (car ,color))
-              (,green (car (cdr ,color)))
-              (,blue  (car (cdr (cdr ,color)))))
-          ,@body))
+     ;;}}}
 
-     (defun rgb-to-html (color)
-       (unpack-color color red green blue
-                     (concat "#" (format "%02x%02x%02x" red green blue))))
-
-     (defun hexcolor-luminance (color)
-       (unpack-color color red green blue
-                     (floor (+ (* 0.299 red)
-                               (* 0.587 green)
-                               (* 0.114 blue)))))
-
-     (defun invert-color (color)
-       (unpack-color color red green blue
-                     `(,(- 255 red)
-                       ,(- 255 green)
-                       ,(- 255 blue))))
-
-     (defun erc-get-color-for-nick (nick dark)
-       (let* ((hash     (md5 (downcase nick)))
-              (red      (mod (string-to-number (substring hash 0 10)
-                                               16)
-                             256))
-              (blue     (mod (string-to-number (substring hash 10 20)
-                                               16)
-                             256))
-              (green    (mod (string-to-number (substring hash 20 30)
-                                               16)
-                             256))
-              (color    `(,red ,green ,blue)))
-         (rgb-to-html (if (if dark (< (hexcolor-luminance color)
-                                      85)
-                            (> (hexcolor-luminance color)
-                               170))
-                          (invert-color color)
-                        color))))
-
-     (defun erc-highlight-nicknames ()
-       (save-excursion
-         (goto-char (point-min))
-         (while (re-search-forward "\\w+" nil t)
-           (let* ((bounds (bounds-of-thing-at-point 'word))
-                  (nick   (buffer-substring-no-properties (car bounds)
-                                                          (cdr bounds))))
-             (when (erc-get-server-user nick)
-               (put-text-property
-                (car bounds)
-                (cdr bounds)
-                'face
-                (cons 'foreground-color (erc-get-color-for-nick nick 't))))))))
-
-     (add-hook 'erc-insert-modify-hook 'erc-highlight-nicknames)))
+     ))
 
 ;;}}}
 
@@ -1126,9 +1189,6 @@ save the pointer marker if tag is found"
  '(compilation-window-height 12)
  '(display-time-mode t)
  '(ede-project-directories (quote ("/Users/leif/git/mongo/src/mongo" "/Users/leif/src/mongodb-src-r2.0.5")))
- '(erc-autojoin-channels-alist (quote (("freenode.net" "#mariadb") ("foonetic.net" "#xkcd"))))
- '(erc-nick (quote ("Adlai" "leifw" "Adlai_" "leifw_" "Adlai__" "leifw__")))
- '(erc-nickserv-identify-mode (quote autodetect))
  '(fill-column 74)
  '(flymake-allowed-file-name-masks (quote (("\\.c\\'" flymake-simple-make-init flymake-simple-cleanup flymake-get-real-file-name) ("\\.cpp\\'" flymake-simple-make-init flymake-simple-cleanup flymake-get-real-file-name) ("\\.xml\\'" flymake-xml-init) ("\\.html?\\'" flymake-xml-init) ("\\.cs\\'" flymake-simple-make-init) ("\\.p[ml]\\'" flymake-perl-init) ("\\.php[345]?\\'" flymake-php-init) ("\\.h\\'" flymake-master-make-header-init flymake-master-cleanup) ("\\.java\\'" flymake-simple-make-java-init flymake-simple-java-cleanup) ("\\.idl\\'" flymake-simple-make-init))))
  '(flymake-gui-warnings-enabled nil)
