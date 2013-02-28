@@ -253,6 +253,8 @@ save the pointer marker if tag is found"
 
 ;;{{{ nyan-mode
 
+(when (not (package-installed-p 'nyan-mode))
+  (package-install 'nyan-mode))
 (when (ignore-errors (nyan-mode 1))
   (nyan-start-animation)
   (setq nyan-wavy-trail t))
