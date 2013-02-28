@@ -246,6 +246,8 @@ save the pointer marker if tag is found"
 
 ;;{{{ yasnippet
 
+(when (not (package-installed-p 'yasnippet-bundle))
+  (package-install 'yasnippet-bundle))
 (require 'yasnippet-bundle)
 (yas/global-mode 1)
 
@@ -829,9 +831,8 @@ that can occur between two notifications.  The default is
 
 ;;{{{ paredit
 
-(autoload 'paredit-mode "paredit"
-  "Minor mode for pseudo-structurally editing Lisp code."
-  t)
+(when (not (package-installed-p 'paredit))
+  (package-install 'paredit))
 
 (mapc (lambda (hook)
         (add-hook hook (lambda () (paredit-mode 1))))
