@@ -757,7 +757,7 @@ save the pointer marker if tag is found"
               (nick   (first (split-string nick "!")))
               (msg    (mapconcat 'identity (rest cmsg) " ")))
          (shell-command-to-string
-          (format "notify-send -u critical '%s says:' '%s'" nick msg))))
+          (format "notify-send -i emacs -c im.received '%s says:' '%s'" nick msg))))
 
      (add-hook 'erc-text-matched-hook 'call-libnotify)
 
