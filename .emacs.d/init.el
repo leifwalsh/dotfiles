@@ -657,93 +657,48 @@ save the pointer marker if tag is found"
 (eval-after-load "erc"
   '(progn
 
-     (autoload 'erc-networks-mode "erc-networks" "Provide data about IRC networks.")
-
-     ;;{{{ prompt
-
-     (setq erc-prompt
-           (lambda ()
-             (if (and (boundp 'erc-default-recipients) (erc-default-target))
-                 (erc-propertize (concat (erc-default-target) ">")
-                                 'read-only t
-                                 'rear-nonsticky t
-                                 'front-nonsticky t)
-               (erc-propertize (concat "ERC>")
-                               'read-only t
-                               'rear-nonsticky t
-                               'front-nonsticky t))))
-
-     ;;}}}
-
-     ;;{{{ url regex
-
-     (when nil
-       (setq erc-button-url-regexp
-             "\\([-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]+\\.\\)+[-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]*[-a-zA-Z0-9\\/]"))
-
-     ;;}}}
-
-     ;;{{{ modules
+     (load "~/.emacs.d/secrets.el.gpg")
 
      (unless (package-installed-p 'erc-hl-nicks)
        (package-install 'erc-hl-nicks))
-     (require 'erc-hl-nicks)
-     (erc-hl-nicks-mode 1)
-
-     (erc-autoaway-mode 1)
-     (erc-autojoin-mode 1)
-     (erc-completion-mode 1)
-     (erc-fill-mode 1)
-     (erc-log-mode 1)
-     (erc-networks-mode 1)
-     (erc-netsplit-mode 1)
-     (erc-services-mode 1)
-     (erc-spelling-mode 1)
-     (erc-track-mode 1)
-     (erc-truncate-mode 1)
-
-     (erc-update-modules)
-
-     ;;}}}
-
-     ;;{{{ variables
 
      (setq
-      ;; colors
-      erc-interpret-mirc-color t
-
-      ;; ignore annoying stuff
+      erc-modules '(autoaway autojoin button completion fill hl-nicks log
+                    netsplit ring services spelling track truncate match)
       erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
                                 "324" "329" "332" "333" "353" "477")
-
-      ;; align nicks
+      erc-prompt (lambda ()
+                   (if (and (boundp 'erc-default-recipients) (erc-default-target))
+                       (erc-propertize (concat (erc-default-target) ">")
+                                       'read-only t
+                                       'rear-nonsticky t
+                                       'front-nonsticky t)
+                     (erc-propertize (concat "ERC>")
+                                     'read-only t
+                                     'rear-nonsticky t
+                                     'front-nonsticky t)))
+      erc-button-url-regexp "\\([-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]+\\.\\)+[-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]*[-a-zA-Z0-9\\/]"
+      erc-interpret-mirc-color t
       erc-fill-function 'erc-fill-static
-
-      ;; autoaway
       erc-auto-discard-away t
       erc-autoaway-idle-seconds 600
       erc-autoaway-idle-method 'irc
-
-      ;; misc
       erc-server-coding-system '(utf-8 . utf-8)
       erc-user-full-name "Leif Walsh"
+      erc-log-channels-directory "~/.emacs.d/erc/logs/"
+      erc-save-buffer-on-part t
+      erc-prompt-for-nickserv-password nil
+      erc-nickserv-passwords `((freenode (("leifw" . ,leif/erc/freenode/nickserv-password)))
+                               (foonetic (("Adlai" . ,leif/erc/foonetic/nickserv-password)))
+                               (tokutek  (("leif"  . ,leif/erc/tokutek/nickserv-password))))
       )
 
-     ;;}}}
+     (erc-update-modules)
 
-     ;;{{{ logging
-
-     (setq
-      erc-log-channels-directory "~/.emacs.d/erc/logs/"
-      erc-save-buffer-on-part t)
      (if (not (file-exists-p erc-log-channels-directory))
          (mkdir erc-log-channels-directory t))
      (defadvice save-buffers-kill-emacs (before save-logs (arg) activate)
        (save-some-buffers t (lambda () (when (eq major-mode 'erc-mode) t))))
-
-     ;;}}}
-
-     ;;{{{ notify
 
      (defun clean-message (s)
        (setq s (replace-regexp-in-string "'" "&apos;"
@@ -751,24 +706,20 @@ save the pointer marker if tag is found"
                (replace-regexp-in-string "&" "&amp;"
                (replace-regexp-in-string "<" "&lt;"
                (replace-regexp-in-string ">" "&gt;" s)))))))
-
      (defun call-libnotify (matched-type nick msg)
        (let* ((cmsg  (split-string (clean-message msg)))
               (nick   (first (split-string nick "!")))
               (msg    (mapconcat 'identity (rest cmsg) " ")))
          (shell-command-to-string
           (format "notify-send -i emacs -c im.received '%s says:' '%s'" nick msg))))
-
      (add-hook 'erc-text-matched-hook 'call-libnotify)
 
      (defvar erc-notify-nick-alist nil
        "Alist of nicks and the last time they tried to trigger a
 notification")
-
      (defvar erc-notify-timeout 10
        "Number of seconds that must elapse between notifications from
 the same person.")
-
      (defun erc-notify-allowed-p (nick &optional delay)
        "Return non-nil if a notification should be made for NICK.
 If DELAY is specified, it will be the minimum time in seconds
@@ -785,8 +736,6 @@ that can occur between two notifications.  The default is
                (> (abs (- cur-time last-time)) delay))
            (push (cons nick cur-time) erc-notify-nick-alist)
            t)))
-
-     ;; private message notification
      (defun erc-notify-on-private-msg (proc parsed)
        (let ((nick (car (erc-parse-user (erc-response.sender parsed))))
              (target (car (erc-response.command-args parsed)))
@@ -797,34 +746,15 @@ that can occur between two notifications.  The default is
            (shell-command-to-string
             (format "notify-send -u critical '%s says:' '%s'" nick msg))
            nil)))
-
      (add-hook 'erc-server-PRIVMSG-functions 'erc-notify-on-private-msg)
 
-     ;;}}}
-
-     ;;{{{ nick/servers/chans
-
-     (load "~/.emacs.d/secrets.el.gpg")
-     (add-to-list 'erc-networks-alist '(tokutek "tokutek.irc.grove.io"))
-     (add-to-list 'erc-nickserv-alist
-                  '(tokutek
-                    "NickServ@tokutek.irc.grove.io"
-                    "This nickname is registered. Please identify via"
-                    "NickServ"
-                    "IDENTIFY"
-                    nil
-                    'privmsg
-                    "You are now identified for"
-                    ))
-
+     (require 'erc-services)
      (add-to-list 'erc-networks-alist '(bitlbee "localhost"))
-
-     (setq
-      erc-prompt-for-nickserv-password nil
-      erc-nickserv-passwords `((freenode (("leifw" . ,leif/erc/freenode/nickserv-password)))
-                               (foonetic (("Adlai" . ,leif/erc/foonetic/nickserv-password)))
-                               (tokutek  (("leif"  . ,leif/erc/tokutek/nickserv-password))))
-      )
+     (add-to-list 'erc-networks-alist '(tokutek "irc.grove.io"))
+     (add-to-list 'erc-nickserv-alist
+                  '(tokutek "NickServ!NickServ@services."
+                            "This nickname is registered."
+                            "NickServ" "IDENTIFY" nil))
 
      (add-hook 'erc-join-hook 'bitlbee-identify)
      (defun bitlbee-identify ()
@@ -840,7 +770,7 @@ that can occur between two notifications.  The default is
        (interactive)
        (erc :server "irc.freenode.net" :port 6667 :nick "leifw")
        (erc :server "irc.foonetic.net" :port 6667 :nick "Adlai")
-       (erc :server "tokutek.irc.grove.io" :port 6667 :nick "leif" :password leif/erc/tokutek/server-password)
+       (erc-tls :server "tokutek.irc.grove.io" :port 6697 :nick "leif" :password leif/erc/tokutek/server-password)
        (when (executable-find "bitlbee")
          (erc :server "localhost" :port 6667 :nick "leif"))
        (setq erc-autojoin-channels-alist
