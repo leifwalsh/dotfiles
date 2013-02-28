@@ -687,6 +687,8 @@ save the pointer marker if tag is found"
 
      (unless (package-installed-p 'erc-hl-nicks)
        (package-install 'erc-hl-nicks))
+     (require 'erc-hl-nicks)
+     (erc-hl-nicks-mode 1)
 
      (erc-autoaway-mode 1)
      (erc-autojoin-mode 1)
@@ -700,6 +702,8 @@ save the pointer marker if tag is found"
      (erc-track-mode 1)
      (erc-truncate-mode 1)
 
+     (erc-update-modules)
+
      ;;}}}
 
      ;;{{{ variables
@@ -711,6 +715,9 @@ save the pointer marker if tag is found"
       ;; ignore annoying stuff
       erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
                                 "324" "329" "332" "333" "353" "477")
+
+      ;; align nicks
+      erc-fill-function 'erc-fill-static
 
       ;; autoaway
       erc-auto-discard-away t
