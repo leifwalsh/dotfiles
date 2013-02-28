@@ -253,9 +253,9 @@ save the pointer marker if tag is found"
 
 ;;{{{ nyan-mode
 
-(nyan-mode 1)
-(nyan-start-animation)
-(setq nyan-wavy-trail t)
+(when (ignore-errors (nyan-mode 1))
+  (nyan-start-animation)
+  (setq nyan-wavy-trail t))
 
 ;;}}}
 
