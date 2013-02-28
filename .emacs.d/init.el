@@ -43,7 +43,8 @@
 
 (package-initialize)
 (setq package-archives '(("ELPA" . "http://tromey.com/elpa/")
-                         ("gnu" . "http://elpa.gnu.org/packages/")))
+                         ("gnu" . "http://elpa.gnu.org/packages/")
+                         ("melpa" . "http://melpa.milkbox.net/packages/")))
 
 ;;}}}
 
@@ -250,6 +251,14 @@ save the pointer marker if tag is found"
 
 ;;}}}
 
+;;{{{ nyan-mode
+
+(nyan-mode 1)
+(nyan-start-animation)
+(setq nyan-wavy-trail t)
+
+;;}}}
+
 ;;{{{ pkgbuild
 
 (autoload 'pkgbuild-mode "pkgbuild-mode.el" "PKGBUILD mode." t)
@@ -342,7 +351,7 @@ save the pointer marker if tag is found"
                                     (c++-mode . ((ac-clang-flags . ,toku-cflags)))))
   (dir-locals-set-directory-class "~/svn/tokutek/toku" 'leif/tokudb-dir-class)
 
-  (flet ((set-fractal-tree-directory
+  (cl-flet ((set-fractal-tree-directory
              (dir file name)
              (add-to-list 'semanticdb-project-roots dir)
 
@@ -395,7 +404,7 @@ save the pointer marker if tag is found"
 
 ;;{{{ w3m-mode
 
-(when (not (require 'w3m-load))
+(when (not (ignore-errors (require 'w3m-load)))
     (autoload 'w3m "w3m" "Emacs interface to w3m." t))
 (eval-after-load "w3m"
   '(progn
@@ -533,10 +542,10 @@ save the pointer marker if tag is found"
 ;;{{{ frame parameters
 
 (scroll-bar-mode -1)
+(tool-bar-mode -1)
 (when (not (eq system-type 'darwin))
   (progn
-    (menu-bar-mode -1)
-    (tool-bar-mode -1)))
+    (menu-bar-mode -1)))
 
 ;;}}}
 
