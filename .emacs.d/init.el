@@ -947,7 +947,8 @@ that can occur between two notifications.  The default is
         eshell-mode-hook
         mail-mode-hook
         message-mode-hook
-        w3m-mode-hook))
+        w3m-mode-hook
+        erc-mode-hook))
 
 ;;}}}
 
