@@ -44,6 +44,7 @@
 (setq package-archives '(("ELPA" . "http://tromey.com/elpa/")
                          ("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
+(package-initialize)
 (defun package-ensure (p)
   (unless (package-installed-p p)
     (package-refresh-contents)
