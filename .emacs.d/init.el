@@ -316,6 +316,49 @@ header"
 
 ;;}}}
 
+;;{{{ mongodb semantic stuff
+
+(dolist (mongodb-svn-root '("~/svn/tokutek/mongodb.org/mongodb-2.2-tokutek/"
+                            "/data/leif/tokutek/mongodb.org/mongodb-2.2-tokutek/"
+                            "/ssd/leif/mongodb-2.2-tokutek/"))
+  (when (file-directory-p mongodb-svn-root)
+    (dolist (mongodb-dir (append (list (concat mongodb-svn-root "trunk/"))
+                                 (when (file-directory-p (concat mongodb-svn-root "branches/"))
+                                   (directory-files (concat mongodb-svn-root "branches/")))
+                                 (when (file-directory-p (concat mongodb-svn-root "tags/"))
+                                   (directory-files (concat mongodb-svn-root "tags/")))))
+      (when (and mongodb-dir
+                 (file-directory-p mongodb-dir)
+                 (file-exists-p (concat mongodb-dir "SConstruct")))
+        (add-to-list 'semanticdb-project-roots mongodb-dir)
+        (let* ((branch (file-name-nondirectory (directory-file-name mongodb-dir)))
+               (strname (format "Tokumon %s" branch))
+               (symbol (intern (format "tokumon-%s-project" branch))))
+          (set symbol
+               (ede-cpp-root-project strname
+                                     :name strname
+                                     :file (concat mongodb-dir "SConstruct")
+                                     :include-path '("/"
+                                                     "/mongo"
+                                                     "/third_party/pcre-8.30"
+                                                     "/third_party/boost"
+                                                     )
+                                     :system-include-path (append (when-let (cpath (getenv "CPATH"))
+                                                                    (split-string cpath ":" t))
+                                                                  '("/usr/local/include"
+                                                                    "/usr/include"))
+                                     :spp-table '(("_SCONS"                        . "1")
+                                                  ("MONGO_EXPOSE_MACROS"           . "1")
+                                                  ("SUPPORT_UTF8"                  . "1")
+                                                  ("_FILE_OFFSET_BITS"             . "64")
+                                                  ("_DEBUG"                        . "1")
+                                                  ("BOOST_ALL_NO_LIB"              . "1")
+                                                  ("MONGO_HAVE_HEADER_UNISTD_H"    . "1")
+                                                  ("MONGO_HAVE_EXECINFO_BACKTRACE" . "1")
+                                                  ))))))))
+
+;;}}}
+
 ;;{{{ toku stuff
 
 (let* ((toku-preprocessor-symbols (append '(("_FILE_OFFSET_BITS" . "64")
@@ -377,48 +420,47 @@ header"
                                     (c++-mode . ((ac-clang-flags . ,toku-cflags)))))
   (dir-locals-set-directory-class "~/svn/tokutek/toku" 'leif/tokudb-dir-class)
 
-  (flet ((set-fractal-tree-directory
-             (dir file name)
-             (add-to-list 'semanticdb-project-roots dir)
+  (defun leif/set-fractal-tree-directory (dir file name)
+    (add-to-list 'semanticdb-project-roots dir)
 
-             (let ((strname (format "Tokudb %s" name))
-                   (symbol (intern (format "tokudb-%s-project" name))))
-               (set symbol
-                    (ede-cpp-root-project strname
-                                          :name strname
-                                          :file (concat dir file)
-                                          :include-path toku-root-include-paths
-                                          :system-include-path (append (when-let (cpath (getenv "CPATH"))
-                                                                         (split-string cpath ":" t))
-                                                                       '("/usr/local/include"
-                                                                         "/usr/include"))
-                                          :spp-table toku-preprocessor-symbols)))))
-    (mapc (lambda (file-and-attr)
-            (let ((tag (car file-and-attr))
-                  (attr (cdr file-and-attr)))
-              (when (car attr)
-                (mapc (lambda (file-and-attr-branch)
-                        (let ((branch (car file-and-attr-branch))
-                              (attr-branch (cdr file-and-attr-branch)))
-                          (when (car attr-branch)
-                            (when (file-exists-p (concat "~/svn/tokutek/mysql.branches/" tag "/" branch "/Makefile"))
-                              (set-fractal-tree-directory (concat "~/svn/tokutek/mysql.branches/" tag "/" branch)
-                                                          "/Makefile" (concat tag "-" branch)))
-                            (when (file-exists-p (concat "~/svn/tokutek/mysql.branches/" tag "/" branch "/CMakeLists.txt"))
-                              (set-fractal-tree-directory (concat "~/svn/tokutek/mysql.branches/" tag "/" branch)
-                                                          "/CMakeLists.txt" (concat tag "-" branch))))))
-                      (directory-files-and-attributes (concat "~/svn/tokutek/mysql.branches/" tag "/") nil "tokudb\\..*")))))
-          (directory-files-and-attributes "~/svn/tokutek/mysql.branches/"))
-    (mapc (lambda (file-and-attr)
-            (let ((dir (car file-and-attr))
-                  (attr (cdr file-and-attr)))
-              (when (and (car attr)
-                         (file-exists-p (concat "~/svn/tokutek/toku/" dir "/CMakeLists.txt")))
-                (let ((branch (substring dir 7)))
-                  (set-fractal-tree-directory (concat "~/svn/tokutek/toku/" dir)
-                                              "/CMakeLists.txt" branch)))))
-          (directory-files-and-attributes "~/svn/tokutek/toku/" nil "tokudb\\..*"))
-    (set-fractal-tree-directory "~/svn/tokutek/toku/tokudb" "/CMakeLists.txt" "main")))
+    (let ((strname (format "Tokudb %s" name))
+          (symbol (intern (format "tokudb-%s-project" name))))
+      (set symbol
+           (ede-cpp-root-project strname
+                                 :name strname
+                                 :file (concat dir file)
+                                 :include-path toku-root-include-paths
+                                 :system-include-path (append (when-let (cpath (getenv "CPATH"))
+                                                                (split-string cpath ":" t))
+                                                              '("/usr/local/include"
+                                                                "/usr/include"))
+                                 :spp-table toku-preprocessor-symbols))))
+  (mapc (lambda (file-and-attr)
+          (let ((tag (car file-and-attr))
+                (attr (cdr file-and-attr)))
+            (when (car attr)
+              (mapc (lambda (file-and-attr-branch)
+                      (let ((branch (car file-and-attr-branch))
+                            (attr-branch (cdr file-and-attr-branch)))
+                        (when (car attr-branch)
+                          (when (file-exists-p (concat "~/svn/tokutek/mysql.branches/" tag "/" branch "/Makefile"))
+                            (leif/set-fractal-tree-directory (concat "~/svn/tokutek/mysql.branches/" tag "/" branch)
+                                                        "/Makefile" (concat tag "-" branch)))
+                          (when (file-exists-p (concat "~/svn/tokutek/mysql.branches/" tag "/" branch "/CMakeLists.txt"))
+                            (leif/set-fractal-tree-directory (concat "~/svn/tokutek/mysql.branches/" tag "/" branch)
+                                                        "/CMakeLists.txt" (concat tag "-" branch))))))
+                    (directory-files-and-attributes (concat "~/svn/tokutek/mysql.branches/" tag "/") nil "tokudb\\..*")))))
+        (directory-files-and-attributes "~/svn/tokutek/mysql.branches/"))
+  (mapc (lambda (file-and-attr)
+          (let ((dir (car file-and-attr))
+                (attr (cdr file-and-attr)))
+            (when (and (car attr)
+                       (file-exists-p (concat "~/svn/tokutek/toku/" dir "/CMakeLists.txt")))
+              (let ((branch (substring dir 7)))
+                (leif/set-fractal-tree-directory (concat "~/svn/tokutek/toku/" dir)
+                                            "/CMakeLists.txt" branch)))))
+        (directory-files-and-attributes "~/svn/tokutek/toku/" nil "tokudb\\..*"))
+  (leif/set-fractal-tree-directory "~/svn/tokutek/toku/tokudb" "/CMakeLists.txt" "main"))
 
 ;;}}}
 
