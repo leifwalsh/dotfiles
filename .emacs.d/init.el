@@ -44,8 +44,11 @@
 (setq package-archives '(("ELPA" . "http://tromey.com/elpa/")
                          ("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
-(package-refresh-contents)
 (package-initialize)
+(defun package-ensure (p)
+  (unless (package-installed-p p)
+    (package-refresh-contents)
+    (package-install p)))
 
 ;;}}}
 
@@ -247,17 +250,14 @@ save the pointer marker if tag is found"
 
 ;;{{{ yasnippet
 
-(when (not (package-installed-p 'yasnippet-bundle))
-  (package-install 'yasnippet-bundle))
-(require 'yasnippet-bundle)
+(package-ensure 'yasnippet-bundle)
 (yas/global-mode 1)
 
 ;;}}}
 
 ;;{{{ nyan-mode
 
-(when (not (package-installed-p 'nyan-mode))
-  (package-install 'nyan-mode))
+(package-ensure 'nyan-mode)
 (when (ignore-errors (nyan-mode 1))
   (nyan-start-animation)
   (setq nyan-wavy-trail t))
@@ -308,8 +308,7 @@ header"
 
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c-c++-header))
 
-(when (not (package-installed-p 'google-c-style))
-  (package-install 'google-c-style))
+(package-ensure 'google-c-style)
 (eval-after-load 'google-c-style
   '(progn
      (c-add-style "Google" google-c-style)))
@@ -732,8 +731,7 @@ header"
 
      (load "~/.emacs.d/secrets.el.gpg")
 
-     (unless (package-installed-p 'erc-hl-nicks)
-       (package-install 'erc-hl-nicks))
+     (package-ensure 'erc-hl-nicks)
 
      (setq
       erc-modules '(autoaway autojoin button completion fill hl-nicks log
@@ -896,9 +894,7 @@ that can occur between two notifications.  The default is
 
 ;;{{{ paredit
 
-(when (not (package-installed-p 'paredit))
-  (package-install 'paredit))
-
+(package-ensure 'paredit)
 (mapc (lambda (hook)
         (add-hook hook (lambda () (paredit-mode 1) (c-like-keys paredit-mode-map))))
       '(clojure-mode-hook
