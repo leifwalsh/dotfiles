@@ -899,7 +899,7 @@ that can occur between two notifications.  The default is
   (package-install 'paredit))
 
 (mapc (lambda (hook)
-        (add-hook hook (lambda () (paredit-mode 1))))
+        (add-hook hook (lambda () (paredit-mode 1) (c-like-keys paredit-mode-map))))
       '(clojure-mode-hook
         scheme-mode-hook
         lisp-mode-hook
