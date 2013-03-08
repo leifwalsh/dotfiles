@@ -41,10 +41,11 @@
 
 ;;{{{ elpa
 
-(package-initialize)
 (setq package-archives '(("ELPA" . "http://tromey.com/elpa/")
                          ("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
+(package-refresh-contents)
+(package-initialize)
 
 ;;}}}
 
@@ -253,6 +254,16 @@ save the pointer marker if tag is found"
 
 ;;}}}
 
+;;{{{ nyan-mode
+
+(when (not (package-installed-p 'nyan-mode))
+  (package-install 'nyan-mode))
+(when (ignore-errors (nyan-mode 1))
+  (nyan-start-animation)
+  (setq nyan-wavy-trail t))
+
+;;}}}
+
 ;;{{{ pkgbuild
 
 (autoload 'pkgbuild-mode "pkgbuild-mode.el" "PKGBUILD mode." t)
@@ -281,6 +292,73 @@ save the pointer marker if tag is found"
 (global-set-key [(control return)] 'auto-complete)
 (setq-default ac-sources '(ac-source-clang
                            ac-source-yasnippet))
+
+;;}}}
+
+;;{{{ c++ header guess
+
+(defun c-c++-header ()
+  "sets either c-mode or c++-mode, whichever is appropriate for
+header"
+  (interactive)
+  (let ((c-file (concat (substring (buffer-file-name) 0 -1) "c")))
+    (if (file-exists-p c-file)
+        (c-mode)
+      (c++-mode))))
+
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c-c++-header))
+
+(when (not (package-installed-p 'google-c-style))
+  (package-install 'google-c-style))
+(eval-after-load 'google-c-style
+  '(progn
+     (c-add-style "Google" google-c-style)))
+(require 'google-c-style)
+
+;;}}}
+
+;;{{{ mongodb semantic stuff
+
+(dolist (mongodb-svn-root '("~/svn/tokutek/mongodb.org/mongodb-2.2-tokutek/"
+                            "/data/leif/tokutek/mongodb.org/mongodb-2.2-tokutek/"
+                            "/ssd/leif/mongodb-2.2-tokutek/"))
+  (when (file-directory-p mongodb-svn-root)
+    (dolist (mongodb-dir-unexp (append (list (concat mongodb-svn-root "trunk/"))
+                                       (when (file-directory-p (concat mongodb-svn-root "branches/"))
+                                         (directory-files (concat mongodb-svn-root "branches/")))
+                                       (when (file-directory-p (concat mongodb-svn-root "tags/"))
+                                         (directory-files (concat mongodb-svn-root "tags/")))))
+      (let ((mongodb-dir (expand-file-name mongodb-dir-unexp)))
+        (when (and mongodb-dir
+                   (file-directory-p mongodb-dir)
+                   (file-exists-p (concat mongodb-dir "SConstruct")))
+          (add-to-list 'semanticdb-project-roots mongodb-dir)
+          (let* ((branch (file-name-nondirectory (directory-file-name mongodb-dir)))
+                 (strname (format "Tokumon %s" branch))
+                 (symbol (intern (format "tokumon-%s-project" branch))))
+            (set symbol
+                 (ede-cpp-root-project strname
+                                       :name strname
+                                       :file (concat mongodb-dir "src/mongo/SConscript")
+                                       :include-path '("/"
+                                                       "/.."
+                                                       )
+                                       :system-include-path (append (when-let (cpath (getenv "CPATH"))
+                                                                      (split-string cpath ":" t))
+                                                                    '((concat mongodb-dir "src/third_party/pcre-8.30/")
+                                                                      (concat mongodb-dir "src/third_party/boost/")
+                                                                      (expand-file-name "~/local/tokudb")
+                                                                      "/usr/local/include/"
+                                                                      "/usr/include/"))
+                                       :spp-table '(("_SCONS"                        . "1")
+                                                    ("MONGO_EXPOSE_MACROS"           . "1")
+                                                    ("SUPPORT_UTF8"                  . "1")
+                                                    ("_FILE_OFFSET_BITS"             . "64")
+                                                    ("_DEBUG"                        . "1")
+                                                    ("BOOST_ALL_NO_LIB"              . "1")
+                                                    ("MONGO_HAVE_HEADER_UNISTD_H"    . "1")
+                                                    ("MONGO_HAVE_EXECINFO_BACKTRACE" . "1")
+                                                    )))))))))
 
 ;;}}}
 
@@ -345,44 +423,47 @@ save the pointer marker if tag is found"
                                     (c++-mode . ((ac-clang-flags . ,toku-cflags)))))
   (dir-locals-set-directory-class "~/svn/tokutek/toku" 'leif/tokudb-dir-class)
 
-  (flet ((set-fractal-tree-directory
-             (dir file name)
-             (add-to-list 'semanticdb-project-roots dir)
+  (defun leif/set-fractal-tree-directory (dir file name)
+    (add-to-list 'semanticdb-project-roots dir)
 
-             (let ((strname (format "Tokudb %s" name))
-                   (symbol (intern (format "tokudb-%s-project" name))))
-               (set symbol
-                    (ede-cpp-root-project strname
-                                          :name strname
-                                          :file (concat dir file)
-                                          :include-path toku-root-include-paths
-                                          :system-include-path (append (when-let (cpath (getenv "CPATH"))
-                                                                         (split-string cpath ":" t))
-                                                                       '("/usr/local/include"
-                                                                         "/usr/include"))
-                                          :spp-table toku-preprocessor-symbols)))))
-    (mapc (lambda (file-and-attr)
-            (let ((dir (car file-and-attr))
-                  (attr (cdr file-and-attr)))
-              (when (and (car attr)
-                         (file-exists-p (concat "~/svn/tokutek/mysql.branches/" dir "/tokudb/Makefile")))
-                (set-fractal-tree-directory (concat "~/svn/tokutek/mysql.branches/" dir "/tokudb")
-                                            "/Makefile" dir))
-              (when (and (car attr)
-                         (file-exists-p (concat "~/svn/tokutek/mysql.branches/" dir "/tokudb/CMakeLists.txt")))
-                (set-fractal-tree-directory (concat "~/svn/tokutek/mysql.branches/" dir "/tokudb")
-                                            "/CMakeLists.txt" dir))))
-          (directory-files-and-attributes "~/svn/tokutek/mysql.branches/"))
-    (mapc (lambda (file-and-attr)
-            (let ((dir (car file-and-attr))
-                  (attr (cdr file-and-attr)))
-              (when (and (car attr)
-                         (file-exists-p (concat "~/svn/tokutek/toku/" dir "/CMakeLists.txt")))
-                (let ((branch (substring dir 7)))
-                  (set-fractal-tree-directory (concat "~/svn/tokutek/toku/" dir)
-                                              "/CMakeLists.txt" branch)))))
-          (directory-files-and-attributes "~/svn/tokutek/toku/" nil "tokudb\\..*"))
-    (set-fractal-tree-directory "~/svn/tokutek/toku/tokudb" "/CMakeLists.txt" "main")))
+    (let ((strname (format "Tokudb %s" name))
+          (symbol (intern (format "tokudb-%s-project" name))))
+      (set symbol
+           (ede-cpp-root-project strname
+                                 :name strname
+                                 :file (concat dir file)
+                                 :include-path toku-root-include-paths
+                                 :system-include-path (append (when-let (cpath (getenv "CPATH"))
+                                                                (split-string cpath ":" t))
+                                                              '("/usr/local/include"
+                                                                "/usr/include"))
+                                 :spp-table toku-preprocessor-symbols))))
+  (mapc (lambda (file-and-attr)
+          (let ((tag (car file-and-attr))
+                (attr (cdr file-and-attr)))
+            (when (car attr)
+              (mapc (lambda (file-and-attr-branch)
+                      (let ((branch (car file-and-attr-branch))
+                            (attr-branch (cdr file-and-attr-branch)))
+                        (when (car attr-branch)
+                          (when (file-exists-p (concat "~/svn/tokutek/mysql.branches/" tag "/" branch "/Makefile"))
+                            (leif/set-fractal-tree-directory (concat "~/svn/tokutek/mysql.branches/" tag "/" branch)
+                                                        "/Makefile" (concat tag "-" branch)))
+                          (when (file-exists-p (concat "~/svn/tokutek/mysql.branches/" tag "/" branch "/CMakeLists.txt"))
+                            (leif/set-fractal-tree-directory (concat "~/svn/tokutek/mysql.branches/" tag "/" branch)
+                                                        "/CMakeLists.txt" (concat tag "-" branch))))))
+                    (directory-files-and-attributes (concat "~/svn/tokutek/mysql.branches/" tag "/") nil "tokudb\\..*")))))
+        (directory-files-and-attributes "~/svn/tokutek/mysql.branches/"))
+  (mapc (lambda (file-and-attr)
+          (let ((dir (car file-and-attr))
+                (attr (cdr file-and-attr)))
+            (when (and (car attr)
+                       (file-exists-p (concat "~/svn/tokutek/toku/" dir "/CMakeLists.txt")))
+              (let ((branch (substring dir 7)))
+                (leif/set-fractal-tree-directory (concat "~/svn/tokutek/toku/" dir)
+                                            "/CMakeLists.txt" branch)))))
+        (directory-files-and-attributes "~/svn/tokutek/toku/" nil "tokudb\\..*"))
+  (leif/set-fractal-tree-directory "~/svn/tokutek/toku/tokudb" "/CMakeLists.txt" "main"))
 
 ;;}}}
 
@@ -398,7 +479,7 @@ save the pointer marker if tag is found"
 
 ;;{{{ w3m-mode
 
-(when (not (require 'w3m-load))
+(when (not (ignore-errors (require 'w3m-load)))
     (autoload 'w3m "w3m" "Emacs interface to w3m." t))
 (eval-after-load "w3m"
   '(progn
@@ -538,10 +619,10 @@ save the pointer marker if tag is found"
 ;;{{{ frame parameters
 
 (scroll-bar-mode -1)
+(tool-bar-mode -1)
 (when (not (eq system-type 'darwin))
   (progn
-    (menu-bar-mode -1)
-    (tool-bar-mode -1)))
+    (menu-bar-mode -1)))
 
 ;;}}}
 
@@ -648,145 +729,146 @@ save the pointer marker if tag is found"
 
 ;;{{{ erc
 
-(require 'erc)
-(autoload 'erc "erc-join" "Custom joining stuff for ERC.")
+(autoload 'start-irc "erc" "Configure and start IRC." t)
+
 (eval-after-load "erc"
   '(progn
 
-     ;;{{{ prompt
+     (load "~/.emacs.d/secrets.el.gpg")
 
-     (setq erc-prompt
-           (lambda ()
-             (if (and (boundp 'erc-default-recipients) (erc-default-target))
-                 (erc-propertize (concat (erc-default-target) ">")
-                                 'read-only t
-                                 'rear-nonsticky t
-                                 'front-nonsticky t)
-               (erc-propertize (concat "ERC>")
-                               'read-only t
-                               'rear-nonsticky t
-                               'front-nonsticky t))))
+     (unless (package-installed-p 'erc-hl-nicks)
+       (package-install 'erc-hl-nicks))
 
-     ;;}}}
+     (setq
+      erc-modules '(autoaway autojoin button completion fill hl-nicks log
+                    netsplit ring services spelling track truncate match)
+      erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
+                                "324" "329" "332" "333" "353" "477")
+      erc-prompt (lambda ()
+                   (if (and (boundp 'erc-default-recipients) (erc-default-target))
+                       (erc-propertize (concat (erc-default-target) ">")
+                                       'read-only t
+                                       'rear-nonsticky t
+                                       'front-nonsticky t)
+                     (erc-propertize (concat "ERC>")
+                                     'read-only t
+                                     'rear-nonsticky t
+                                     'front-nonsticky t)))
+      erc-button-url-regexp "\\([-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]+\\.\\)+[-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]*[-a-zA-Z0-9\\/]"
+      erc-interpret-mirc-color t
+      erc-fill-function 'erc-fill-static
+      erc-fill-static-center 17
+      erc-auto-discard-away t
+      erc-autoaway-idle-seconds 600
+      erc-autoaway-idle-method 'irc
+      erc-server-coding-system '(utf-8 . utf-8)
+      erc-user-full-name "Leif Walsh"
+      erc-log-channels-directory "~/.emacs.d/erc/logs/"
+      erc-save-buffer-on-part t
+      erc-prompt-for-nickserv-password nil
+      erc-nickserv-passwords `((freenode (("leifw" . ,leif/erc/freenode/nickserv-password)))
+                               (foonetic (("Adlai" . ,leif/erc/foonetic/nickserv-password)))
+                               (tokutek  (("leif"  . ,leif/erc/tokutek/nickserv-password))))
+      )
 
-     ;;{{{ url regex
+     (erc-update-modules)
 
-     (setq erc-button-url-regexp
-           "\\([-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]+\\.\\)+[-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]*[-a-zA-Z0-9\\/]")
+     (if (not (file-exists-p erc-log-channels-directory))
+         (mkdir erc-log-channels-directory t))
+     (defadvice save-buffers-kill-emacs (before save-logs (arg) activate)
+       (save-some-buffers t (lambda () (when (eq major-mode 'erc-mode) t))))
 
-     ;;}}}
+     (defun clean-message (s)
+       (setq s (replace-regexp-in-string "'" "&apos;"
+               (replace-regexp-in-string "\"" "&quot;"
+               (replace-regexp-in-string "&" "&amp;"
+               (replace-regexp-in-string "<" "&lt;"
+               (replace-regexp-in-string ">" "&gt;" s)))))))
+     (defun call-libnotify (matched-type nick msg)
+       (let* ((cmsg  (split-string (clean-message msg)))
+              (nick   (first (split-string nick "!")))
+              (msg    (mapconcat 'identity (rest cmsg) " ")))
+         (shell-command-to-string
+          (format "notify-send -i emacs -c im.received '%s says:' '%s'" nick msg))))
+     (add-hook 'erc-text-matched-hook 'call-libnotify)
 
-     ;;{{{ truncate
+     (defvar erc-notify-nick-alist nil
+       "Alist of nicks and the last time they tried to trigger a
+notification")
+     (defvar erc-notify-timeout 10
+       "Number of seconds that must elapse between notifications from
+the same person.")
+     (defun erc-notify-allowed-p (nick &optional delay)
+       "Return non-nil if a notification should be made for NICK.
+If DELAY is specified, it will be the minimum time in seconds
+that can occur between two notifications.  The default is
+`erc-notify-timeout'."
+       (unless delay (setq delay erc-notify-timeout))
+       (let ((cur-time (time-to-seconds (current-time)))
+             (cur-assoc (assoc nick erc-notify-nick-alist))
+             (last-time nil))
+         (if cur-assoc
+             (progn
+               (setq last-time (cdr cur-assoc))
+               (setcdr cur-assoc cur-time)
+               (> (abs (- cur-time last-time)) delay))
+           (push (cons nick cur-time) erc-notify-nick-alist)
+           t)))
+     (defun erc-notify-on-private-msg (proc parsed)
+       (let ((nick (car (erc-parse-user (erc-response.sender parsed))))
+             (target (car (erc-response.command-args parsed)))
+             (msg (erc-response.contents parsed)))
+         (when (and (erc-current-nick-p target)
+                    (not (erc-is-message-ctcp-and-not-action-p msg))
+                    (erc-notify-allowed-p nick))
+           (shell-command-to-string
+            (format "notify-send -u critical '%s says:' '%s'" nick msg))
+           nil)))
+     (add-hook 'erc-server-PRIVMSG-functions 'erc-notify-on-private-msg)
 
-     (setq erc-max-buffer-size 5000)
-     (defvar erc-insert-post-hook)
-     (add-hook 'erc-insert-post-hook
-               'erc-truncate-buffer)
-     (setq erc-truncate-buffer-on-save t)
+     (require 'erc-services)
+     (add-to-list 'erc-networks-alist '(bitlbee "localhost"))
+     (add-to-list 'erc-networks-alist '(tokutek "irc.grove.io"))
+     (add-to-list 'erc-nickserv-alist
+                  '(tokutek "NickServ!NickServ@services."
+                            "This nickname is registered."
+                            "NickServ" "IDENTIFY" nil))
 
-     ;;}}}
-
-     ;;{{{ nick/servers/chans
-
-     (eval-after-load "erc-join"
-       '(progn
-          (setq erc-server-history-list
-                '("localhost"
-                  "irc.foonetic.net"
-                  "irc.freenode.net"))))
-
-     ;;}}}
-
-     ;;{{{ notify
-
-     (defun erc-xml-escape
-       (s)
-       "Escape unsafe characters from xml stuff."
-       (reduce (lambda (s regex-pair)
-                 (let ((match (car regex-pair))
-                       (replacement (cdr regex-pair)))
-                   (replace-regexp-in-string match replacement s)))
-               '(("'" . "&apos;")
-                 ("\"" . "&quot;")
-                 ("&" . "&amp;")
-                 ("<" . "&lt;")
-                 (">" . "&gt;")
-                 ("~A" . " "))
-               :initial-value s))
-
-     (defun erc-osd-display
-       (id msg)
-       "Display a message msg using OSD."
-       (save-window-excursion
-         (shell-command
-          (format
-           "notify-send -i emacs '%s' '%s'"
-           id (erc-xml-escape msg)))))
-
-     (defun erc-notify-osd
-       (matched-type nick msg)
-       "Hook to add into erc-text-matched-hook in order to remind the user that a message from erc has come their way."
+     (add-hook 'erc-join-hook 'bitlbee-identify)
+     (defun bitlbee-identify ()
+       "If we're on the bitlbee server, send the identify command to the
+&bitlbee channel."
+       (when (and (string= "localhost" erc-session-server)
+                  (string= "&bitlbee" (buffer-name)))
+         (erc-message "PRIVMSG" (format "%s identify %s"
+                                        (erc-default-target)
+                                        leif/erc/bitlbee/password))))
+     (defun start-irc ()
+       "Connect to IRC."
        (interactive)
-       (when (string= matched-type "current-nick")
-         (erc-osd-display (erc-extract-nick nick) msg)))
+       (erc :server "irc.freenode.net" :port 6667 :nick "leifw")
+       (erc :server "irc.foonetic.net" :port 6667 :nick "Adlai")
+       (erc-tls :server "tokutek.irc.grove.io" :port 6697 :nick "leif" :password leif/erc/tokutek/server-password)
+       (when (executable-find "bitlbee")
+         (erc :server "localhost" :port 6667 :nick "leif"))
+       (setq erc-autojoin-channels-alist
+             '(("freenode.net" "#clojure" "#emacs")
+               ("foonetic.net" "#xkcd")
+               ("tokutek.irc.grove.io" "#tokutek"))))
+     (defun stop-irc ()
+       "Disconnect from IRC."
+       (interactive)
+       (dolist (buffer (delq nil
+                             (mapcar
+                              (lambda (x) (and (erc-server-buffer-p x) x))
+                              (buffer-list))))
+         (message "Server buffer: %s" (buffer-name buffer))
+         (with-current-buffer buffer
+           (erc-quit-server "blasting off again!"))))
 
-     (add-hook 'erc-text-matched-hook 'erc-notify-osd)
-     (defmacro unpack-color (color red green blue &rest body)
-       `(let ((,red   (car ,color))
-              (,green (car (cdr ,color)))
-              (,blue  (car (cdr (cdr ,color)))))
-          ,@body))
+     ;;}}}
 
-     (defun rgb-to-html (color)
-       (unpack-color color red green blue
-                     (concat "#" (format "%02x%02x%02x" red green blue))))
-
-     (defun hexcolor-luminance (color)
-       (unpack-color color red green blue
-                     (floor (+ (* 0.299 red)
-                               (* 0.587 green)
-                               (* 0.114 blue)))))
-
-     (defun invert-color (color)
-       (unpack-color color red green blue
-                     `(,(- 255 red)
-                       ,(- 255 green)
-                       ,(- 255 blue))))
-
-     (defun erc-get-color-for-nick (nick dark)
-       (let* ((hash     (md5 (downcase nick)))
-              (red      (mod (string-to-number (substring hash 0 10)
-                                               16)
-                             256))
-              (blue     (mod (string-to-number (substring hash 10 20)
-                                               16)
-                             256))
-              (green    (mod (string-to-number (substring hash 20 30)
-                                               16)
-                             256))
-              (color    `(,red ,green ,blue)))
-         (rgb-to-html (if (if dark (< (hexcolor-luminance color)
-                                      85)
-                            (> (hexcolor-luminance color)
-                               170))
-                          (invert-color color)
-                        color))))
-
-     (defun erc-highlight-nicknames ()
-       (save-excursion
-         (goto-char (point-min))
-         (while (re-search-forward "\\w+" nil t)
-           (let* ((bounds (bounds-of-thing-at-point 'word))
-                  (nick   (buffer-substring-no-properties (car bounds)
-                                                          (cdr bounds))))
-             (when (erc-get-server-user nick)
-               (put-text-property
-                (car bounds)
-                (cdr bounds)
-                'face
-                (cons 'foreground-color (erc-get-color-for-nick nick 't))))))))
-
-     (add-hook 'erc-insert-modify-hook 'erc-highlight-nicknames)))
+     ))
 
 ;;}}}
 
@@ -831,12 +913,8 @@ save the pointer marker if tag is found"
 
 (when (not (package-installed-p 'paredit))
   (package-install 'paredit))
-(autoload 'paredit-mode "paredit"
-  "Minor mode for pseudo-structurally editing Lisp code."
-  t)
-
 (mapc (lambda (hook)
-        (add-hook hook 'paredit-mode))
+        (add-hook hook (lambda () (paredit-mode 1) (c-like-keys paredit-mode-map))))
       '(clojure-mode-hook
         nrepl-mode-hook
         scheme-mode-hook
@@ -921,6 +999,16 @@ save the pointer marker if tag is found"
 
 ;;}}}
 
+;;{{{ eshell
+
+(require 'eshell)
+(require 'em-smart)
+(setq eshell-where-to-jump 'begin)
+(setq eshell-review-quick-commands nil)
+(setq eshell-smart-space-goes-to-end t)
+
+;;}}}
+
 ;;{{{ trailing whitespace
 
 (defun leif/unset-show-trailing-whitespace ()
@@ -932,7 +1020,8 @@ save the pointer marker if tag is found"
         eshell-mode-hook
         mail-mode-hook
         message-mode-hook
-        w3m-mode-hook))
+        w3m-mode-hook
+        erc-mode-hook))
 
 ;;}}}
 
@@ -1108,12 +1197,10 @@ save the pointer marker if tag is found"
  '(c-default-style (quote ((c-mode . "bsd") (c-mode . "stroustrup") (objc-mode . "objc") (java-mode . "java") (awk-mode . "awk") (other . "gnu"))))
  '(c-echo-syntactic-information-p t)
  '(column-number-mode t)
+ '(compilation-scroll-output (quote first-error))
  '(compilation-window-height 12)
  '(display-time-mode t)
  '(ede-project-directories (quote ("/Users/leif/git/mongo/src/mongo" "/Users/leif/src/mongodb-src-r2.0.5")))
- '(erc-autojoin-channels-alist (quote (("freenode.net" "#mariadb") ("foonetic.net" "#xkcd"))))
- '(erc-nick (quote ("Adlai" "leifw" "Adlai_" "leifw_" "Adlai__" "leifw__")))
- '(erc-nickserv-identify-mode (quote autodetect))
  '(fill-column 74)
  '(flymake-allowed-file-name-masks (quote (("\\.c\\'" flymake-simple-make-init flymake-simple-cleanup flymake-get-real-file-name) ("\\.cpp\\'" flymake-simple-make-init flymake-simple-cleanup flymake-get-real-file-name) ("\\.xml\\'" flymake-xml-init) ("\\.html?\\'" flymake-xml-init) ("\\.cs\\'" flymake-simple-make-init) ("\\.p[ml]\\'" flymake-perl-init) ("\\.php[345]?\\'" flymake-php-init) ("\\.h\\'" flymake-master-make-header-init flymake-master-cleanup) ("\\.java\\'" flymake-simple-make-java-init flymake-simple-java-cleanup) ("\\.idl\\'" flymake-simple-make-init))))
  '(flymake-gui-warnings-enabled nil)
@@ -1144,14 +1231,15 @@ save the pointer marker if tag is found"
  '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-irc org-mew org-mhe org-vm org-wl org-w3m)))
  '(org-pretty-entities t)
  '(org-use-sub-superscripts (quote {}))
- '(safe-local-variable-values (quote ((ac-clang-flags "-std=c++11" "-D_FILE_OFFSET_BITS=64" "-D_LARGEFILE64_SOURCE=1" "-D__STDC_FORMAT_MACROS=1" "-D__STDC_LIMIT_MACROS=1" "-D__LONG_LONG_SUPPORTED=1" "-DTOKU_PTHREAD_DEBUG=1" "-DTOKU_ALLOW_DEPRECATED=1" "-D_SVID_SOURCE=1" "-D_XOPEN_SOURCE=600" "-I./" "-I./include" "-I./portability" "-I./portability/tests" "-I./toku_include" "-I./util" "-I./util/tests" "-I./ft" "-I./ft/tests" "-I./locktree" "-I./locktree/tests" "-I./src" "-I./src/tests" "-I./dbg/." "-I./dbg/buildheader" "-I./dbg/ft" "-I./dbg/toku_include" "-I./opt/." "-I./opt/buildheader" "-I./opt/ft" "-I./opt/toku_include" "-I./cov/." "-I./cov/buildheader" "-I./cov/ft" "-I./cov/toku_include" "-I./Debug/." "-I./Debug/buildheader" "-I./Debug/ft" "-I./Debug/toku_include" "-I./Release/." "-I./Release/buildheader" "-I./Release/ft" "-I./Release/toku_include" "-I./Coverage/." "-I./Coverage/buildheader" "-I./Coverage/ft" "-I./Coverage/toku_include" "-I./gcc/." "-I./gcc/buildheader" "-I./gcc/ft" "-I./gcc/toku_include" "-I./gccdbg/." "-I./gccdbg/buildheader" "-I./gccdbg/ft" "-I./gccdbg/toku_include" "-I./gccopt/." "-I./gccopt/buildheader" "-I./gccopt/ft" "-I./gccopt/toku_include" "-I./gcccov/." "-I./gcccov/buildheader" "-I./gcccov/ft" "-I./gcccov/toku_include" "-I./clang/." "-I./clang/buildheader" "-I./clang/ft" "-I./clang/toku_include" "-I./clangdbg/." "-I./clangdbg/buildheader" "-I./clangdbg/ft" "-I./clangdbg/toku_include" "-I./clangopt/." "-I./clangopt/buildheader" "-I./clangopt/ft" "-I./clangopt/toku_include" "-I./clangcov/." "-I./clangcov/buildheader" "-I./clangcov/ft" "-I./clangcov/toku_include" "-I./asan/." "-I./asan/buildheader" "-I./asan/ft" "-I./asan/toku_include" "-I../" "-I../include" "-I../portability" "-I../portability/tests" "-I../toku_include" "-I../util" "-I../util/tests" "-I../ft" "-I../ft/tests" "-I../locktree" "-I../locktree/tests" "-I../src" "-I../src/tests" "-I../dbg/." "-I../dbg/buildheader" "-I../dbg/ft" "-I../dbg/toku_include" "-I../opt/." "-I../opt/buildheader" "-I../opt/ft" "-I../opt/toku_include" "-I../cov/." "-I../cov/buildheader" "-I../cov/ft" "-I../cov/toku_include" "-I../Debug/." "-I../Debug/buildheader" "-I../Debug/ft" "-I../Debug/toku_include" "-I../Release/." "-I../Release/buildheader" "-I../Release/ft" "-I../Release/toku_include" "-I../Coverage/." "-I../Coverage/buildheader" "-I../Coverage/ft" "-I../Coverage/toku_include" "-I../gcc/." "-I../gcc/buildheader" "-I../gcc/ft" "-I../gcc/toku_include" "-I../gccdbg/." "-I../gccdbg/buildheader" "-I../gccdbg/ft" "-I../gccdbg/toku_include" "-I../gccopt/." "-I../gccopt/buildheader" "-I../gccopt/ft" "-I../gccopt/toku_include" "-I../gcccov/." "-I../gcccov/buildheader" "-I../gcccov/ft" "-I../gcccov/toku_include" "-I../clang/." "-I../clang/buildheader" "-I../clang/ft" "-I../clang/toku_include" "-I../clangdbg/." "-I../clangdbg/buildheader" "-I../clangdbg/ft" "-I../clangdbg/toku_include" "-I../clangopt/." "-I../clangopt/buildheader" "-I../clangopt/ft" "-I../clangopt/toku_include" "-I../clangcov/." "-I../clangcov/buildheader" "-I../clangcov/ft" "-I../clangcov/toku_include" "-I../asan/." "-I../asan/buildheader" "-I../asan/ft" "-I../asan/toku_include" "-I../../" "-I../../include" "-I../../portability" "-I../../portability/tests" "-I../../toku_include" "-I../../util" "-I../../util/tests" "-I../../ft" "-I../../ft/tests" "-I../../locktree" "-I../../locktree/tests" "-I../../src" "-I../../src/tests" "-I../../dbg/." "-I../../dbg/buildheader" "-I../../dbg/ft" "-I../../dbg/toku_include" "-I../../opt/." "-I../../opt/buildheader" "-I../../opt/ft" "-I../../opt/toku_include" "-I../../cov/." "-I../../cov/buildheader" "-I../../cov/ft" "-I../../cov/toku_include" "-I../../Debug/." "-I../../Debug/buildheader" "-I../../Debug/ft" "-I../../Debug/toku_include" "-I../../Release/." "-I../../Release/buildheader" "-I../../Release/ft" "-I../../Release/toku_include" "-I../../Coverage/." "-I../../Coverage/buildheader" "-I../../Coverage/ft" "-I../../Coverage/toku_include" "-I../../gcc/." "-I../../gcc/buildheader" "-I../../gcc/ft" "-I../../gcc/toku_include" "-I../../gccdbg/." "-I../../gccdbg/buildheader" "-I../../gccdbg/ft" "-I../../gccdbg/toku_include" "-I../../gccopt/." "-I../../gccopt/buildheader" "-I../../gccopt/ft" "-I../../gccopt/toku_include" "-I../../gcccov/." "-I../../gcccov/buildheader" "-I../../gcccov/ft" "-I../../gcccov/toku_include" "-I../../clang/." "-I../../clang/buildheader" "-I../../clang/ft" "-I../../clang/toku_include" "-I../../clangdbg/." "-I../../clangdbg/buildheader" "-I../../clangdbg/ft" "-I../../clangdbg/toku_include" "-I../../clangopt/." "-I../../clangopt/buildheader" "-I../../clangopt/ft" "-I../../clangopt/toku_include" "-I../../clangcov/." "-I../../clangcov/buildheader" "-I../../clangcov/ft" "-I../../clangcov/toku_include" "-I../../asan/." "-I../../asan/buildheader" "-I../../asan/ft" "-I../../asan/toku_include" "-I../../../" "-I../../../include" "-I../../../portability" "-I../../../portability/tests" "-I../../../toku_include" "-I../../../util" "-I../../../util/tests" "-I../../../ft" "-I../../../ft/tests" "-I../../../locktree" "-I../../../locktree/tests" "-I../../../src" "-I../../../src/tests" "-I../../../dbg/." "-I../../../dbg/buildheader" "-I../../../dbg/ft" "-I../../../dbg/toku_include" "-I../../../opt/." "-I../../../opt/buildheader" "-I../../../opt/ft" "-I../../../opt/toku_include" "-I../../../cov/." "-I../../../cov/buildheader" "-I../../../cov/ft" "-I../../../cov/toku_include" "-I../../../Debug/." "-I../../../Debug/buildheader" "-I../../../Debug/ft" "-I../../../Debug/toku_include" "-I../../../Release/." "-I../../../Release/buildheader" "-I../../../Release/ft" "-I../../../Release/toku_include" "-I../../../Coverage/." "-I../../../Coverage/buildheader" "-I../../../Coverage/ft" "-I../../../Coverage/toku_include" "-I../../../gcc/." "-I../../../gcc/buildheader" "-I../../../gcc/ft" "-I../../../gcc/toku_include" "-I../../../gccdbg/." "-I../../../gccdbg/buildheader" "-I../../../gccdbg/ft" "-I../../../gccdbg/toku_include" "-I../../../gccopt/." "-I../../../gccopt/buildheader" "-I../../../gccopt/ft" "-I../../../gccopt/toku_include" "-I../../../gcccov/." "-I../../../gcccov/buildheader" "-I../../../gcccov/ft" "-I../../../gcccov/toku_include" "-I../../../clang/." "-I../../../clang/buildheader" "-I../../../clang/ft" "-I../../../clang/toku_include" "-I../../../clangdbg/." "-I../../../clangdbg/buildheader" "-I../../../clangdbg/ft" "-I../../../clangdbg/toku_include" "-I../../../clangopt/." "-I../../../clangopt/buildheader" "-I../../../clangopt/ft" "-I../../../clangopt/toku_include" "-I../../../clangcov/." "-I../../../clangcov/buildheader" "-I../../../clangcov/ft" "-I../../../clangcov/toku_include" "-I../../../asan/." "-I../../../asan/buildheader" "-I../../../asan/ft" "-I../../../asan/toku_include") (ac-clang-flags "-std=c++11" "-stdlib=libc++" "-D_FILE_OFFSET_BITS=64" "-D_LARGEFILE64_SOURCE=1" "-D__STDC_FORMAT_MACROS=1" "-D__STDC_LIMIT_MACROS=1" "-D__LONG_LONG_SUPPORTED=1" "-DTOKU_PTHREAD_DEBUG=1" "-DTOKU_ALLOW_DEPRECATED=1" "-DDARWIN=1" "-D_DARWIN_C_SOURCE=1" "-D_SVID_SOURCE=1" "-D_XOPEN_SOURCE=600" "-I./" "-I./include" "-I./portability" "-I./portability/tests" "-I./toku_include" "-I./util" "-I./util/tests" "-I./ft" "-I./ft/tests" "-I./locktree" "-I./locktree/tests" "-I./src" "-I./src/tests" "-I./dbg/." "-I./dbg/buildheader" "-I./dbg/ft" "-I./dbg/toku_include" "-I./opt/." "-I./opt/buildheader" "-I./opt/ft" "-I./opt/toku_include" "-I./cov/." "-I./cov/buildheader" "-I./cov/ft" "-I./cov/toku_include" "-I./Debug/." "-I./Debug/buildheader" "-I./Debug/ft" "-I./Debug/toku_include" "-I./Release/." "-I./Release/buildheader" "-I./Release/ft" "-I./Release/toku_include" "-I./Coverage/." "-I./Coverage/buildheader" "-I./Coverage/ft" "-I./Coverage/toku_include" "-I./gcc/." "-I./gcc/buildheader" "-I./gcc/ft" "-I./gcc/toku_include" "-I./gccdbg/." "-I./gccdbg/buildheader" "-I./gccdbg/ft" "-I./gccdbg/toku_include" "-I./gccopt/." "-I./gccopt/buildheader" "-I./gccopt/ft" "-I./gccopt/toku_include" "-I./gcccov/." "-I./gcccov/buildheader" "-I./gcccov/ft" "-I./gcccov/toku_include" "-I./clang/." "-I./clang/buildheader" "-I./clang/ft" "-I./clang/toku_include" "-I./clangdbg/." "-I./clangdbg/buildheader" "-I./clangdbg/ft" "-I./clangdbg/toku_include" "-I./clangopt/." "-I./clangopt/buildheader" "-I./clangopt/ft" "-I./clangopt/toku_include" "-I./clangcov/." "-I./clangcov/buildheader" "-I./clangcov/ft" "-I./clangcov/toku_include" "-I./asan/." "-I./asan/buildheader" "-I./asan/ft" "-I./asan/toku_include" "-I../" "-I../include" "-I../portability" "-I../portability/tests" "-I../toku_include" "-I../util" "-I../util/tests" "-I../ft" "-I../ft/tests" "-I../locktree" "-I../locktree/tests" "-I../src" "-I../src/tests" "-I../dbg/." "-I../dbg/buildheader" "-I../dbg/ft" "-I../dbg/toku_include" "-I../opt/." "-I../opt/buildheader" "-I../opt/ft" "-I../opt/toku_include" "-I../cov/." "-I../cov/buildheader" "-I../cov/ft" "-I../cov/toku_include" "-I../Debug/." "-I../Debug/buildheader" "-I../Debug/ft" "-I../Debug/toku_include" "-I../Release/." "-I../Release/buildheader" "-I../Release/ft" "-I../Release/toku_include" "-I../Coverage/." "-I../Coverage/buildheader" "-I../Coverage/ft" "-I../Coverage/toku_include" "-I../gcc/." "-I../gcc/buildheader" "-I../gcc/ft" "-I../gcc/toku_include" "-I../gccdbg/." "-I../gccdbg/buildheader" "-I../gccdbg/ft" "-I../gccdbg/toku_include" "-I../gccopt/." "-I../gccopt/buildheader" "-I../gccopt/ft" "-I../gccopt/toku_include" "-I../gcccov/." "-I../gcccov/buildheader" "-I../gcccov/ft" "-I../gcccov/toku_include" "-I../clang/." "-I../clang/buildheader" "-I../clang/ft" "-I../clang/toku_include" "-I../clangdbg/." "-I../clangdbg/buildheader" "-I../clangdbg/ft" "-I../clangdbg/toku_include" "-I../clangopt/." "-I../clangopt/buildheader" "-I../clangopt/ft" "-I../clangopt/toku_include" "-I../clangcov/." "-I../clangcov/buildheader" "-I../clangcov/ft" "-I../clangcov/toku_include" "-I../asan/." "-I../asan/buildheader" "-I../asan/ft" "-I../asan/toku_include" "-I../../" "-I../../include" "-I../../portability" "-I../../portability/tests" "-I../../toku_include" "-I../../util" "-I../../util/tests" "-I../../ft" "-I../../ft/tests" "-I../../locktree" "-I../../locktree/tests" "-I../../src" "-I../../src/tests" "-I../../dbg/." "-I../../dbg/buildheader" "-I../../dbg/ft" "-I../../dbg/toku_include" "-I../../opt/." "-I../../opt/buildheader" "-I../../opt/ft" "-I../../opt/toku_include" "-I../../cov/." "-I../../cov/buildheader" "-I../../cov/ft" "-I../../cov/toku_include" "-I../../Debug/." "-I../../Debug/buildheader" "-I../../Debug/ft" "-I../../Debug/toku_include" "-I../../Release/." "-I../../Release/buildheader" "-I../../Release/ft" "-I../../Release/toku_include" "-I../../Coverage/." "-I../../Coverage/buildheader" "-I../../Coverage/ft" "-I../../Coverage/toku_include" "-I../../gcc/." "-I../../gcc/buildheader" "-I../../gcc/ft" "-I../../gcc/toku_include" "-I../../gccdbg/." "-I../../gccdbg/buildheader" "-I../../gccdbg/ft" "-I../../gccdbg/toku_include" "-I../../gccopt/." "-I../../gccopt/buildheader" "-I../../gccopt/ft" "-I../../gccopt/toku_include" "-I../../gcccov/." "-I../../gcccov/buildheader" "-I../../gcccov/ft" "-I../../gcccov/toku_include" "-I../../clang/." "-I../../clang/buildheader" "-I../../clang/ft" "-I../../clang/toku_include" "-I../../clangdbg/." "-I../../clangdbg/buildheader" "-I../../clangdbg/ft" "-I../../clangdbg/toku_include" "-I../../clangopt/." "-I../../clangopt/buildheader" "-I../../clangopt/ft" "-I../../clangopt/toku_include" "-I../../clangcov/." "-I../../clangcov/buildheader" "-I../../clangcov/ft" "-I../../clangcov/toku_include" "-I../../asan/." "-I../../asan/buildheader" "-I../../asan/ft" "-I../../asan/toku_include" "-I../../../" "-I../../../include" "-I../../../portability" "-I../../../portability/tests" "-I../../../toku_include" "-I../../../util" "-I../../../util/tests" "-I../../../ft" "-I../../../ft/tests" "-I../../../locktree" "-I../../../locktree/tests" "-I../../../src" "-I../../../src/tests" "-I../../../dbg/." "-I../../../dbg/buildheader" "-I../../../dbg/ft" "-I../../../dbg/toku_include" "-I../../../opt/." "-I../../../opt/buildheader" "-I../../../opt/ft" "-I../../../opt/toku_include" "-I../../../cov/." "-I../../../cov/buildheader" "-I../../../cov/ft" "-I../../../cov/toku_include" "-I../../../Debug/." "-I../../../Debug/buildheader" "-I../../../Debug/ft" "-I../../../Debug/toku_include" "-I../../../Release/." "-I../../../Release/buildheader" "-I../../../Release/ft" "-I../../../Release/toku_include" "-I../../../Coverage/." "-I../../../Coverage/buildheader" "-I../../../Coverage/ft" "-I../../../Coverage/toku_include" "-I../../../gcc/." "-I../../../gcc/buildheader" "-I../../../gcc/ft" "-I../../../gcc/toku_include" "-I../../../gccdbg/." "-I../../../gccdbg/buildheader" "-I../../../gccdbg/ft" "-I../../../gccdbg/toku_include" "-I../../../gccopt/." "-I../../../gccopt/buildheader" "-I../../../gccopt/ft" "-I../../../gccopt/toku_include" "-I../../../gcccov/." "-I../../../gcccov/buildheader" "-I../../../gcccov/ft" "-I../../../gcccov/toku_include" "-I../../../clang/." "-I../../../clang/buildheader" "-I../../../clang/ft" "-I../../../clang/toku_include" "-I../../../clangdbg/." "-I../../../clangdbg/buildheader" "-I../../../clangdbg/ft" "-I../../../clangdbg/toku_include" "-I../../../clangopt/." "-I../../../clangopt/buildheader" "-I../../../clangopt/ft" "-I../../../clangopt/toku_include" "-I../../../clangcov/." "-I../../../clangcov/buildheader" "-I../../../clangcov/ft" "-I../../../clangcov/toku_include" "-I../../../asan/." "-I../../../asan/buildheader" "-I../../../asan/ft" "-I../../../asan/toku_include") (ac-clang-flags "-std=c++11" "-stdlib=libc++" "-D_FILE_OFFSET_BITS=64" "-D_LARGEFILE64_SOURCE=1" "-D__STDC_FORMAT_MACROS=1" "-D__STDC_LIMIT_MACROS=1" "-D__LONG_LONG_SUPPORTED=1" "-DTOKU_PTHREAD_DEBUG=1" "-DTOKU_ALLOW_DEPRECATED=1" "-DDARWIN=1" "-D_DARWIN_C_SOURCE=1" "-D_SVID_SOURCE=1" "-D_XOPEN_SOURCE=600" "-I./" "-I./include" "-I./portability" "-I./portability/tests" "-I./toku_include" "-I./ft" "-I./ft/tests" "-I./src" "-I./src/tests" "-I./src/lock_tree" "-I./src/lock_tree/tests" "-I./src/range_tree" "-I./src/range_tree/tests" "-I./dbg/." "-I./dbg/buildheader" "-I./dbg/ft" "-I./dbg/toku_include" "-I./opt/." "-I./opt/buildheader" "-I./opt/ft" "-I./opt/toku_include" "-I./cov/." "-I./cov/buildheader" "-I./cov/ft" "-I./cov/toku_include" "-I./Debug/." "-I./Debug/buildheader" "-I./Debug/ft" "-I./Debug/toku_include" "-I./Release/." "-I./Release/buildheader" "-I./Release/ft" "-I./Release/toku_include" "-I./Coverage/." "-I./Coverage/buildheader" "-I./Coverage/ft" "-I./Coverage/toku_include" "-I./gcc/." "-I./gcc/buildheader" "-I./gcc/ft" "-I./gcc/toku_include" "-I./gccdbg/." "-I./gccdbg/buildheader" "-I./gccdbg/ft" "-I./gccdbg/toku_include" "-I./gccopt/." "-I./gccopt/buildheader" "-I./gccopt/ft" "-I./gccopt/toku_include" "-I./gcccov/." "-I./gcccov/buildheader" "-I./gcccov/ft" "-I./gcccov/toku_include" "-I./clang/." "-I./clang/buildheader" "-I./clang/ft" "-I./clang/toku_include" "-I./clangdbg/." "-I./clangdbg/buildheader" "-I./clangdbg/ft" "-I./clangdbg/toku_include" "-I./clangopt/." "-I./clangopt/buildheader" "-I./clangopt/ft" "-I./clangopt/toku_include" "-I./clangcov/." "-I./clangcov/buildheader" "-I./clangcov/ft" "-I./clangcov/toku_include" "-I./asan/." "-I./asan/buildheader" "-I./asan/ft" "-I./asan/toku_include" "-I../" "-I../include" "-I../portability" "-I../portability/tests" "-I../toku_include" "-I../ft" "-I../ft/tests" "-I../src" "-I../src/tests" "-I../src/lock_tree" "-I../src/lock_tree/tests" "-I../src/range_tree" "-I../src/range_tree/tests" "-I../dbg/." "-I../dbg/buildheader" "-I../dbg/ft" "-I../dbg/toku_include" "-I../opt/." "-I../opt/buildheader" "-I../opt/ft" "-I../opt/toku_include" "-I../cov/." "-I../cov/buildheader" "-I../cov/ft" "-I../cov/toku_include" "-I../Debug/." "-I../Debug/buildheader" "-I../Debug/ft" "-I../Debug/toku_include" "-I../Release/." "-I../Release/buildheader" "-I../Release/ft" "-I../Release/toku_include" "-I../Coverage/." "-I../Coverage/buildheader" "-I../Coverage/ft" "-I../Coverage/toku_include" "-I../gcc/." "-I../gcc/buildheader" "-I../gcc/ft" "-I../gcc/toku_include" "-I../gccdbg/." "-I../gccdbg/buildheader" "-I../gccdbg/ft" "-I../gccdbg/toku_include" "-I../gccopt/." "-I../gccopt/buildheader" "-I../gccopt/ft" "-I../gccopt/toku_include" "-I../gcccov/." "-I../gcccov/buildheader" "-I../gcccov/ft" "-I../gcccov/toku_include" "-I../clang/." "-I../clang/buildheader" "-I../clang/ft" "-I../clang/toku_include" "-I../clangdbg/." "-I../clangdbg/buildheader" "-I../clangdbg/ft" "-I../clangdbg/toku_include" "-I../clangopt/." "-I../clangopt/buildheader" "-I../clangopt/ft" "-I../clangopt/toku_include" "-I../clangcov/." "-I../clangcov/buildheader" "-I../clangcov/ft" "-I../clangcov/toku_include" "-I../asan/." "-I../asan/buildheader" "-I../asan/ft" "-I../asan/toku_include" "-I../../" "-I../../include" "-I../../portability" "-I../../portability/tests" "-I../../toku_include" "-I../../ft" "-I../../ft/tests" "-I../../src" "-I../../src/tests" "-I../../src/lock_tree" "-I../../src/lock_tree/tests" "-I../../src/range_tree" "-I../../src/range_tree/tests" "-I../../dbg/." "-I../../dbg/buildheader" "-I../../dbg/ft" "-I../../dbg/toku_include" "-I../../opt/." "-I../../opt/buildheader" "-I../../opt/ft" "-I../../opt/toku_include" "-I../../cov/." "-I../../cov/buildheader" "-I../../cov/ft" "-I../../cov/toku_include" "-I../../Debug/." "-I../../Debug/buildheader" "-I../../Debug/ft" "-I../../Debug/toku_include" "-I../../Release/." "-I../../Release/buildheader" "-I../../Release/ft" "-I../../Release/toku_include" "-I../../Coverage/." "-I../../Coverage/buildheader" "-I../../Coverage/ft" "-I../../Coverage/toku_include" "-I../../gcc/." "-I../../gcc/buildheader" "-I../../gcc/ft" "-I../../gcc/toku_include" "-I../../gccdbg/." "-I../../gccdbg/buildheader" "-I../../gccdbg/ft" "-I../../gccdbg/toku_include" "-I../../gccopt/." "-I../../gccopt/buildheader" "-I../../gccopt/ft" "-I../../gccopt/toku_include" "-I../../gcccov/." "-I../../gcccov/buildheader" "-I../../gcccov/ft" "-I../../gcccov/toku_include" "-I../../clang/." "-I../../clang/buildheader" "-I../../clang/ft" "-I../../clang/toku_include" "-I../../clangdbg/." "-I../../clangdbg/buildheader" "-I../../clangdbg/ft" "-I../../clangdbg/toku_include" "-I../../clangopt/." "-I../../clangopt/buildheader" "-I../../clangopt/ft" "-I../../clangopt/toku_include" "-I../../clangcov/." "-I../../clangcov/buildheader" "-I../../clangcov/ft" "-I../../clangcov/toku_include" "-I../../asan/." "-I../../asan/buildheader" "-I../../asan/ft" "-I../../asan/toku_include" "-I../../../" "-I../../../include" "-I../../../portability" "-I../../../portability/tests" "-I../../../toku_include" "-I../../../ft" "-I../../../ft/tests" "-I../../../src" "-I../../../src/tests" "-I../../../src/lock_tree" "-I../../../src/lock_tree/tests" "-I../../../src/range_tree" "-I../../../src/range_tree/tests" "-I../../../dbg/." "-I../../../dbg/buildheader" "-I../../../dbg/ft" "-I../../../dbg/toku_include" "-I../../../opt/." "-I../../../opt/buildheader" "-I../../../opt/ft" "-I../../../opt/toku_include" "-I../../../cov/." "-I../../../cov/buildheader" "-I../../../cov/ft" "-I../../../cov/toku_include" "-I../../../Debug/." "-I../../../Debug/buildheader" "-I../../../Debug/ft" "-I../../../Debug/toku_include" "-I../../../Release/." "-I../../../Release/buildheader" "-I../../../Release/ft" "-I../../../Release/toku_include" "-I../../../Coverage/." "-I../../../Coverage/buildheader" "-I../../../Coverage/ft" "-I../../../Coverage/toku_include" "-I../../../gcc/." "-I../../../gcc/buildheader" "-I../../../gcc/ft" "-I../../../gcc/toku_include" "-I../../../gccdbg/." "-I../../../gccdbg/buildheader" "-I../../../gccdbg/ft" "-I../../../gccdbg/toku_include" "-I../../../gccopt/." "-I../../../gccopt/buildheader" "-I../../../gccopt/ft" "-I../../../gccopt/toku_include" "-I../../../gcccov/." "-I../../../gcccov/buildheader" "-I../../../gcccov/ft" "-I../../../gcccov/toku_include" "-I../../../clang/." "-I../../../clang/buildheader" "-I../../../clang/ft" "-I../../../clang/toku_include" "-I../../../clangdbg/." "-I../../../clangdbg/buildheader" "-I../../../clangdbg/ft" "-I../../../clangdbg/toku_include" "-I../../../clangopt/." "-I../../../clangopt/buildheader" "-I../../../clangopt/ft" "-I../../../clangopt/toku_include" "-I../../../clangcov/." "-I../../../clangcov/buildheader" "-I../../../clangcov/ft" "-I../../../clangcov/toku_include" "-I../../../asan/." "-I../../../asan/buildheader" "-I../../../asan/ft" "-I../../../asan/toku_include") (ac-clang-flags "-std=c++11" "-D_FILE_OFFSET_BITS=64" "-D_LARGEFILE64_SOURCE=1" "-D__STDC_FORMAT_MACROS=1" "-D__STDC_LIMIT_MACROS=1" "-D__LONG_LONG_SUPPORTED=1" "-DTOKU_PTHREAD_DEBUG=1" "-DTOKU_ALLOW_DEPRECATED=1" "-D_SVID_SOURCE=1" "-D_XOPEN_SOURCE=600" "-I./" "-I./include" "-I./portability" "-I./portability/tests" "-I./toku_include" "-I./ft" "-I./ft/tests" "-I./src" "-I./src/tests" "-I./src/lock_tree" "-I./src/lock_tree/tests" "-I./src/range_tree" "-I./src/range_tree/tests" "-I./dbg/." "-I./dbg/buildheader" "-I./dbg/ft" "-I./dbg/toku_include" "-I./opt/." "-I./opt/buildheader" "-I./opt/ft" "-I./opt/toku_include" "-I./cov/." "-I./cov/buildheader" "-I./cov/ft" "-I./cov/toku_include" "-I./Debug/." "-I./Debug/buildheader" "-I./Debug/ft" "-I./Debug/toku_include" "-I./Release/." "-I./Release/buildheader" "-I./Release/ft" "-I./Release/toku_include" "-I./Coverage/." "-I./Coverage/buildheader" "-I./Coverage/ft" "-I./Coverage/toku_include" "-I./gcc/." "-I./gcc/buildheader" "-I./gcc/ft" "-I./gcc/toku_include" "-I./gccdbg/." "-I./gccdbg/buildheader" "-I./gccdbg/ft" "-I./gccdbg/toku_include" "-I./gccopt/." "-I./gccopt/buildheader" "-I./gccopt/ft" "-I./gccopt/toku_include" "-I./gcccov/." "-I./gcccov/buildheader" "-I./gcccov/ft" "-I./gcccov/toku_include" "-I./clang/." "-I./clang/buildheader" "-I./clang/ft" "-I./clang/toku_include" "-I./clangdbg/." "-I./clangdbg/buildheader" "-I./clangdbg/ft" "-I./clangdbg/toku_include" "-I./clangopt/." "-I./clangopt/buildheader" "-I./clangopt/ft" "-I./clangopt/toku_include" "-I./clangcov/." "-I./clangcov/buildheader" "-I./clangcov/ft" "-I./clangcov/toku_include" "-I./asan/." "-I./asan/buildheader" "-I./asan/ft" "-I./asan/toku_include" "-I../" "-I../include" "-I../portability" "-I../portability/tests" "-I../toku_include" "-I../ft" "-I../ft/tests" "-I../src" "-I../src/tests" "-I../src/lock_tree" "-I../src/lock_tree/tests" "-I../src/range_tree" "-I../src/range_tree/tests" "-I../dbg/." "-I../dbg/buildheader" "-I../dbg/ft" "-I../dbg/toku_include" "-I../opt/." "-I../opt/buildheader" "-I../opt/ft" "-I../opt/toku_include" "-I../cov/." "-I../cov/buildheader" "-I../cov/ft" "-I../cov/toku_include" "-I../Debug/." "-I../Debug/buildheader" "-I../Debug/ft" "-I../Debug/toku_include" "-I../Release/." "-I../Release/buildheader" "-I../Release/ft" "-I../Release/toku_include" "-I../Coverage/." "-I../Coverage/buildheader" "-I../Coverage/ft" "-I../Coverage/toku_include" "-I../gcc/." "-I../gcc/buildheader" "-I../gcc/ft" "-I../gcc/toku_include" "-I../gccdbg/." "-I../gccdbg/buildheader" "-I../gccdbg/ft" "-I../gccdbg/toku_include" "-I../gccopt/." "-I../gccopt/buildheader" "-I../gccopt/ft" "-I../gccopt/toku_include" "-I../gcccov/." "-I../gcccov/buildheader" "-I../gcccov/ft" "-I../gcccov/toku_include" "-I../clang/." "-I../clang/buildheader" "-I../clang/ft" "-I../clang/toku_include" "-I../clangdbg/." "-I../clangdbg/buildheader" "-I../clangdbg/ft" "-I../clangdbg/toku_include" "-I../clangopt/." "-I../clangopt/buildheader" "-I../clangopt/ft" "-I../clangopt/toku_include" "-I../clangcov/." "-I../clangcov/buildheader" "-I../clangcov/ft" "-I../clangcov/toku_include" "-I../asan/." "-I../asan/buildheader" "-I../asan/ft" "-I../asan/toku_include" "-I../../" "-I../../include" "-I../../portability" "-I../../portability/tests" "-I../../toku_include" "-I../../ft" "-I../../ft/tests" "-I../../src" "-I../../src/tests" "-I../../src/lock_tree" "-I../../src/lock_tree/tests" "-I../../src/range_tree" "-I../../src/range_tree/tests" "-I../../dbg/." "-I../../dbg/buildheader" "-I../../dbg/ft" "-I../../dbg/toku_include" "-I../../opt/." "-I../../opt/buildheader" "-I../../opt/ft" "-I../../opt/toku_include" "-I../../cov/." "-I../../cov/buildheader" "-I../../cov/ft" "-I../../cov/toku_include" "-I../../Debug/." "-I../../Debug/buildheader" "-I../../Debug/ft" "-I../../Debug/toku_include" "-I../../Release/." "-I../../Release/buildheader" "-I../../Release/ft" "-I../../Release/toku_include" "-I../../Coverage/." "-I../../Coverage/buildheader" "-I../../Coverage/ft" "-I../../Coverage/toku_include" "-I../../gcc/." "-I../../gcc/buildheader" "-I../../gcc/ft" "-I../../gcc/toku_include" "-I../../gccdbg/." "-I../../gccdbg/buildheader" "-I../../gccdbg/ft" "-I../../gccdbg/toku_include" "-I../../gccopt/." "-I../../gccopt/buildheader" "-I../../gccopt/ft" "-I../../gccopt/toku_include" "-I../../gcccov/." "-I../../gcccov/buildheader" "-I../../gcccov/ft" "-I../../gcccov/toku_include" "-I../../clang/." "-I../../clang/buildheader" "-I../../clang/ft" "-I../../clang/toku_include" "-I../../clangdbg/." "-I../../clangdbg/buildheader" "-I../../clangdbg/ft" "-I../../clangdbg/toku_include" "-I../../clangopt/." "-I../../clangopt/buildheader" "-I../../clangopt/ft" "-I../../clangopt/toku_include" "-I../../clangcov/." "-I../../clangcov/buildheader" "-I../../clangcov/ft" "-I../../clangcov/toku_include" "-I../../asan/." "-I../../asan/buildheader" "-I../../asan/ft" "-I../../asan/toku_include" "-I../../../" "-I../../../include" "-I../../../portability" "-I../../../portability/tests" "-I../../../toku_include" "-I../../../ft" "-I../../../ft/tests" "-I../../../src" "-I../../../src/tests" "-I../../../src/lock_tree" "-I../../../src/lock_tree/tests" "-I../../../src/range_tree" "-I../../../src/range_tree/tests" "-I../../../dbg/." "-I../../../dbg/buildheader" "-I../../../dbg/ft" "-I../../../dbg/toku_include" "-I../../../opt/." "-I../../../opt/buildheader" "-I../../../opt/ft" "-I../../../opt/toku_include" "-I../../../cov/." "-I../../../cov/buildheader" "-I../../../cov/ft" "-I../../../cov/toku_include" "-I../../../Debug/." "-I../../../Debug/buildheader" "-I../../../Debug/ft" "-I../../../Debug/toku_include" "-I../../../Release/." "-I../../../Release/buildheader" "-I../../../Release/ft" "-I../../../Release/toku_include" "-I../../../Coverage/." "-I../../../Coverage/buildheader" "-I../../../Coverage/ft" "-I../../../Coverage/toku_include" "-I../../../gcc/." "-I../../../gcc/buildheader" "-I../../../gcc/ft" "-I../../../gcc/toku_include" "-I../../../gccdbg/." "-I../../../gccdbg/buildheader" "-I../../../gccdbg/ft" "-I../../../gccdbg/toku_include" "-I../../../gccopt/." "-I../../../gccopt/buildheader" "-I../../../gccopt/ft" "-I../../../gccopt/toku_include" "-I../../../gcccov/." "-I../../../gcccov/buildheader" "-I../../../gcccov/ft" "-I../../../gcccov/toku_include" "-I../../../clang/." "-I../../../clang/buildheader" "-I../../../clang/ft" "-I../../../clang/toku_include" "-I../../../clangdbg/." "-I../../../clangdbg/buildheader" "-I../../../clangdbg/ft" "-I../../../clangdbg/toku_include" "-I../../../clangopt/." "-I../../../clangopt/buildheader" "-I../../../clangopt/ft" "-I../../../clangopt/toku_include" "-I../../../clangcov/." "-I../../../clangcov/buildheader" "-I../../../clangcov/ft" "-I../../../clangcov/toku_include" "-I../../../asan/." "-I../../../asan/buildheader" "-I../../../asan/ft" "-I../../../asan/toku_include") (ac-clang-flags "-D_FILE_OFFSET_BITS=64" "-D_LARGEFILE64_SOURCE" "-D__STDC_FORMAT_MACROS" "-D__STDC_LIMIT_MACROS" "-D__LONG_LONG_SUPPORTED" "-D_SVID_SOURCE" "-D_XOPEN_SOURCE=600" "-std=c++11" "-I./" "-I./dbg" "-I./dbg/buildheader" "-I./dbg/toku_include" "-I./dbg/ft" "-I./opt" "-I./opt/buildheader" "-I./opt/toku_include" "-I./opt/ft" "-I./include" "-I./portability" "-I./portability/tests" "-I./toku_include" "-I./ft" "-I./ft/tests" "-I./src" "-I./src/lock_tree" "-I./src/lock_tree/tests" "-I./src/range_tree" "-I./src/range_tree/tests" "-I./src/tests" "-I../" "-I../dbg" "-I../dbg/buildheader" "-I../dbg/toku_include" "-I../dbg/ft" "-I../opt" "-I../opt/buildheader" "-I../opt/toku_include" "-I../opt/ft" "-I../include" "-I../portability" "-I../portability/tests" "-I../toku_include" "-I../ft" "-I../ft/tests" "-I../src" "-I../src/lock_tree" "-I../src/lock_tree/tests" "-I../src/range_tree" "-I../src/range_tree/tests" "-I../src/tests" "-I../../" "-I../../dbg" "-I../../dbg/buildheader" "-I../../dbg/toku_include" "-I../../dbg/ft" "-I../../opt" "-I../../opt/buildheader" "-I../../opt/toku_include" "-I../../opt/ft" "-I../../include" "-I../../portability" "-I../../portability/tests" "-I../../toku_include" "-I../../ft" "-I../../ft/tests" "-I../../src" "-I../../src/lock_tree" "-I../../src/lock_tree/tests" "-I../../src/range_tree" "-I../../src/range_tree/tests" "-I../../src/tests" "-I../../../" "-I../../../dbg" "-I../../../dbg/buildheader" "-I../../../dbg/toku_include" "-I../../../dbg/ft" "-I../../../opt" "-I../../../opt/buildheader" "-I../../../opt/toku_include" "-I../../../opt/ft" "-I../../../include" "-I../../../portability" "-I../../../portability/tests" "-I../../../toku_include" "-I../../../ft" "-I../../../ft/tests" "-I../../../src" "-I../../../src/lock_tree" "-I../../../src/lock_tree/tests" "-I../../../src/range_tree" "-I../../../src/range_tree/tests" "-I../../../src/tests") (ac-clang-flags "-D_FILE_OFFSET_BITS=64" "-D_LARGEFILE64_SOURCE" "-D__STDC_FORMAT_MACROS" "-D__STDC_LIMIT_MACROS" "-D__LONG_LONG_SUPPORTED" "-D_SVID_SOURCE" "-D_XOPEN_SOURCE=600" "-std=c++11" "-I./" "-I./dbg/buildheader" "-I./dbg/toku_include" "-I./dbg/ft" "-I./opt/buildheader" "-I./opt/toku_include" "-I./opt/ft" "-I./include" "-I./portability" "-I./portability/tests" "-I./toku_include" "-I./ft" "-I./ft/tests" "-I./src" "-I./src/lock_tree" "-I./src/lock_tree/tests" "-I./src/range_tree" "-I./src/range_tree/tests" "-I./src/tests" "-I../" "-I../dbg/buildheader" "-I../dbg/toku_include" "-I../dbg/ft" "-I../opt/buildheader" "-I../opt/toku_include" "-I../opt/ft" "-I../include" "-I../portability" "-I../portability/tests" "-I../toku_include" "-I../ft" "-I../ft/tests" "-I../src" "-I../src/lock_tree" "-I../src/lock_tree/tests" "-I../src/range_tree" "-I../src/range_tree/tests" "-I../src/tests" "-I../../" "-I../../dbg/buildheader" "-I../../dbg/toku_include" "-I../../dbg/ft" "-I../../opt/buildheader" "-I../../opt/toku_include" "-I../../opt/ft" "-I../../include" "-I../../portability" "-I../../portability/tests" "-I../../toku_include" "-I../../ft" "-I../../ft/tests" "-I../../src" "-I../../src/lock_tree" "-I../../src/lock_tree/tests" "-I../../src/range_tree" "-I../../src/range_tree/tests" "-I../../src/tests" "-I../../../" "-I../../../dbg/buildheader" "-I../../../dbg/toku_include" "-I../../../dbg/ft" "-I../../../opt/buildheader" "-I../../../opt/toku_include" "-I../../../opt/ft" "-I../../../include" "-I../../../portability" "-I../../../portability/tests" "-I../../../toku_include" "-I../../../ft" "-I../../../ft/tests" "-I../../../src" "-I../../../src/lock_tree" "-I../../../src/lock_tree/tests" "-I../../../src/range_tree" "-I../../../src/range_tree/tests" "-I../../../src/tests") (ac-clang-flags "-std=c++11" "-I./" "-I./dbg/buildheader" "-I./dbg/toku_include" "-I./dbg/ft" "-I./opt/buildheader" "-I./opt/toku_include" "-I./opt/ft" "-I./include" "-I./portability" "-I./portability/tests" "-I./toku_include" "-I./ft" "-I./ft/tests" "-I./src" "-I./src/lock_tree" "-I./src/lock_tree/tests" "-I./src/range_tree" "-I./src/range_tree/tests" "-I./src/tests" "-I../" "-I../dbg/buildheader" "-I../dbg/toku_include" "-I../dbg/ft" "-I../opt/buildheader" "-I../opt/toku_include" "-I../opt/ft" "-I../include" "-I../portability" "-I../portability/tests" "-I../toku_include" "-I../ft" "-I../ft/tests" "-I../src" "-I../src/lock_tree" "-I../src/lock_tree/tests" "-I../src/range_tree" "-I../src/range_tree/tests" "-I../src/tests" "-I../../" "-I../../dbg/buildheader" "-I../../dbg/toku_include" "-I../../dbg/ft" "-I../../opt/buildheader" "-I../../opt/toku_include" "-I../../opt/ft" "-I../../include" "-I../../portability" "-I../../portability/tests" "-I../../toku_include" "-I../../ft" "-I../../ft/tests" "-I../../src" "-I../../src/lock_tree" "-I../../src/lock_tree/tests" "-I../../src/range_tree" "-I../../src/range_tree/tests" "-I../../src/tests") (ac-clang-flags "-I./" "-I./dbg/buildheader" "-I./dbg/toku_include" "-I./dbg/ft" "-I./opt/buildheader" "-I./opt/toku_include" "-I./opt/ft" "-I./include" "-I./portability" "-I./portability/tests" "-I./toku_include" "-I./ft" "-I./ft/tests" "-I./src" "-I./src/lock_tree" "-I./src/lock_tree/tests" "-I./src/range_tree" "-I./src/range_tree/tests" "-I./src/tests" "-I../" "-I../dbg/buildheader" "-I../dbg/toku_include" "-I../dbg/ft" "-I../opt/buildheader" "-I../opt/toku_include" "-I../opt/ft" "-I../include" "-I../portability" "-I../portability/tests" "-I../toku_include" "-I../ft" "-I../ft/tests" "-I../src" "-I../src/lock_tree" "-I../src/lock_tree/tests" "-I../src/range_tree" "-I../src/range_tree/tests" "-I../src/tests" "-I../../" "-I../../dbg/buildheader" "-I../../dbg/toku_include" "-I../../dbg/ft" "-I../../opt/buildheader" "-I../../opt/toku_include" "-I../../opt/ft" "-I../../include" "-I../../portability" "-I../../portability/tests" "-I../../toku_include" "-I../../ft" "-I../../ft/tests" "-I../../src" "-I../../src/lock_tree" "-I../../src/lock_tree/tests" "-I../../src/range_tree" "-I../../src/range_tree/tests" "-I../../src/tests") (c-file-style . bsd) (eval progn (put (quote when-let) (quote lisp-indent-function) 1) (font-lock-add-keywords nil (quote (("(\\(when-let\\)\\>" 1 font-lock-keyword-face))))) (noweb-code-mode . c-mode) (js2-basic-offset . 4) (c-indentation-style . linux))))
+ '(safe-local-variable-values (quote ((eval setq ac-clang-flags (let* ((cppdefs (quote (("_SCONS" . "1") ("MONGO_EXPOSE_MACROS" . "1") ("SUPPORT_UTF8" . "1") ("_FILE_OFFSET_BITS" . "64") ("_DEBUG" . "1") ("BOOST_ALL_NO_LIB" . "1") ("MONGO_HAVE_HEADER_UNISTD_H" . "1") ("MONGO_HAVE_EXECINFO_BACKTRACE" . "1")))) (project-root (expand-file-name (locate-dominating-file buffer-file-name ".dir-locals.el"))) (includes (quote ("/" "/mongo" "/third_party/pcre-8.30" "/third_party/boost"))) (cflags (quote ("-pthread" "-Wall" "-Wsign-compare" "-Wno-unknown-pragmas" "-Winvalid-pch" "-Werror"))) (cxxflags (quote ("-Wnon-virtual-dtor" "-Woverloaded-virtual"))) (cppflags (append (mapcar (lambda (x) (concat "-D" (car x) "=" (cdr x))) cppdefs) (mapcar (lambda (x) (concat "-I" project-root "src" x)) includes)))) (append cppflags cflags cxxflags))) (eval setq ac-clang-flags (let* ((cppdefs (quote (("_SCONS" . "1") ("MONGO_EXPOSE_MACROS" . "1") ("SUPPORT_UTF8" . "1") ("_FILE_OFFSET_BITS" . "64") ("_DEBUG" . "1") ("BOOST_ALL_NO_LIB" . "1") ("MONGO_HAVE_HEADER_UNISTD_H" . "1") ("MONGO_HAVE_EXECINFO_BACKTRACE" . "1")))) (project-root (locate-dominating-file buffer-file-name ".dir-locals.el")) (includes (quote ("/" "/mongo" "/third_party/pcre-8.30" "/third_party/boost"))) (cflags (quote ("-fPIC" "-fno-strict-aliasing" "-ggdb" "-pthread" "-Wall" "-Wsign-compare" "-Wno-unknown-pragmas" "-Winvalid-pch" "-Werror" "-pipe"))) (cxxflags (quote ("-Wnon-virtual-dtor" "-Woverloaded-virtual"))) (cppflags (append (mapcar (lambda (x) (concat "-D" (car x) "=" (cdr x))) cppdefs) (mapcar (lambda (x) (concat "-I" project-root "src" x)) includes)))) (append cppflags cflags cxxflags))) (ac-clang-flags "-std=c++11" "-D_FILE_OFFSET_BITS=64" "-D_LARGEFILE64_SOURCE=1" "-D__STDC_FORMAT_MACROS=1" "-D__STDC_LIMIT_MACROS=1" "-D__LONG_LONG_SUPPORTED=1" "-DTOKU_PTHREAD_DEBUG=1" "-DTOKU_ALLOW_DEPRECATED=1" "-D_SVID_SOURCE=1" "-D_XOPEN_SOURCE=600" "-I./" "-I./include" "-I./portability" "-I./portability/tests" "-I./toku_include" "-I./util" "-I./util/tests" "-I./ft" "-I./ft/tests" "-I./locktree" "-I./locktree/tests" "-I./src" "-I./src/tests" "-I./dbg/." "-I./dbg/buildheader" "-I./dbg/ft" "-I./dbg/toku_include" "-I./opt/." "-I./opt/buildheader" "-I./opt/ft" "-I./opt/toku_include" "-I./cov/." "-I./cov/buildheader" "-I./cov/ft" "-I./cov/toku_include" "-I./Debug/." "-I./Debug/buildheader" "-I./Debug/ft" "-I./Debug/toku_include" "-I./Release/." "-I./Release/buildheader" "-I./Release/ft" "-I./Release/toku_include" "-I./Coverage/." "-I./Coverage/buildheader" "-I./Coverage/ft" "-I./Coverage/toku_include" "-I./gcc/." "-I./gcc/buildheader" "-I./gcc/ft" "-I./gcc/toku_include" "-I./gccdbg/." "-I./gccdbg/buildheader" "-I./gccdbg/ft" "-I./gccdbg/toku_include" "-I./gccopt/." "-I./gccopt/buildheader" "-I./gccopt/ft" "-I./gccopt/toku_include" "-I./gcccov/." "-I./gcccov/buildheader" "-I./gcccov/ft" "-I./gcccov/toku_include" "-I./clang/." "-I./clang/buildheader" "-I./clang/ft" "-I./clang/toku_include" "-I./clangdbg/." "-I./clangdbg/buildheader" "-I./clangdbg/ft" "-I./clangdbg/toku_include" "-I./clangopt/." "-I./clangopt/buildheader" "-I./clangopt/ft" "-I./clangopt/toku_include" "-I./clangcov/." "-I./clangcov/buildheader" "-I./clangcov/ft" "-I./clangcov/toku_include" "-I./asan/." "-I./asan/buildheader" "-I./asan/ft" "-I./asan/toku_include" "-I../" "-I../include" "-I../portability" "-I../portability/tests" "-I../toku_include" "-I../util" "-I../util/tests" "-I../ft" "-I../ft/tests" "-I../locktree" "-I../locktree/tests" "-I../src" "-I../src/tests" "-I../dbg/." "-I../dbg/buildheader" "-I../dbg/ft" "-I../dbg/toku_include" "-I../opt/." "-I../opt/buildheader" "-I../opt/ft" "-I../opt/toku_include" "-I../cov/." "-I../cov/buildheader" "-I../cov/ft" "-I../cov/toku_include" "-I../Debug/." "-I../Debug/buildheader" "-I../Debug/ft" "-I../Debug/toku_include" "-I../Release/." "-I../Release/buildheader" "-I../Release/ft" "-I../Release/toku_include" "-I../Coverage/." "-I../Coverage/buildheader" "-I../Coverage/ft" "-I../Coverage/toku_include" "-I../gcc/." "-I../gcc/buildheader" "-I../gcc/ft" "-I../gcc/toku_include" "-I../gccdbg/." "-I../gccdbg/buildheader" "-I../gccdbg/ft" "-I../gccdbg/toku_include" "-I../gccopt/." "-I../gccopt/buildheader" "-I../gccopt/ft" "-I../gccopt/toku_include" "-I../gcccov/." "-I../gcccov/buildheader" "-I../gcccov/ft" "-I../gcccov/toku_include" "-I../clang/." "-I../clang/buildheader" "-I../clang/ft" "-I../clang/toku_include" "-I../clangdbg/." "-I../clangdbg/buildheader" "-I../clangdbg/ft" "-I../clangdbg/toku_include" "-I../clangopt/." "-I../clangopt/buildheader" "-I../clangopt/ft" "-I../clangopt/toku_include" "-I../clangcov/." "-I../clangcov/buildheader" "-I../clangcov/ft" "-I../clangcov/toku_include" "-I../asan/." "-I../asan/buildheader" "-I../asan/ft" "-I../asan/toku_include" "-I../../" "-I../../include" "-I../../portability" "-I../../portability/tests" "-I../../toku_include" "-I../../util" "-I../../util/tests" "-I../../ft" "-I../../ft/tests" "-I../../locktree" "-I../../locktree/tests" "-I../../src" "-I../../src/tests" "-I../../dbg/." "-I../../dbg/buildheader" "-I../../dbg/ft" "-I../../dbg/toku_include" "-I../../opt/." "-I../../opt/buildheader" "-I../../opt/ft" "-I../../opt/toku_include" "-I../../cov/." "-I../../cov/buildheader" "-I../../cov/ft" "-I../../cov/toku_include" "-I../../Debug/." "-I../../Debug/buildheader" "-I../../Debug/ft" "-I../../Debug/toku_include" "-I../../Release/." "-I../../Release/buildheader" "-I../../Release/ft" "-I../../Release/toku_include" "-I../../Coverage/." "-I../../Coverage/buildheader" "-I../../Coverage/ft" "-I../../Coverage/toku_include" "-I../../gcc/." "-I../../gcc/buildheader" "-I../../gcc/ft" "-I../../gcc/toku_include" "-I../../gccdbg/." "-I../../gccdbg/buildheader" "-I../../gccdbg/ft" "-I../../gccdbg/toku_include" "-I../../gccopt/." "-I../../gccopt/buildheader" "-I../../gccopt/ft" "-I../../gccopt/toku_include" "-I../../gcccov/." "-I../../gcccov/buildheader" "-I../../gcccov/ft" "-I../../gcccov/toku_include" "-I../../clang/." "-I../../clang/buildheader" "-I../../clang/ft" "-I../../clang/toku_include" "-I../../clangdbg/." "-I../../clangdbg/buildheader" "-I../../clangdbg/ft" "-I../../clangdbg/toku_include" "-I../../clangopt/." "-I../../clangopt/buildheader" "-I../../clangopt/ft" "-I../../clangopt/toku_include" "-I../../clangcov/." "-I../../clangcov/buildheader" "-I../../clangcov/ft" "-I../../clangcov/toku_include" "-I../../asan/." "-I../../asan/buildheader" "-I../../asan/ft" "-I../../asan/toku_include" "-I../../../" "-I../../../include" "-I../../../portability" "-I../../../portability/tests" "-I../../../toku_include" "-I../../../util" "-I../../../util/tests" "-I../../../ft" "-I../../../ft/tests" "-I../../../locktree" "-I../../../locktree/tests" "-I../../../src" "-I../../../src/tests" "-I../../../dbg/." "-I../../../dbg/buildheader" "-I../../../dbg/ft" "-I../../../dbg/toku_include" "-I../../../opt/." "-I../../../opt/buildheader" "-I../../../opt/ft" "-I../../../opt/toku_include" "-I../../../cov/." "-I../../../cov/buildheader" "-I../../../cov/ft" "-I../../../cov/toku_include" "-I../../../Debug/." "-I../../../Debug/buildheader" "-I../../../Debug/ft" "-I../../../Debug/toku_include" "-I../../../Release/." "-I../../../Release/buildheader" "-I../../../Release/ft" "-I../../../Release/toku_include" "-I../../../Coverage/." "-I../../../Coverage/buildheader" "-I../../../Coverage/ft" "-I../../../Coverage/toku_include" "-I../../../gcc/." "-I../../../gcc/buildheader" "-I../../../gcc/ft" "-I../../../gcc/toku_include" "-I../../../gccdbg/." "-I../../../gccdbg/buildheader" "-I../../../gccdbg/ft" "-I../../../gccdbg/toku_include" "-I../../../gccopt/." "-I../../../gccopt/buildheader" "-I../../../gccopt/ft" "-I../../../gccopt/toku_include" "-I../../../gcccov/." "-I../../../gcccov/buildheader" "-I../../../gcccov/ft" "-I../../../gcccov/toku_include" "-I../../../clang/." "-I../../../clang/buildheader" "-I../../../clang/ft" "-I../../../clang/toku_include" "-I../../../clangdbg/." "-I../../../clangdbg/buildheader" "-I../../../clangdbg/ft" "-I../../../clangdbg/toku_include" "-I../../../clangopt/." "-I../../../clangopt/buildheader" "-I../../../clangopt/ft" "-I../../../clangopt/toku_include" "-I../../../clangcov/." "-I../../../clangcov/buildheader" "-I../../../clangcov/ft" "-I../../../clangcov/toku_include" "-I../../../asan/." "-I../../../asan/buildheader" "-I../../../asan/ft" "-I../../../asan/toku_include") (ac-clang-flags "-std=c++11" "-stdlib=libc++" "-D_FILE_OFFSET_BITS=64" "-D_LARGEFILE64_SOURCE=1" "-D__STDC_FORMAT_MACROS=1" "-D__STDC_LIMIT_MACROS=1" "-D__LONG_LONG_SUPPORTED=1" "-DTOKU_PTHREAD_DEBUG=1" "-DTOKU_ALLOW_DEPRECATED=1" "-DDARWIN=1" "-D_DARWIN_C_SOURCE=1" "-D_SVID_SOURCE=1" "-D_XOPEN_SOURCE=600" "-I./" "-I./include" "-I./portability" "-I./portability/tests" "-I./toku_include" "-I./util" "-I./util/tests" "-I./ft" "-I./ft/tests" "-I./locktree" "-I./locktree/tests" "-I./src" "-I./src/tests" "-I./dbg/." "-I./dbg/buildheader" "-I./dbg/ft" "-I./dbg/toku_include" "-I./opt/." "-I./opt/buildheader" "-I./opt/ft" "-I./opt/toku_include" "-I./cov/." "-I./cov/buildheader" "-I./cov/ft" "-I./cov/toku_include" "-I./Debug/." "-I./Debug/buildheader" "-I./Debug/ft" "-I./Debug/toku_include" "-I./Release/." "-I./Release/buildheader" "-I./Release/ft" "-I./Release/toku_include" "-I./Coverage/." "-I./Coverage/buildheader" "-I./Coverage/ft" "-I./Coverage/toku_include" "-I./gcc/." "-I./gcc/buildheader" "-I./gcc/ft" "-I./gcc/toku_include" "-I./gccdbg/." "-I./gccdbg/buildheader" "-I./gccdbg/ft" "-I./gccdbg/toku_include" "-I./gccopt/." "-I./gccopt/buildheader" "-I./gccopt/ft" "-I./gccopt/toku_include" "-I./gcccov/." "-I./gcccov/buildheader" "-I./gcccov/ft" "-I./gcccov/toku_include" "-I./clang/." "-I./clang/buildheader" "-I./clang/ft" "-I./clang/toku_include" "-I./clangdbg/." "-I./clangdbg/buildheader" "-I./clangdbg/ft" "-I./clangdbg/toku_include" "-I./clangopt/." "-I./clangopt/buildheader" "-I./clangopt/ft" "-I./clangopt/toku_include" "-I./clangcov/." "-I./clangcov/buildheader" "-I./clangcov/ft" "-I./clangcov/toku_include" "-I./asan/." "-I./asan/buildheader" "-I./asan/ft" "-I./asan/toku_include" "-I../" "-I../include" "-I../portability" "-I../portability/tests" "-I../toku_include" "-I../util" "-I../util/tests" "-I../ft" "-I../ft/tests" "-I../locktree" "-I../locktree/tests" "-I../src" "-I../src/tests" "-I../dbg/." "-I../dbg/buildheader" "-I../dbg/ft" "-I../dbg/toku_include" "-I../opt/." "-I../opt/buildheader" "-I../opt/ft" "-I../opt/toku_include" "-I../cov/." "-I../cov/buildheader" "-I../cov/ft" "-I../cov/toku_include" "-I../Debug/." "-I../Debug/buildheader" "-I../Debug/ft" "-I../Debug/toku_include" "-I../Release/." "-I../Release/buildheader" "-I../Release/ft" "-I../Release/toku_include" "-I../Coverage/." "-I../Coverage/buildheader" "-I../Coverage/ft" "-I../Coverage/toku_include" "-I../gcc/." "-I../gcc/buildheader" "-I../gcc/ft" "-I../gcc/toku_include" "-I../gccdbg/." "-I../gccdbg/buildheader" "-I../gccdbg/ft" "-I../gccdbg/toku_include" "-I../gccopt/." "-I../gccopt/buildheader" "-I../gccopt/ft" "-I../gccopt/toku_include" "-I../gcccov/." "-I../gcccov/buildheader" "-I../gcccov/ft" "-I../gcccov/toku_include" "-I../clang/." "-I../clang/buildheader" "-I../clang/ft" "-I../clang/toku_include" "-I../clangdbg/." "-I../clangdbg/buildheader" "-I../clangdbg/ft" "-I../clangdbg/toku_include" "-I../clangopt/." "-I../clangopt/buildheader" "-I../clangopt/ft" "-I../clangopt/toku_include" "-I../clangcov/." "-I../clangcov/buildheader" "-I../clangcov/ft" "-I../clangcov/toku_include" "-I../asan/." "-I../asan/buildheader" "-I../asan/ft" "-I../asan/toku_include" "-I../../" "-I../../include" "-I../../portability" "-I../../portability/tests" "-I../../toku_include" "-I../../util" "-I../../util/tests" "-I../../ft" "-I../../ft/tests" "-I../../locktree" "-I../../locktree/tests" "-I../../src" "-I../../src/tests" "-I../../dbg/." "-I../../dbg/buildheader" "-I../../dbg/ft" "-I../../dbg/toku_include" "-I../../opt/." "-I../../opt/buildheader" "-I../../opt/ft" "-I../../opt/toku_include" "-I../../cov/." "-I../../cov/buildheader" "-I../../cov/ft" "-I../../cov/toku_include" "-I../../Debug/." "-I../../Debug/buildheader" "-I../../Debug/ft" "-I../../Debug/toku_include" "-I../../Release/." "-I../../Release/buildheader" "-I../../Release/ft" "-I../../Release/toku_include" "-I../../Coverage/." "-I../../Coverage/buildheader" "-I../../Coverage/ft" "-I../../Coverage/toku_include" "-I../../gcc/." "-I../../gcc/buildheader" "-I../../gcc/ft" "-I../../gcc/toku_include" "-I../../gccdbg/." "-I../../gccdbg/buildheader" "-I../../gccdbg/ft" "-I../../gccdbg/toku_include" "-I../../gccopt/." "-I../../gccopt/buildheader" "-I../../gccopt/ft" "-I../../gccopt/toku_include" "-I../../gcccov/." "-I../../gcccov/buildheader" "-I../../gcccov/ft" "-I../../gcccov/toku_include" "-I../../clang/." "-I../../clang/buildheader" "-I../../clang/ft" "-I../../clang/toku_include" "-I../../clangdbg/." "-I../../clangdbg/buildheader" "-I../../clangdbg/ft" "-I../../clangdbg/toku_include" "-I../../clangopt/." "-I../../clangopt/buildheader" "-I../../clangopt/ft" "-I../../clangopt/toku_include" "-I../../clangcov/." "-I../../clangcov/buildheader" "-I../../clangcov/ft" "-I../../clangcov/toku_include" "-I../../asan/." "-I../../asan/buildheader" "-I../../asan/ft" "-I../../asan/toku_include" "-I../../../" "-I../../../include" "-I../../../portability" "-I../../../portability/tests" "-I../../../toku_include" "-I../../../util" "-I../../../util/tests" "-I../../../ft" "-I../../../ft/tests" "-I../../../locktree" "-I../../../locktree/tests" "-I../../../src" "-I../../../src/tests" "-I../../../dbg/." "-I../../../dbg/buildheader" "-I../../../dbg/ft" "-I../../../dbg/toku_include" "-I../../../opt/." "-I../../../opt/buildheader" "-I../../../opt/ft" "-I../../../opt/toku_include" "-I../../../cov/." "-I../../../cov/buildheader" "-I../../../cov/ft" "-I../../../cov/toku_include" "-I../../../Debug/." "-I../../../Debug/buildheader" "-I../../../Debug/ft" "-I../../../Debug/toku_include" "-I../../../Release/." "-I../../../Release/buildheader" "-I../../../Release/ft" "-I../../../Release/toku_include" "-I../../../Coverage/." "-I../../../Coverage/buildheader" "-I../../../Coverage/ft" "-I../../../Coverage/toku_include" "-I../../../gcc/." "-I../../../gcc/buildheader" "-I../../../gcc/ft" "-I../../../gcc/toku_include" "-I../../../gccdbg/." "-I../../../gccdbg/buildheader" "-I../../../gccdbg/ft" "-I../../../gccdbg/toku_include" "-I../../../gccopt/." "-I../../../gccopt/buildheader" "-I../../../gccopt/ft" "-I../../../gccopt/toku_include" "-I../../../gcccov/." "-I../../../gcccov/buildheader" "-I../../../gcccov/ft" "-I../../../gcccov/toku_include" "-I../../../clang/." "-I../../../clang/buildheader" "-I../../../clang/ft" "-I../../../clang/toku_include" "-I../../../clangdbg/." "-I../../../clangdbg/buildheader" "-I../../../clangdbg/ft" "-I../../../clangdbg/toku_include" "-I../../../clangopt/." "-I../../../clangopt/buildheader" "-I../../../clangopt/ft" "-I../../../clangopt/toku_include" "-I../../../clangcov/." "-I../../../clangcov/buildheader" "-I../../../clangcov/ft" "-I../../../clangcov/toku_include" "-I../../../asan/." "-I../../../asan/buildheader" "-I../../../asan/ft" "-I../../../asan/toku_include") (ac-clang-flags "-std=c++11" "-stdlib=libc++" "-D_FILE_OFFSET_BITS=64" "-D_LARGEFILE64_SOURCE=1" "-D__STDC_FORMAT_MACROS=1" "-D__STDC_LIMIT_MACROS=1" "-D__LONG_LONG_SUPPORTED=1" "-DTOKU_PTHREAD_DEBUG=1" "-DTOKU_ALLOW_DEPRECATED=1" "-DDARWIN=1" "-D_DARWIN_C_SOURCE=1" "-D_SVID_SOURCE=1" "-D_XOPEN_SOURCE=600" "-I./" "-I./include" "-I./portability" "-I./portability/tests" "-I./toku_include" "-I./ft" "-I./ft/tests" "-I./src" "-I./src/tests" "-I./src/lock_tree" "-I./src/lock_tree/tests" "-I./src/range_tree" "-I./src/range_tree/tests" "-I./dbg/." "-I./dbg/buildheader" "-I./dbg/ft" "-I./dbg/toku_include" "-I./opt/." "-I./opt/buildheader" "-I./opt/ft" "-I./opt/toku_include" "-I./cov/." "-I./cov/buildheader" "-I./cov/ft" "-I./cov/toku_include" "-I./Debug/." "-I./Debug/buildheader" "-I./Debug/ft" "-I./Debug/toku_include" "-I./Release/." "-I./Release/buildheader" "-I./Release/ft" "-I./Release/toku_include" "-I./Coverage/." "-I./Coverage/buildheader" "-I./Coverage/ft" "-I./Coverage/toku_include" "-I./gcc/." "-I./gcc/buildheader" "-I./gcc/ft" "-I./gcc/toku_include" "-I./gccdbg/." "-I./gccdbg/buildheader" "-I./gccdbg/ft" "-I./gccdbg/toku_include" "-I./gccopt/." "-I./gccopt/buildheader" "-I./gccopt/ft" "-I./gccopt/toku_include" "-I./gcccov/." "-I./gcccov/buildheader" "-I./gcccov/ft" "-I./gcccov/toku_include" "-I./clang/." "-I./clang/buildheader" "-I./clang/ft" "-I./clang/toku_include" "-I./clangdbg/." "-I./clangdbg/buildheader" "-I./clangdbg/ft" "-I./clangdbg/toku_include" "-I./clangopt/." "-I./clangopt/buildheader" "-I./clangopt/ft" "-I./clangopt/toku_include" "-I./clangcov/." "-I./clangcov/buildheader" "-I./clangcov/ft" "-I./clangcov/toku_include" "-I./asan/." "-I./asan/buildheader" "-I./asan/ft" "-I./asan/toku_include" "-I../" "-I../include" "-I../portability" "-I../portability/tests" "-I../toku_include" "-I../ft" "-I../ft/tests" "-I../src" "-I../src/tests" "-I../src/lock_tree" "-I../src/lock_tree/tests" "-I../src/range_tree" "-I../src/range_tree/tests" "-I../dbg/." "-I../dbg/buildheader" "-I../dbg/ft" "-I../dbg/toku_include" "-I../opt/." "-I../opt/buildheader" "-I../opt/ft" "-I../opt/toku_include" "-I../cov/." "-I../cov/buildheader" "-I../cov/ft" "-I../cov/toku_include" "-I../Debug/." "-I../Debug/buildheader" "-I../Debug/ft" "-I../Debug/toku_include" "-I../Release/." "-I../Release/buildheader" "-I../Release/ft" "-I../Release/toku_include" "-I../Coverage/." "-I../Coverage/buildheader" "-I../Coverage/ft" "-I../Coverage/toku_include" "-I../gcc/." "-I../gcc/buildheader" "-I../gcc/ft" "-I../gcc/toku_include" "-I../gccdbg/." "-I../gccdbg/buildheader" "-I../gccdbg/ft" "-I../gccdbg/toku_include" "-I../gccopt/." "-I../gccopt/buildheader" "-I../gccopt/ft" "-I../gccopt/toku_include" "-I../gcccov/." "-I../gcccov/buildheader" "-I../gcccov/ft" "-I../gcccov/toku_include" "-I../clang/." "-I../clang/buildheader" "-I../clang/ft" "-I../clang/toku_include" "-I../clangdbg/." "-I../clangdbg/buildheader" "-I../clangdbg/ft" "-I../clangdbg/toku_include" "-I../clangopt/." "-I../clangopt/buildheader" "-I../clangopt/ft" "-I../clangopt/toku_include" "-I../clangcov/." "-I../clangcov/buildheader" "-I../clangcov/ft" "-I../clangcov/toku_include" "-I../asan/." "-I../asan/buildheader" "-I../asan/ft" "-I../asan/toku_include" "-I../../" "-I../../include" "-I../../portability" "-I../../portability/tests" "-I../../toku_include" "-I../../ft" "-I../../ft/tests" "-I../../src" "-I../../src/tests" "-I../../src/lock_tree" "-I../../src/lock_tree/tests" "-I../../src/range_tree" "-I../../src/range_tree/tests" "-I../../dbg/." "-I../../dbg/buildheader" "-I../../dbg/ft" "-I../../dbg/toku_include" "-I../../opt/." "-I../../opt/buildheader" "-I../../opt/ft" "-I../../opt/toku_include" "-I../../cov/." "-I../../cov/buildheader" "-I../../cov/ft" "-I../../cov/toku_include" "-I../../Debug/." "-I../../Debug/buildheader" "-I../../Debug/ft" "-I../../Debug/toku_include" "-I../../Release/." "-I../../Release/buildheader" "-I../../Release/ft" "-I../../Release/toku_include" "-I../../Coverage/." "-I../../Coverage/buildheader" "-I../../Coverage/ft" "-I../../Coverage/toku_include" "-I../../gcc/." "-I../../gcc/buildheader" "-I../../gcc/ft" "-I../../gcc/toku_include" "-I../../gccdbg/." "-I../../gccdbg/buildheader" "-I../../gccdbg/ft" "-I../../gccdbg/toku_include" "-I../../gccopt/." "-I../../gccopt/buildheader" "-I../../gccopt/ft" "-I../../gccopt/toku_include" "-I../../gcccov/." "-I../../gcccov/buildheader" "-I../../gcccov/ft" "-I../../gcccov/toku_include" "-I../../clang/." "-I../../clang/buildheader" "-I../../clang/ft" "-I../../clang/toku_include" "-I../../clangdbg/." "-I../../clangdbg/buildheader" "-I../../clangdbg/ft" "-I../../clangdbg/toku_include" "-I../../clangopt/." "-I../../clangopt/buildheader" "-I../../clangopt/ft" "-I../../clangopt/toku_include" "-I../../clangcov/." "-I../../clangcov/buildheader" "-I../../clangcov/ft" "-I../../clangcov/toku_include" "-I../../asan/." "-I../../asan/buildheader" "-I../../asan/ft" "-I../../asan/toku_include" "-I../../../" "-I../../../include" "-I../../../portability" "-I../../../portability/tests" "-I../../../toku_include" "-I../../../ft" "-I../../../ft/tests" "-I../../../src" "-I../../../src/tests" "-I../../../src/lock_tree" "-I../../../src/lock_tree/tests" "-I../../../src/range_tree" "-I../../../src/range_tree/tests" "-I../../../dbg/." "-I../../../dbg/buildheader" "-I../../../dbg/ft" "-I../../../dbg/toku_include" "-I../../../opt/." "-I../../../opt/buildheader" "-I../../../opt/ft" "-I../../../opt/toku_include" "-I../../../cov/." "-I../../../cov/buildheader" "-I../../../cov/ft" "-I../../../cov/toku_include" "-I../../../Debug/." "-I../../../Debug/buildheader" "-I../../../Debug/ft" "-I../../../Debug/toku_include" "-I../../../Release/." "-I../../../Release/buildheader" "-I../../../Release/ft" "-I../../../Release/toku_include" "-I../../../Coverage/." "-I../../../Coverage/buildheader" "-I../../../Coverage/ft" "-I../../../Coverage/toku_include" "-I../../../gcc/." "-I../../../gcc/buildheader" "-I../../../gcc/ft" "-I../../../gcc/toku_include" "-I../../../gccdbg/." "-I../../../gccdbg/buildheader" "-I../../../gccdbg/ft" "-I../../../gccdbg/toku_include" "-I../../../gccopt/." "-I../../../gccopt/buildheader" "-I../../../gccopt/ft" "-I../../../gccopt/toku_include" "-I../../../gcccov/." "-I../../../gcccov/buildheader" "-I../../../gcccov/ft" "-I../../../gcccov/toku_include" "-I../../../clang/." "-I../../../clang/buildheader" "-I../../../clang/ft" "-I../../../clang/toku_include" "-I../../../clangdbg/." "-I../../../clangdbg/buildheader" "-I../../../clangdbg/ft" "-I../../../clangdbg/toku_include" "-I../../../clangopt/." "-I../../../clangopt/buildheader" "-I../../../clangopt/ft" "-I../../../clangopt/toku_include" "-I../../../clangcov/." "-I../../../clangcov/buildheader" "-I../../../clangcov/ft" "-I../../../clangcov/toku_include" "-I../../../asan/." "-I../../../asan/buildheader" "-I../../../asan/ft" "-I../../../asan/toku_include") (ac-clang-flags "-std=c++11" "-D_FILE_OFFSET_BITS=64" "-D_LARGEFILE64_SOURCE=1" "-D__STDC_FORMAT_MACROS=1" "-D__STDC_LIMIT_MACROS=1" "-D__LONG_LONG_SUPPORTED=1" "-DTOKU_PTHREAD_DEBUG=1" "-DTOKU_ALLOW_DEPRECATED=1" "-D_SVID_SOURCE=1" "-D_XOPEN_SOURCE=600" "-I./" "-I./include" "-I./portability" "-I./portability/tests" "-I./toku_include" "-I./ft" "-I./ft/tests" "-I./src" "-I./src/tests" "-I./src/lock_tree" "-I./src/lock_tree/tests" "-I./src/range_tree" "-I./src/range_tree/tests" "-I./dbg/." "-I./dbg/buildheader" "-I./dbg/ft" "-I./dbg/toku_include" "-I./opt/." "-I./opt/buildheader" "-I./opt/ft" "-I./opt/toku_include" "-I./cov/." "-I./cov/buildheader" "-I./cov/ft" "-I./cov/toku_include" "-I./Debug/." "-I./Debug/buildheader" "-I./Debug/ft" "-I./Debug/toku_include" "-I./Release/." "-I./Release/buildheader" "-I./Release/ft" "-I./Release/toku_include" "-I./Coverage/." "-I./Coverage/buildheader" "-I./Coverage/ft" "-I./Coverage/toku_include" "-I./gcc/." "-I./gcc/buildheader" "-I./gcc/ft" "-I./gcc/toku_include" "-I./gccdbg/." "-I./gccdbg/buildheader" "-I./gccdbg/ft" "-I./gccdbg/toku_include" "-I./gccopt/." "-I./gccopt/buildheader" "-I./gccopt/ft" "-I./gccopt/toku_include" "-I./gcccov/." "-I./gcccov/buildheader" "-I./gcccov/ft" "-I./gcccov/toku_include" "-I./clang/." "-I./clang/buildheader" "-I./clang/ft" "-I./clang/toku_include" "-I./clangdbg/." "-I./clangdbg/buildheader" "-I./clangdbg/ft" "-I./clangdbg/toku_include" "-I./clangopt/." "-I./clangopt/buildheader" "-I./clangopt/ft" "-I./clangopt/toku_include" "-I./clangcov/." "-I./clangcov/buildheader" "-I./clangcov/ft" "-I./clangcov/toku_include" "-I./asan/." "-I./asan/buildheader" "-I./asan/ft" "-I./asan/toku_include" "-I../" "-I../include" "-I../portability" "-I../portability/tests" "-I../toku_include" "-I../ft" "-I../ft/tests" "-I../src" "-I../src/tests" "-I../src/lock_tree" "-I../src/lock_tree/tests" "-I../src/range_tree" "-I../src/range_tree/tests" "-I../dbg/." "-I../dbg/buildheader" "-I../dbg/ft" "-I../dbg/toku_include" "-I../opt/." "-I../opt/buildheader" "-I../opt/ft" "-I../opt/toku_include" "-I../cov/." "-I../cov/buildheader" "-I../cov/ft" "-I../cov/toku_include" "-I../Debug/." "-I../Debug/buildheader" "-I../Debug/ft" "-I../Debug/toku_include" "-I../Release/." "-I../Release/buildheader" "-I../Release/ft" "-I../Release/toku_include" "-I../Coverage/." "-I../Coverage/buildheader" "-I../Coverage/ft" "-I../Coverage/toku_include" "-I../gcc/." "-I../gcc/buildheader" "-I../gcc/ft" "-I../gcc/toku_include" "-I../gccdbg/." "-I../gccdbg/buildheader" "-I../gccdbg/ft" "-I../gccdbg/toku_include" "-I../gccopt/." "-I../gccopt/buildheader" "-I../gccopt/ft" "-I../gccopt/toku_include" "-I../gcccov/." "-I../gcccov/buildheader" "-I../gcccov/ft" "-I../gcccov/toku_include" "-I../clang/." "-I../clang/buildheader" "-I../clang/ft" "-I../clang/toku_include" "-I../clangdbg/." "-I../clangdbg/buildheader" "-I../clangdbg/ft" "-I../clangdbg/toku_include" "-I../clangopt/." "-I../clangopt/buildheader" "-I../clangopt/ft" "-I../clangopt/toku_include" "-I../clangcov/." "-I../clangcov/buildheader" "-I../clangcov/ft" "-I../clangcov/toku_include" "-I../asan/." "-I../asan/buildheader" "-I../asan/ft" "-I../asan/toku_include" "-I../../" "-I../../include" "-I../../portability" "-I../../portability/tests" "-I../../toku_include" "-I../../ft" "-I../../ft/tests" "-I../../src" "-I../../src/tests" "-I../../src/lock_tree" "-I../../src/lock_tree/tests" "-I../../src/range_tree" "-I../../src/range_tree/tests" "-I../../dbg/." "-I../../dbg/buildheader" "-I../../dbg/ft" "-I../../dbg/toku_include" "-I../../opt/." "-I../../opt/buildheader" "-I../../opt/ft" "-I../../opt/toku_include" "-I../../cov/." "-I../../cov/buildheader" "-I../../cov/ft" "-I../../cov/toku_include" "-I../../Debug/." "-I../../Debug/buildheader" "-I../../Debug/ft" "-I../../Debug/toku_include" "-I../../Release/." "-I../../Release/buildheader" "-I../../Release/ft" "-I../../Release/toku_include" "-I../../Coverage/." "-I../../Coverage/buildheader" "-I../../Coverage/ft" "-I../../Coverage/toku_include" "-I../../gcc/." "-I../../gcc/buildheader" "-I../../gcc/ft" "-I../../gcc/toku_include" "-I../../gccdbg/." "-I../../gccdbg/buildheader" "-I../../gccdbg/ft" "-I../../gccdbg/toku_include" "-I../../gccopt/." "-I../../gccopt/buildheader" "-I../../gccopt/ft" "-I../../gccopt/toku_include" "-I../../gcccov/." "-I../../gcccov/buildheader" "-I../../gcccov/ft" "-I../../gcccov/toku_include" "-I../../clang/." "-I../../clang/buildheader" "-I../../clang/ft" "-I../../clang/toku_include" "-I../../clangdbg/." "-I../../clangdbg/buildheader" "-I../../clangdbg/ft" "-I../../clangdbg/toku_include" "-I../../clangopt/." "-I../../clangopt/buildheader" "-I../../clangopt/ft" "-I../../clangopt/toku_include" "-I../../clangcov/." "-I../../clangcov/buildheader" "-I../../clangcov/ft" "-I../../clangcov/toku_include" "-I../../asan/." "-I../../asan/buildheader" "-I../../asan/ft" "-I../../asan/toku_include" "-I../../../" "-I../../../include" "-I../../../portability" "-I../../../portability/tests" "-I../../../toku_include" "-I../../../ft" "-I../../../ft/tests" "-I../../../src" "-I../../../src/tests" "-I../../../src/lock_tree" "-I../../../src/lock_tree/tests" "-I../../../src/range_tree" "-I../../../src/range_tree/tests" "-I../../../dbg/." "-I../../../dbg/buildheader" "-I../../../dbg/ft" "-I../../../dbg/toku_include" "-I../../../opt/." "-I../../../opt/buildheader" "-I../../../opt/ft" "-I../../../opt/toku_include" "-I../../../cov/." "-I../../../cov/buildheader" "-I../../../cov/ft" "-I../../../cov/toku_include" "-I../../../Debug/." "-I../../../Debug/buildheader" "-I../../../Debug/ft" "-I../../../Debug/toku_include" "-I../../../Release/." "-I../../../Release/buildheader" "-I../../../Release/ft" "-I../../../Release/toku_include" "-I../../../Coverage/." "-I../../../Coverage/buildheader" "-I../../../Coverage/ft" "-I../../../Coverage/toku_include" "-I../../../gcc/." "-I../../../gcc/buildheader" "-I../../../gcc/ft" "-I../../../gcc/toku_include" "-I../../../gccdbg/." "-I../../../gccdbg/buildheader" "-I../../../gccdbg/ft" "-I../../../gccdbg/toku_include" "-I../../../gccopt/." "-I../../../gccopt/buildheader" "-I../../../gccopt/ft" "-I../../../gccopt/toku_include" "-I../../../gcccov/." "-I../../../gcccov/buildheader" "-I../../../gcccov/ft" "-I../../../gcccov/toku_include" "-I../../../clang/." "-I../../../clang/buildheader" "-I../../../clang/ft" "-I../../../clang/toku_include" "-I../../../clangdbg/." "-I../../../clangdbg/buildheader" "-I../../../clangdbg/ft" "-I../../../clangdbg/toku_include" "-I../../../clangopt/." "-I../../../clangopt/buildheader" "-I../../../clangopt/ft" "-I../../../clangopt/toku_include" "-I../../../clangcov/." "-I../../../clangcov/buildheader" "-I../../../clangcov/ft" "-I../../../clangcov/toku_include" "-I../../../asan/." "-I../../../asan/buildheader" "-I../../../asan/ft" "-I../../../asan/toku_include") (ac-clang-flags "-D_FILE_OFFSET_BITS=64" "-D_LARGEFILE64_SOURCE" "-D__STDC_FORMAT_MACROS" "-D__STDC_LIMIT_MACROS" "-D__LONG_LONG_SUPPORTED" "-D_SVID_SOURCE" "-D_XOPEN_SOURCE=600" "-std=c++11" "-I./" "-I./dbg" "-I./dbg/buildheader" "-I./dbg/toku_include" "-I./dbg/ft" "-I./opt" "-I./opt/buildheader" "-I./opt/toku_include" "-I./opt/ft" "-I./include" "-I./portability" "-I./portability/tests" "-I./toku_include" "-I./ft" "-I./ft/tests" "-I./src" "-I./src/lock_tree" "-I./src/lock_tree/tests" "-I./src/range_tree" "-I./src/range_tree/tests" "-I./src/tests" "-I../" "-I../dbg" "-I../dbg/buildheader" "-I../dbg/toku_include" "-I../dbg/ft" "-I../opt" "-I../opt/buildheader" "-I../opt/toku_include" "-I../opt/ft" "-I../include" "-I../portability" "-I../portability/tests" "-I../toku_include" "-I../ft" "-I../ft/tests" "-I../src" "-I../src/lock_tree" "-I../src/lock_tree/tests" "-I../src/range_tree" "-I../src/range_tree/tests" "-I../src/tests" "-I../../" "-I../../dbg" "-I../../dbg/buildheader" "-I../../dbg/toku_include" "-I../../dbg/ft" "-I../../opt" "-I../../opt/buildheader" "-I../../opt/toku_include" "-I../../opt/ft" "-I../../include" "-I../../portability" "-I../../portability/tests" "-I../../toku_include" "-I../../ft" "-I../../ft/tests" "-I../../src" "-I../../src/lock_tree" "-I../../src/lock_tree/tests" "-I../../src/range_tree" "-I../../src/range_tree/tests" "-I../../src/tests" "-I../../../" "-I../../../dbg" "-I../../../dbg/buildheader" "-I../../../dbg/toku_include" "-I../../../dbg/ft" "-I../../../opt" "-I../../../opt/buildheader" "-I../../../opt/toku_include" "-I../../../opt/ft" "-I../../../include" "-I../../../portability" "-I../../../portability/tests" "-I../../../toku_include" "-I../../../ft" "-I../../../ft/tests" "-I../../../src" "-I../../../src/lock_tree" "-I../../../src/lock_tree/tests" "-I../../../src/range_tree" "-I../../../src/range_tree/tests" "-I../../../src/tests") (ac-clang-flags "-D_FILE_OFFSET_BITS=64" "-D_LARGEFILE64_SOURCE" "-D__STDC_FORMAT_MACROS" "-D__STDC_LIMIT_MACROS" "-D__LONG_LONG_SUPPORTED" "-D_SVID_SOURCE" "-D_XOPEN_SOURCE=600" "-std=c++11" "-I./" "-I./dbg/buildheader" "-I./dbg/toku_include" "-I./dbg/ft" "-I./opt/buildheader" "-I./opt/toku_include" "-I./opt/ft" "-I./include" "-I./portability" "-I./portability/tests" "-I./toku_include" "-I./ft" "-I./ft/tests" "-I./src" "-I./src/lock_tree" "-I./src/lock_tree/tests" "-I./src/range_tree" "-I./src/range_tree/tests" "-I./src/tests" "-I../" "-I../dbg/buildheader" "-I../dbg/toku_include" "-I../dbg/ft" "-I../opt/buildheader" "-I../opt/toku_include" "-I../opt/ft" "-I../include" "-I../portability" "-I../portability/tests" "-I../toku_include" "-I../ft" "-I../ft/tests" "-I../src" "-I../src/lock_tree" "-I../src/lock_tree/tests" "-I../src/range_tree" "-I../src/range_tree/tests" "-I../src/tests" "-I../../" "-I../../dbg/buildheader" "-I../../dbg/toku_include" "-I../../dbg/ft" "-I../../opt/buildheader" "-I../../opt/toku_include" "-I../../opt/ft" "-I../../include" "-I../../portability" "-I../../portability/tests" "-I../../toku_include" "-I../../ft" "-I../../ft/tests" "-I../../src" "-I../../src/lock_tree" "-I../../src/lock_tree/tests" "-I../../src/range_tree" "-I../../src/range_tree/tests" "-I../../src/tests" "-I../../../" "-I../../../dbg/buildheader" "-I../../../dbg/toku_include" "-I../../../dbg/ft" "-I../../../opt/buildheader" "-I../../../opt/toku_include" "-I../../../opt/ft" "-I../../../include" "-I../../../portability" "-I../../../portability/tests" "-I../../../toku_include" "-I../../../ft" "-I../../../ft/tests" "-I../../../src" "-I../../../src/lock_tree" "-I../../../src/lock_tree/tests" "-I../../../src/range_tree" "-I../../../src/range_tree/tests" "-I../../../src/tests") (ac-clang-flags "-std=c++11" "-I./" "-I./dbg/buildheader" "-I./dbg/toku_include" "-I./dbg/ft" "-I./opt/buildheader" "-I./opt/toku_include" "-I./opt/ft" "-I./include" "-I./portability" "-I./portability/tests" "-I./toku_include" "-I./ft" "-I./ft/tests" "-I./src" "-I./src/lock_tree" "-I./src/lock_tree/tests" "-I./src/range_tree" "-I./src/range_tree/tests" "-I./src/tests" "-I../" "-I../dbg/buildheader" "-I../dbg/toku_include" "-I../dbg/ft" "-I../opt/buildheader" "-I../opt/toku_include" "-I../opt/ft" "-I../include" "-I../portability" "-I../portability/tests" "-I../toku_include" "-I../ft" "-I../ft/tests" "-I../src" "-I../src/lock_tree" "-I../src/lock_tree/tests" "-I../src/range_tree" "-I../src/range_tree/tests" "-I../src/tests" "-I../../" "-I../../dbg/buildheader" "-I../../dbg/toku_include" "-I../../dbg/ft" "-I../../opt/buildheader" "-I../../opt/toku_include" "-I../../opt/ft" "-I../../include" "-I../../portability" "-I../../portability/tests" "-I../../toku_include" "-I../../ft" "-I../../ft/tests" "-I../../src" "-I../../src/lock_tree" "-I../../src/lock_tree/tests" "-I../../src/range_tree" "-I../../src/range_tree/tests" "-I../../src/tests") (ac-clang-flags "-I./" "-I./dbg/buildheader" "-I./dbg/toku_include" "-I./dbg/ft" "-I./opt/buildheader" "-I./opt/toku_include" "-I./opt/ft" "-I./include" "-I./portability" "-I./portability/tests" "-I./toku_include" "-I./ft" "-I./ft/tests" "-I./src" "-I./src/lock_tree" "-I./src/lock_tree/tests" "-I./src/range_tree" "-I./src/range_tree/tests" "-I./src/tests" "-I../" "-I../dbg/buildheader" "-I../dbg/toku_include" "-I../dbg/ft" "-I../opt/buildheader" "-I../opt/toku_include" "-I../opt/ft" "-I../include" "-I../portability" "-I../portability/tests" "-I../toku_include" "-I../ft" "-I../ft/tests" "-I../src" "-I../src/lock_tree" "-I../src/lock_tree/tests" "-I../src/range_tree" "-I../src/range_tree/tests" "-I../src/tests" "-I../../" "-I../../dbg/buildheader" "-I../../dbg/toku_include" "-I../../dbg/ft" "-I../../opt/buildheader" "-I../../opt/toku_include" "-I../../opt/ft" "-I../../include" "-I../../portability" "-I../../portability/tests" "-I../../toku_include" "-I../../ft" "-I../../ft/tests" "-I../../src" "-I../../src/lock_tree" "-I../../src/lock_tree/tests" "-I../../src/range_tree" "-I../../src/range_tree/tests" "-I../../src/tests") (c-file-style . bsd) (eval progn (put (quote when-let) (quote lisp-indent-function) 1) (font-lock-add-keywords nil (quote (("(\\(when-let\\)\\>" 1 font-lock-keyword-face))))) (noweb-code-mode . c-mode) (js2-basic-offset . 4) (c-indentation-style . linux))))
  '(show-paren-mode t)
  '(show-trailing-whitespace t)
  '(slime-net-coding-system (quote utf-8-unix))
  '(user-full-name "Leif Walsh")
  '(user-mail-address "leif.walsh@gmail.com")
  '(vc-handled-backends (quote (RCS CVS SVN git SCCS Bzr Git Hg Arch)))
- '(whitespace-style (quote (face tabs trailing space-before-tab indentation empty space-after-tab tab-mark))))
+ '(whitespace-style (quote (face tabs trailing space-before-tab indentation empty space-after-tab tab-mark)))
+ '(xterm-mouse-mode t))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
