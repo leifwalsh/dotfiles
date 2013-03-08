@@ -31,12 +31,12 @@ fi
 if [[ -d /usr/lib/ccache/bin ]]; then
     PATH=/usr/lib/ccache/bin:$PATH
 fi
-if which distcc &>/dev/null; then
+if which distcc >/dev/null 2>/dev/null; then
     CCACHE_PREFIX="distcc"
 fi
 
 # add coreutils
-if which brew &>/dev/null && [ -d $(brew --prefix coreutils)/libexec/gnubin ]; then
+if which brew >/dev/null 2>/dev/null && [ -d $(brew --prefix coreutils)/libexec/gnubin ]; then
     PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
 fi
 
@@ -90,7 +90,7 @@ if [ -f $HOME/.shell_utils ]; then
     . $HOME/.shell_utils
 fi
 
-if which ssh-add &>/dev/null && [ ! -z "$SSH_AGENT_PID" ] && ps ax | grep "$SSH_AGENT_PID" | grep -q -v grep; then
+if which ssh-add >/dev/null 2>/dev/null && [ ! -z "$SSH_AGENT_PID" ] && ps ax | grep "$SSH_AGENT_PID" | grep -q -v grep; then
     if ! ssh-add -l | grep -q .ssh/id_rsa; then
         ssh-add
     fi
