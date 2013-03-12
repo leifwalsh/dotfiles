@@ -15,9 +15,6 @@
     whitespace = trailing-space,space-before-tab,cr-at-eol
     excludesfile = ~/.gitignore-default
     editor = emacsclient
-[github]
-    user = adlaiff6
-    token = c821dd114baed39aab1bb20161cd8c8d
 [push]
     default = matching
 [alias]
