@@ -319,6 +319,37 @@ header"
 
 ;;{{{ mongodb semantic stuff
 
+(defun leif/setup-semanticdb-mongo (mongodb-dir)
+  (when (and mongodb-dir
+             (file-directory-p mongodb-dir)
+             (file-exists-p (concat mongodb-dir "SConstruct")))
+    (add-to-list 'semanticdb-project-roots mongodb-dir)
+    (let* ((branch (file-name-nondirectory (directory-file-name mongodb-dir)))
+           (strname (format "Tokumon %s" branch))
+           (symbol (intern (format "tokumon-%s-project" branch))))
+      (set symbol
+           (ede-cpp-root-project strname
+                                 :name strname
+                                 :file (concat mongodb-dir "src/mongo/SConscript")
+                                 :include-path '("/"
+                                                 "/.."
+                                                 )
+                                 :system-include-path (append (when-let (cpath (getenv "CPATH"))
+                                                                (split-string cpath ":" t))
+                                                              '((concat mongodb-dir "src/third_party/pcre-8.30/")
+                                                                (concat mongodb-dir "src/third_party/boost/")
+                                                                (expand-file-name "~/local/tokudb")
+                                                                "/usr/local/include/"
+                                                                "/usr/include/"))
+                                 :spp-table '(("_SCONS"                        . "1")
+                                              ("MONGO_EXPOSE_MACROS"           . "1")
+                                              ("SUPPORT_UTF8"                  . "1")
+                                              ("_FILE_OFFSET_BITS"             . "64")
+                                              ("_DEBUG"                        . "1")
+                                              ("BOOST_ALL_NO_LIB"              . "1")
+                                              ("MONGO_HAVE_HEADER_UNISTD_H"    . "1")
+                                              ("MONGO_HAVE_EXECINFO_BACKTRACE" . "1")
+                                              ))))))
 (dolist (mongodb-svn-root '("~/svn/tokutek/mongodb.org/mongodb-2.2-tokutek/"
                             "/data/leif/tokutek/mongodb.org/mongodb-2.2-tokutek/"
                             "/ssd/leif/mongodb-2.2-tokutek/"))
@@ -328,37 +359,9 @@ header"
                                          (directory-files (concat mongodb-svn-root "branches/")))
                                        (when (file-directory-p (concat mongodb-svn-root "tags/"))
                                          (directory-files (concat mongodb-svn-root "tags/")))))
-      (let ((mongodb-dir (expand-file-name mongodb-dir-unexp)))
-        (when (and mongodb-dir
-                   (file-directory-p mongodb-dir)
-                   (file-exists-p (concat mongodb-dir "SConstruct")))
-          (add-to-list 'semanticdb-project-roots mongodb-dir)
-          (let* ((branch (file-name-nondirectory (directory-file-name mongodb-dir)))
-                 (strname (format "Tokumon %s" branch))
-                 (symbol (intern (format "tokumon-%s-project" branch))))
-            (set symbol
-                 (ede-cpp-root-project strname
-                                       :name strname
-                                       :file (concat mongodb-dir "src/mongo/SConscript")
-                                       :include-path '("/"
-                                                       "/.."
-                                                       )
-                                       :system-include-path (append (when-let (cpath (getenv "CPATH"))
-                                                                      (split-string cpath ":" t))
-                                                                    '((concat mongodb-dir "src/third_party/pcre-8.30/")
-                                                                      (concat mongodb-dir "src/third_party/boost/")
-                                                                      (expand-file-name "~/local/tokudb")
-                                                                      "/usr/local/include/"
-                                                                      "/usr/include/"))
-                                       :spp-table '(("_SCONS"                        . "1")
-                                                    ("MONGO_EXPOSE_MACROS"           . "1")
-                                                    ("SUPPORT_UTF8"                  . "1")
-                                                    ("_FILE_OFFSET_BITS"             . "64")
-                                                    ("_DEBUG"                        . "1")
-                                                    ("BOOST_ALL_NO_LIB"              . "1")
-                                                    ("MONGO_HAVE_HEADER_UNISTD_H"    . "1")
-                                                    ("MONGO_HAVE_EXECINFO_BACKTRACE" . "1")
-                                                    )))))))))
+      (leif/setup-semanticdb-mongo (expand-file-name mongodb-dir-unexp)))))
+(dolist (d '("~/git/mongo" "/ssd/leif/git/mongo"))
+  (leif/setup-semanticdb-mongo (expand-file-name d)))
 
 (when (not (package-installed-p 'inf-mongo))
   (package-install 'inf-mongo))
