@@ -360,6 +360,9 @@ header"
                                                     ("MONGO_HAVE_EXECINFO_BACKTRACE" . "1")
                                                     )))))))))
 
+(when (not (package-installed-p 'inf-mongo))
+  (package-install 'inf-mongo))
+
 ;;}}}
 
 ;;{{{ toku stuff
@@ -911,6 +914,14 @@ that can occur between two notifications.  The default is
 
 ;;{{{ paredit
 
+(defun c-like-keys (map)
+  (let ((old-meta-q (key-binding (kbd "M-q")))
+        (old-meta-x (key-binding (kbd "M-x"))))
+    (define-key map (kbd "C-c C-c") 'compile)
+    (if (not (eq old-meta-q 'execute-extended-command))
+        (progn
+          (define-key map (kbd "M-q") 'execute-extended-command)
+          (define-key map (kbd "M-x") old-meta-q)))))
 (when (not (package-installed-p 'paredit))
   (package-install 'paredit))
 (mapc (lambda (hook)
@@ -1121,14 +1132,6 @@ that can occur between two notifications.  The default is
      '(2 "_NET_WM_STATE_FULLSCREEN" 0))))
 (global-set-key [(meta return)] 'fullscreen)
 
-(defun c-like-keys (map)
-  (let ((old-meta-q (key-binding (kbd "M-q")))
-        (old-meta-x (key-binding (kbd "M-x"))))
-    (define-key map (kbd "C-c C-c") 'compile)
-    (if (not (eq old-meta-q 'execute-extended-command))
-        (progn
-          (define-key map (kbd "M-q") 'execute-extended-command)
-          (define-key map (kbd "M-x") old-meta-q)))))
 (defun my-c-mode-font-lock-if0 (limit)
   (save-restriction
     (widen)
