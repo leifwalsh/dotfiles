@@ -34,6 +34,9 @@ fi
 if [[ -d /usr/lib/ccache/bin ]]; then
     PATH=/usr/lib/ccache/bin:$PATH
 fi
+if [[ -d $HOME/.rvm/bin ]]; then
+    PATH=$HOME/.rvm/bin:$PATH
+fi
 if which distcc >/dev/null 2>/dev/null; then
     CCACHE_PREFIX="distcc"
 fi
