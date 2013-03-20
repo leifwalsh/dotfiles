@@ -1017,9 +1017,66 @@ that can occur between two notifications.  The default is
 
 (require 'eshell)
 (require 'em-smart)
-(setq eshell-where-to-jump 'begin)
-(setq eshell-review-quick-commands nil)
-(setq eshell-smart-space-goes-to-end t)
+(require 'em-hist)
+
+(defun leif/eshell/pwd-repl-home (pwd)
+  (interactive)
+  (let* ((home (expand-file-name (getenv "HOME")))
+         (home-len (length home)))
+    (if (and
+         (>= (length pwd) home-len)
+         (equal home (substring pwd 0 home-len)))
+        (concat "~" (substring pwd home-len))
+      pwd)))
+
+(defun leif/eshell/curr-dir-git-branch-string (pwd)
+  "Returns current git branch as a string, or the empty string if
+PWD is not in a git repo (or the git command is not found)."
+  (interactive)
+  (when (and (eshell-search-path "git")
+             (locate-dominating-file pwd ".git"))
+    (let ((git-output (shell-command-to-string (concat "cd " pwd " && git branch | grep '\\*' | sed -e 's/^\\* //'"))))
+      (propertize (concat " ["
+                          (if (> (length git-output) 0)
+                              (substring git-output 0 -1)
+                            "(no branch)")
+                          "]") 'face `(:foreground "green")))))
+
+(defun leif/eshell/prompt ()
+        (concat
+         (propertize ((lambda (p-lst)
+                        (if (> (length p-lst) 3)
+                            (concat
+                             (mapconcat (lambda (elm) (if (zerop (length elm)) ""
+                                                        (substring elm 0 1)))
+                                        (butlast p-lst 3)
+                                        "/")
+                             "/"
+                             (mapconcat (lambda (elm) elm)
+                                        (last p-lst 3)
+                                        "/"))
+                          (mapconcat (lambda (elm) elm)
+                                     p-lst
+                                     "/")))
+                      (split-string (leif/eshell/pwd-repl-home (eshell/pwd)) "/")) 'face `(:foreground "yellow"))
+         (or (leif/eshell/curr-dir-git-branch-string (eshell/pwd)))
+         (propertize " % " 'face 'default)))
+
+(add-hook 'eshell-mode-hook 'eshell-smart-initialize)
+
+(setq
+ eshell-save-history-on-exit t
+
+ ;; eshell-smart config
+ eshell-where-to-jump 'begin
+ eshell-review-quick-commands nil
+ eshell-smart-space-goes-to-end t
+
+ ;; prompt
+ eshell-prompt-function 'leif/eshell/prompt
+ eshell-prompt-regexp "^[^#%$]*[#%$] "
+ eshell-highlight-prompt nil
+ )
 
 ;;}}}
 
