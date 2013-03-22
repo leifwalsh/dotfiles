@@ -25,14 +25,19 @@ fi
 
 PATH=/usr/local/bin:/usr/local/sbin:$PATH
 
-if [[ -d /usr/lib64/distcc/bin ]]; then
+if [[ -d /usr/lib/distcc/bin ]]; then
+    PATH=/usr/lib/distcc/bin:$PATH
+elif [[ -d /usr/lib64/distcc/bin ]]; then
     PATH=/usr/lib64/distcc/bin:$PATH
-fi
-if [[ -d /usr/lib/ccache ]]; then
-    PATH=/usr/lib/ccache:$PATH
 fi
 if [[ -d /usr/lib/ccache/bin ]]; then
     PATH=/usr/lib/ccache/bin:$PATH
+elif [[ -d /usr/lib/ccache ]]; then
+    PATH=/usr/lib/ccache:$PATH
+elif [[ -d /usr/lib64/ccache/bin ]]; then
+    PATH=/usr/lib64/ccache/bin:$PATH
+elif [[ -d /usr/lib64/ccache ]]; then
+    PATH=/usr/lib64/ccache:$PATH
 fi
 if [[ -d $HOME/.rvm/bin ]]; then
     PATH=$HOME/.rvm/bin:$PATH
