@@ -576,6 +576,12 @@ header"
 
 ;;}}}
 
+;;{{{ rvm
+
+(when (not (package-installed-p 'rvm))
+  (package-install 'rvm))
+(rvm-use-default)
+
 ;;{{{ lua-mode
 
 (when (not (package-installed-p 'lua-mode))
