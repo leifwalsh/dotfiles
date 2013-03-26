@@ -25,20 +25,28 @@ fi
 
 PATH=/usr/local/bin:/usr/local/sbin:$PATH
 
-if [[ -d /usr/lib64/distcc/bin ]]; then
+if [[ -d /usr/lib/distcc/bin ]]; then
+    PATH=/usr/lib/distcc/bin:$PATH
+elif [[ -d /usr/lib64/distcc/bin ]]; then
     PATH=/usr/lib64/distcc/bin:$PATH
-fi
-if [[ -d /usr/lib/ccache ]]; then
-    PATH=/usr/lib/ccache:$PATH
 fi
 if [[ -d /usr/lib/ccache/bin ]]; then
     PATH=/usr/lib/ccache/bin:$PATH
+elif [[ -d /usr/lib/ccache ]]; then
+    PATH=/usr/lib/ccache:$PATH
+elif [[ -d /usr/lib64/ccache/bin ]]; then
+    PATH=/usr/lib64/ccache/bin:$PATH
+elif [[ -d /usr/lib64/ccache ]]; then
+    PATH=/usr/lib64/ccache:$PATH
+fi
+if which distcc >/dev/null 2>/dev/null; then
+    CCACHE_PREFIX="distcc"
 fi
 if [[ -d $HOME/.rvm/bin ]]; then
     PATH=$HOME/.rvm/bin:$PATH
 fi
-if which distcc >/dev/null 2>/dev/null; then
-    CCACHE_PREFIX="distcc"
+if [ -d /Library/Frameworks/Python.Framework/Versions/Current/bin ]; then
+    PATH=/Library/Frameworks/Python.Framework/Versions/Current/bin:$PATH
 fi
 
 # add coreutils
@@ -58,7 +66,13 @@ PATH=$HOME/local/bin:$HOME/local/sbin:$PATH
 PKG_CONFIG_PATH=$HOME/local/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 INFOPATH=$HOME/local/share/info:/usr/local/share/info:$INFOPATH
 MANPATH=$HOME/local/share/man:/usr/local/share/man:$MANPATH
-PYTHONPATH=$HOME/local/lib64/python:$HOME/local/lib/python2.7/site-packages:$PYTHONPATH
+
+if [ -d $HOME/local/lib64/python ]; then
+    PYTHONPATH=$HOME/local/lib64/python:$PYTHONPATH
+fi
+if [ -d $HOME/local/lib/python2.7/site-packages ]; then
+    PYTHONPATH=$HOME/local/lib/python2.7/site-packages:$PYTHONPATH
+fi
 
 if [ -f $HOME/local/.profile ]
 then
