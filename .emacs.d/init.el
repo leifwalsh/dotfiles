@@ -644,6 +644,17 @@ header"
 
 ;;}}}
 
+;;{{{ easypg
+
+(require 'epg-config)
+
+;; Use gnupg1 if it exists and we are on a text terminal
+(when (and (not (display-graphic-p))
+           (file-exists-p "/usr/bin/gpg1"))
+  (setq epg-gpg-program "/usr/bin/gpg1"))
+
+;;}}}
+
 ;;{{{ eldoc
 
 (autoload 'turn-on-eldoc-mode "eldoc" "Eldoc doc hints." t)
