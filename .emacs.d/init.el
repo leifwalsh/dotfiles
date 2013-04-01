@@ -875,7 +875,7 @@ that can occur between two notifications.  The default is
        (when (executable-find "bitlbee")
          (erc :server "localhost" :port 6667 :nick "leif"))
        (setq erc-autojoin-channels-alist
-             '(("freenode.net" "#clojure" "#emacs")
+             '(("freenode.net" "#clojure" "#emacs" "##c" "##c++" "##workingset")
                ("foonetic.net" "#xkcd")
                ("tokutek.irc.grove.io" "#tokutek"))))
      (defun stop-irc ()
@@ -1279,6 +1279,7 @@ PWD is not in a git repo (or the git command is not found)."
  '(column-number-mode t)
  '(compilation-scroll-output (quote first-error))
  '(compilation-window-height 12)
+ '(custom-safe-themes (quote ("fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" default)))
  '(display-time-mode t)
  '(ede-project-directories (quote ("/Users/leif/git/mongo/src/mongo" "/Users/leif/src/mongodb-src-r2.0.5")))
  '(fill-column 74)

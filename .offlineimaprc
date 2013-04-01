@@ -17,7 +17,7 @@ localfolders = ~/Maildir/Personal
 type = Gmail
 remoteuser = leif.walsh@gmail.com
 remotepasseval = get_authinfo_password("imap.gmail.com", "leif.walsh@gmail.com", 993)
-folderfilter = lambda foldername: foldername in ['INBOX']
+folderfilter = lambda foldername: foldername in ['INBOX'] or foldername[:9] == '[Mailbox]'
 sslcacertfile = /etc/ssl/certs/ca-certificates.crt
 
 [Account Work]
@@ -32,7 +32,7 @@ localfolders = ~/Maildir/Tokutek
 type = Gmail
 remoteuser = leif@tokutek.com
 remotepasseval = get_authinfo_password("imap.gmail.com", "leif@tokutek.com", 993)
-folderfilter = lambda foldername: foldername in ['INBOX']
+folderfilter = lambda foldername: foldername in ['INBOX'] or foldername[:9] == '[Mailbox]'
 sslcacertfile = /etc/ssl/certs/ca-certificates.crt
 
 # Local Variables:
