@@ -15,6 +15,7 @@
 .codereview_upload_cookies
 .compiz/
 .compiz-1/
+.config/abiword/
 .config/autostart/
 .config/banshee-1/
 .config/caffeine/
@@ -27,6 +28,7 @@
 .config/eog/
 .config/evolution/
 .config/gedit/
+.config/gmusicbrowser/
 .config/google-chrome/
 .config/gtk-2.0
 .config/gtk-2.0/
@@ -44,6 +46,7 @@
 .config/mupen64plus/
 .config/MusicBrainz/
 .config/nautilus/
+.config/nemo/
 .config/nottoomuch/
 .config/orage/
 .config/pavucontrol.ini
@@ -63,6 +66,7 @@
 .config/user-dirs.locale
 .config/vlc/
 .config/whatpulse/
+.config/xfburn/
 .config/xfce4/
 .cpan
 .cups/
@@ -70,6 +74,7 @@
 .debug/
 .dir_colors
 .dircolors
+.dbshell
 .dbus/
 .dmenu_cache
 .dmrc
@@ -106,6 +111,7 @@
 .history
 .*_history
 .htoprc
+.hugin
 .huludesktop
 .ICEauthority
 .icons/
@@ -142,11 +148,13 @@
 .pentadactyl/
 .pki/
 .processing/
+.ptbt1
 .pulse/
 .pulse-cookie
 .racket/
 .rhosts
 .rnd
+.rvm/
 .semanticdb
 .serverauth.*
 .shotwell/
@@ -163,6 +171,7 @@
 .tangerine
 .tangerine-log*
 .texmf-var/
+.themes/
 .thumbnails/
 .thunderbird/
 .Trash
@@ -170,6 +179,7 @@
 .vim/view/
 .w3m/
 .wine/
+.wine-browser/
 .Xauthority
 .Xclients
 .Xmodmap
