@@ -292,6 +292,7 @@ save the pointer marker if tag is found"
 (global-set-key [(control return)] 'auto-complete)
 (setq-default ac-sources '(ac-source-clang
                            ac-source-yasnippet))
+(setq ac-auto-start nil)
 
 ;;}}}
 
@@ -767,6 +768,7 @@ header"
                     netsplit ring services spelling track truncate match)
       erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
                                 "324" "329" "332" "333" "353" "477")
+      erc-hide-list '("JOIN" "PART" "QUIT")
       erc-prompt (lambda ()
                    (if (and (boundp 'erc-default-recipients) (erc-default-target))
                        (erc-propertize (concat (erc-default-target) ">")
