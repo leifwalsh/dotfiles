@@ -872,13 +872,14 @@ that can occur between two notifications.  The default is
      (defun start-irc ()
        "Connect to IRC."
        (interactive)
-       (erc :server "irc.freenode.net" :port 6667 :nick "leifw")
+       (erc-tls :server "irc.freenode.net" :port 6697 :nick "leifw")
        (erc :server "irc.foonetic.net" :port 6667 :nick "Adlai")
-       (erc-tls :server "tokutek.irc.grove.io" :port 6697 :nick "leif" :password leif/erc/tokutek/server-password)
+       (when nil  ;; don't need grove.io anymore
+         (erc-tls :server "tokutek.irc.grove.io" :port 6697 :nick "leif" :password leif/erc/tokutek/server-password))
        (when (executable-find "bitlbee")
          (erc :server "localhost" :port 6667 :nick "leif"))
        (setq erc-autojoin-channels-alist
-             '(("freenode.net" "#clojure" "#emacs" "##c" "##c++" "##workingset")
+             '(("freenode.net" "#clojure" "#emacs" "##c" "##c++" "##workingset" "#tokutek")
                ("foonetic.net" "#xkcd")
                ("tokutek.irc.grove.io" "#tokutek"))))
      (defun stop-irc ()
