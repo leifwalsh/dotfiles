@@ -84,12 +84,12 @@ xpdf*antialias:         yes
 xpdf*foreground:        black
 xpdf*background:        white
 
-Xft.dpi: 96
-Xft.antialias: 0
-Xft.hinting: 1
-Xft.hintstyle: hintslight
-Xft.lcdfilter: lcddefault
-Xft.rgba: rgb
+!Xft.dpi: 96
+!Xft.antialias: 0
+!Xft.hinting: 1
+!Xft.hintstyle: hintslight
+!Xft.lcdfilter: lcddefault
+!Xft.rgba: rgb
 
 URxvt.termName: rxvt-unicode-256color
 URxvt.font: xft:DejaVu Sans Mono-10
