@@ -1099,6 +1099,9 @@ PWD is not in a git repo (or the git command is not found)."
  eshell-highlight-prompt nil
  )
 
+;; emacs isn't a real terminal
+(setenv "GIT_PAGER" "")
+
 ;;}}}
 
 ;;{{{ trailing whitespace
