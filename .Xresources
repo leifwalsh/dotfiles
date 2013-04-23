@@ -92,10 +92,10 @@ Xft.lcdfilter: lcddefault
 Xft.rgba: rgb
 
 URxvt.termName: rxvt-unicode-256color
-!URxvt.font: xft:DejaVu Sans Mono-12
-!URxvt.boldFont: xft:DejaVu Sans Mono-12:bold
-!URxvt.italicFont: xft:DejaVu Sans Mono-12:italic
-!URxvt.boldItalicFont: xft:DejaVu Sans Mono-12:bold:italic
+URxvt.font: xft:DejaVu Sans Mono-10
+URxvt.boldFont: xft:DejaVu Sans Mono-10:bold
+URxvt.italicFont: xft:DejaVu Sans Mono-10:italic
+URxvt.boldItalicFont: xft:DejaVu Sans Mono-10:bold:italic
 
 URxvt.scrollBar: false
 URxvt.saveLines: 8192
@@ -104,6 +104,8 @@ URxvt.secondaryScroll: true
 URxvt*scrollTtyOutput: false
 URxvt*scrollWithBuffer: true
 URxvt*scrollTtyKeypress: true
+
+emacs.font: DejaVu Sans Mono-10
 
 Fig.latexfonts: true
 Fig.specialtext: true
