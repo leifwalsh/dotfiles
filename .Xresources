@@ -84,18 +84,18 @@ xpdf*antialias:         yes
 xpdf*foreground:        black
 xpdf*background:        white
 
-!Xft.dpi: 96
-!Xft.antialias: 1
-!Xft.hinting: 1
-!Xft.hintstyle: hintslight
-!Xft.lcdfilter: lcddefault
-!Xft.rgba: rgb
+Xft.dpi: 96
+Xft.antialias: 0
+Xft.hinting: 1
+Xft.hintstyle: hintslight
+Xft.lcdfilter: lcddefault
+Xft.rgba: rgb
 
 URxvt.termName: rxvt-unicode-256color
-URxvt.font: xft:Terminus-12
-URxvt.boldFont: xft:Terminus-12:bold
-URxvt.italicFont: xft:Terminus-12:italic
-URxvt.boldItalicFont: xft:Terminus-12:bold:italic
+!URxvt.font: xft:DejaVu Sans Mono-12
+!URxvt.boldFont: xft:DejaVu Sans Mono-12:bold
+!URxvt.italicFont: xft:DejaVu Sans Mono-12:italic
+!URxvt.boldItalicFont: xft:DejaVu Sans Mono-12:bold:italic
 
 URxvt.scrollBar: false
 URxvt.saveLines: 8192
@@ -104,8 +104,6 @@ URxvt.secondaryScroll: true
 URxvt*scrollTtyOutput: false
 URxvt*scrollWithBuffer: true
 URxvt*scrollTtyKeypress: true
-
-emacs.font: Terminus-10
 
 Fig.latexfonts: true
 Fig.specialtext: true
