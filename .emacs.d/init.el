@@ -1144,6 +1144,23 @@ PWD is not in a git repo (or the git command is not found)."
            '(mu4e-compose-mode-hook
              mu4e-headers-mode-hook
              mu4e-view-mode-hook))
+
+     (defun leif/mu4e/set-from-address ()
+       "Set the From address based on the To address of the original."
+       (when-let (msg mu4e-compose-parent-message)
+         (setq user-mail-address
+               (cond
+                ((or (mu4e-message-contact-field-matches msg :to "leif\\.walsh@gmail\\.com")
+                     (mu4e-message-contact-field-matches msg :cc "leif\\.walsh@gmail\\.com")
+                     (mu4e-message-contact-field-matches msg :bcc "leif\\.walsh@gmail\\.com"))
+                 "leif.walsh@gmail.com")
+                ((or (mu4e-message-contact-field-matches msg :to "@tokutek\\.com")
+                     (mu4e-message-contact-field-matches msg :cc "@tokutek\\.com")
+                     (mu4e-message-contact-field-matches msg :bcc "@tokutek\\.com"))
+                 "leif@tokutek.com")
+                (t "leif.walsh@gmail.com")))))
+     (add-hook 'mu4e-compose-pre-hook 'leif/mu4e/set-from-address)
+
      (setq
       ;; make mu4e the default user agent
       mail-user-agent 'mu4e-user-agent
@@ -1165,9 +1182,11 @@ PWD is not in a git repo (or the git command is not found)."
       mu4e-sent-messages-behavior 'trash
       ;; match myself
       mu4e-user-mail-address-list '("leif.walsh@gmail.com"
+                                    "adlaiff6@gmail.com"
+                                    "adlaiff6@fastmail.fm"
+                                    "leif@imap.cc"
                                     "leif@tokutek.com"
                                     "rlwalsh@ic.sunysb.edu")
-      mu4e-user-mail-address-regexp "^\\(leif.walsh@gmail.com\\|leif@tokutek.com\\|rlwalsh@ic.sunysb.edu\\)$"
       ;; update every 10 minutes
       mu4e-update-interval 600
       ;; use fancy chars
@@ -1181,7 +1200,7 @@ PWD is not in a git repo (or the git command is not found)."
       ;; show images in message
       mu4e-show-images t
       ;; convert html
-      mu4e-html2text-command "html2text -utf8 -width 72"
+      mu4e-html2text-command "html2text -utf8 -width 72 -nobs"
       ;; use sendmail (msmtp)
       message-send-mail-function 'message-send-mail-with-sendmail
       ;; get envelope from out of header
