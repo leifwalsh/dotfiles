@@ -759,19 +759,18 @@ header"
 
 (autoload 'start-irc "erc" "Configure and start IRC." t)
 
+(unless (package-installed-p 'erc-hl-nicks)
+  (package-install 'erc-hl-nicks))
+
 (eval-after-load "erc"
   '(progn
 
      (load "~/.emacs.d/secrets.el.gpg")
 
-     (unless (package-installed-p 'erc-hl-nicks)
-       (package-install 'erc-hl-nicks))
-
+     (dolist (module '(autoaway autojoin button completion fill log
+                       netsplit ring services stamp truncate hl-nicks))
+       (add-to-list 'erc-modules module t))
      (setq
-      erc-modules '(autoaway autojoin button completion fill hl-nicks log
-                    netsplit ring services spelling track truncate match)
-      erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
-                                "324" "329" "332" "333" "353" "477")
       erc-hide-list '("JOIN" "PART" "QUIT")
       erc-prompt (lambda ()
                    (if (and (boundp 'erc-default-recipients) (erc-default-target))
@@ -877,12 +876,11 @@ that can occur between two notifications.  The default is
        (interactive)
        (erc-tls :server "irc.freenode.net" :port 6697 :nick "leifw")
        (erc :server "irc.foonetic.net" :port 6667 :nick "Adlai")
-       (when nil  ;; don't need grove.io anymore
-         (erc-tls :server "tokutek.irc.grove.io" :port 6697 :nick "leif" :password leif/erc/tokutek/server-password))
+       (erc-tls :server "tokutek.irc.grove.io" :port 6697 :nick "leif" :password leif/erc/tokutek/server-password)
        (when (executable-find "bitlbee")
          (erc :server "localhost" :port 6667 :nick "leif"))
        (setq erc-autojoin-channels-alist
-             '(("freenode.net" "#clojure" "#emacs" "##c" "##c++" "##workingset" "#tokutek")
+             '(("freenode.net" "#clojure" "#emacs" "##workingset" "#haskell" "#tokutek" "#maria" "#mongodb")
                ("foonetic.net" "#xkcd")
                ("tokutek.irc.grove.io" "#tokutek"))))
      (defun stop-irc ()
