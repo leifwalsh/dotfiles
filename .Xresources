@@ -92,10 +92,10 @@ xpdf*background:        white
 !Xft.rgba: rgb
 
 URxvt.termName: rxvt-unicode-256color
-URxvt.font: xft:DejaVu Sans Mono-10
-URxvt.boldFont: xft:DejaVu Sans Mono-10:bold
-URxvt.italicFont: xft:DejaVu Sans Mono-10:italic
-URxvt.boldItalicFont: xft:DejaVu Sans Mono-10:bold:italic
+URxvt.font: xft:terminus-8
+URxvt.boldFont: xft:terminus-8:bold
+URxvt.italicFont: xft:terminus-8:italic
+URxvt.boldItalicFont: xft:terminus-8:bold:italic
 
 URxvt.scrollBar: false
 URxvt.saveLines: 8192
@@ -105,7 +105,7 @@ URxvt*scrollTtyOutput: false
 URxvt*scrollWithBuffer: true
 URxvt*scrollTtyKeypress: true
 
-emacs.font: DejaVu Sans Mono-10
+emacs.font: terminus-8
 
 Fig.latexfonts: true
 Fig.specialtext: true
