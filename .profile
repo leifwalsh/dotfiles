@@ -110,12 +110,14 @@ if [ -f $HOME/.shell_utils ]; then
     . $HOME/.shell_utils
 fi
 
-gnupginf="${HOME}/.gpg-agent-info"
-if pgrep -u "${USER}" gpg-agent >/dev/null 2>&1; then
-    eval `cat ${gnupginf}`
-    eval `cut -d= -f1 ${gnupginf} | xargs echo export`
-else
-    eval `gpg-agent -s --enable-ssh-support --daemon`
+if which gpg-agent &>/dev/null; then
+    gnupginf="${HOME}/.gpg-agent-info"
+    if pgrep -u "${USER}" gpg-agent >/dev/null 2>&1; then
+        eval `cat ${gnupginf}`
+        eval `cut -d= -f1 ${gnupginf} | xargs echo export`
+    else
+        eval `gpg-agent -s --enable-ssh-support --daemon`
+    fi
 fi
 
 if which ssh-add >/dev/null 2>/dev/null && [ ! -z "$SSH_AGENT_PID" ] && ps ax | grep "$SSH_AGENT_PID" | grep -q -v grep; then
