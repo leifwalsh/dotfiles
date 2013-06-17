@@ -518,6 +518,8 @@ header"
 
 ;;{{{ asciidoc
 
+(when (not (package-installed-p 'asciidoc))
+  (package-install 'asciidoc))
 (autoload 'doc-mode "doc-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.adoc$" . doc-mode))
 (add-hook 'doc-mode-hook
@@ -530,8 +532,12 @@ header"
 ;;{{{ workgroups
 
 (require 'workgroups)
-(setq wg-prefix-key (kbd "C-c w"))
+(setq wg-prefix-key (kbd "C-c w")
+      wg-morph-on nil
+      leif/workgroups/save-file (expand-file-name "~/.emacs.d/saved-workgroups"))
 (workgroups-mode 1)
+(when (file-exists-p leif/workgroups/save-file)
+  (wg-load leif/workgroups/save-file))
 
 ;;}}}
 
@@ -751,6 +757,7 @@ header"
 (ido-everywhere)
 (setq ido-enable-flex-matching t
       ido-rotate-file-list-default t
+      ido-default-buffer-method 'selected-window
       ido-use-filename-at-point 'guess)
 
 ;;}}}
@@ -942,7 +949,7 @@ that can occur between two notifications.  The default is
 (defun c-like-keys (map)
   (let ((old-meta-q (key-binding (kbd "M-q")))
         (old-meta-x (key-binding (kbd "M-x"))))
-    (define-key map (kbd "C-c C-c") 'compile)
+    (define-key map (kbd "C-c C-c") 'recompile)
     (if (not (eq old-meta-q 'execute-extended-command))
         (progn
           (define-key map (kbd "M-q") 'execute-extended-command)
