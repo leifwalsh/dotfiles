@@ -134,7 +134,7 @@
       (append semantic-default-submodes
               '(global-semanticdb-minor-mode
                 global-semantic-decoration-mode
-                global-semantic-highlight-func-mode
+                ;; global-semantic-highlight-func-mode
                 global-semantic-idle-breadcrumbs-mode
                 ;; global-semantic-idle-completions-mode
                 global-semantic-idle-local-symbol-highlight-mode
@@ -311,8 +311,8 @@ header"
              (file-exists-p (concat mongodb-dir "SConstruct")))
     (add-to-list 'semanticdb-project-roots mongodb-dir)
     (let* ((branch (file-name-nondirectory (directory-file-name mongodb-dir)))
-           (strname (format "Tokumon %s" branch))
-           (symbol (intern (format "tokumon-%s-project" branch))))
+           (strname (format "TokuMX %s" branch))
+           (symbol (intern (format "tokumx-%s-project" branch))))
       (set symbol
            (ede-cpp-root-project strname
                                  :name strname
@@ -324,7 +324,7 @@ header"
                                                                 (split-string cpath ":" t))
                                                               '((concat mongodb-dir "src/third_party/pcre-8.30/")
                                                                 (concat mongodb-dir "src/third_party/boost/")
-                                                                (expand-file-name "~/local/tokudb")
+                                                                (concat mongodb-dir "src/third_party/tokukv/")
                                                                 "/usr/local/include/"
                                                                 "/usr/include/"))
                                  :spp-table '(("_SCONS"                        . "1")
@@ -337,7 +337,7 @@ header"
                                               ("MONGO_HAVE_EXECINFO_BACKTRACE" . "1")
                                               ))))))
 
-(dolist (d '("~/git/mongo" "/ssd/leif/git/mongo"))
+(dolist (d '("~/git/mongo/" "/ssd/leif/git/mongo/"))
   (leif/setup-semanticdb-mongo (expand-file-name d)))
 
 (when (not (package-installed-p 'inf-mongo))
