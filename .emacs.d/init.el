@@ -925,12 +925,13 @@ that can occur between two notifications.  The default is
 ;;{{{ tramp
 
 (require 'tramp)
-(setq tramp-default-method "rsyncc"
+(setq tramp-default-method "rsync"
       tramp-remote-path '(tramp-own-remote-path
                           tramp-default-remote-path
                           "/usr/local/bin" "/usr/local/sbin"
                           "/usr/bin" "/usr/sbin"
                           "/bin"))
+(set-default 'tramp-default-proxies-alist (quote ((".*" "\\`root\\'" "/ssh:%h:"))))
 
 ;;}}}
 
