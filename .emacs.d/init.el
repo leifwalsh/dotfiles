@@ -310,32 +310,41 @@ header"
              (file-directory-p mongodb-dir)
              (file-exists-p (concat mongodb-dir "SConstruct")))
     (add-to-list 'semanticdb-project-roots mongodb-dir)
-    (let* ((branch (file-name-nondirectory (directory-file-name mongodb-dir)))
-           (strname (format "TokuMX %s" branch))
-           (symbol (intern (format "tokumx-%s-project" branch))))
-      (set symbol
-           (ede-cpp-root-project strname
-                                 :name strname
-                                 :file (concat mongodb-dir "src/mongo/SConscript")
-                                 :include-path '("/"
-                                                 "/.."
-                                                 )
-                                 :system-include-path (append (when-let (cpath (getenv "CPATH"))
-                                                                (split-string cpath ":" t))
-                                                              '((concat mongodb-dir "src/third_party/pcre-8.30/")
-                                                                (concat mongodb-dir "src/third_party/boost/")
-                                                                (concat mongodb-dir "src/third_party/tokukv/")
-                                                                "/usr/local/include/"
-                                                                "/usr/include/"))
-                                 :spp-table '(("_SCONS"                        . "1")
-                                              ("MONGO_EXPOSE_MACROS"           . "1")
-                                              ("SUPPORT_UTF8"                  . "1")
-                                              ("_FILE_OFFSET_BITS"             . "64")
-                                              ("_DEBUG"                        . "1")
-                                              ("BOOST_ALL_NO_LIB"              . "1")
-                                              ("MONGO_HAVE_HEADER_UNISTD_H"    . "1")
-                                              ("MONGO_HAVE_EXECINFO_BACKTRACE" . "1")
-                                              ))))))
+    (set 'tokumx-project
+         (ede-cpp-root-project "TokuMX"
+                               :name "TokuMX"
+                               :file (concat mongodb-dir "src/mongo/SConscript")
+                               :include-path '("."
+                                               "/"
+                                               "/.."
+                                               "/../third_party/pcre-8.30"
+                                               "/../third_party/boost"
+                                               "/../third_party/tokukv"
+                                               "/../third_party/tokubackup"
+                                               )
+                               :system-include-path (append (when-let (cpath (getenv "CPATH"))
+                                                              (split-string cpath ":" t))
+                                                            (mapcar (apply-partially #'concat mongodb-dir)
+                                                                    '("/src/"
+                                                                      "/src/third_party/pcre-8.30"
+                                                                      "/src/third_party/boost"
+                                                                      "/src/third_party/tokukv"
+                                                                      "/src/third_party/tokubackup"
+                                                                      "/src/mongo"
+                                                                      "/src/mongo/client"
+                                                                      "/src/mongo/db"
+                                                                      "/src/mongo/s"))
+                                                            '("/usr/local/include/"
+                                                              "/usr/include/"))
+                               :spp-table '(("_SCONS"                        . "1")
+                                            ("MONGO_EXPOSE_MACROS"           . "1")
+                                            ("SUPPORT_UTF8"                  . "1")
+                                            ("_FILE_OFFSET_BITS"             . "64")
+                                            ("_DEBUG"                        . "1")
+                                            ("BOOST_ALL_NO_LIB"              . "1")
+                                            ("MONGO_HAVE_HEADER_UNISTD_H"    . "1")
+                                            ("MONGO_HAVE_EXECINFO_BACKTRACE" . "1")
+                                            )))))
 
 (dolist (d '("~/git/mongo/" "/ssd/leif/git/mongo/"))
   (leif/setup-semanticdb-mongo (expand-file-name d)))
