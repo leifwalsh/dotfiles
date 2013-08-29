@@ -127,3 +127,7 @@ if which ssh-add >/dev/null 2>/dev/null && [ ! -z "$SSH_AGENT_PID" ] && ps ax | 
         ssh-add
     fi
 fi
+
+if [[ -f "$HOME/perl5/perlbrew/etc/bashrc" ]]; then
+    . "$HOME/perl5/perlbrew/etc/bashrc"
+fi
