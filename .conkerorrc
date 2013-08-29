@@ -188,5 +188,3 @@ if (false) {  // don't know how to securely express password yet
     define_key(default_global_keymap, "C-x i", "instapaper");
     define_key(default_global_keymap, "C-x I", "instapaper-link");
 }
-
-hint_digits = "euthoanspgyfid";
