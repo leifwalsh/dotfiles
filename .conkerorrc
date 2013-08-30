@@ -7,6 +7,10 @@ session_auto_save_auto_load = true;
 // use history for completions
 url_completion_use_history = true;
 
+// tabs
+require('new-tabs.js');
+tab_bar_button_close = 1;
+
 // Swap M-x and M-q
 define_key(default_global_keymap, "M-q", "execute-extended-command");
 
