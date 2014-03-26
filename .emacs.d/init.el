@@ -2,14 +2,6 @@
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/git-emacs"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/workgroups"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/auto-complete-1.3.1"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/auto-complete-clang"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/emacs-color-theme-solarized"))
-(if (< emacs-major-version 24)
-    (add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/color-theme-6.6.0"))
-  (add-to-list 'custom-theme-load-path (expand-file-name "~/.emacs.d/vendor/emacs-color-theme-solarized/")))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/vendor/tuareg"))
 
 ;;}}}
 
@@ -53,18 +45,10 @@
 
 ;;{{{ color theme
 
-(if (< emacs-major-version 24)
-    (progn
-      (require 'color-theme)
-      (eval-after-load "color-theme"
-        '(progn
-           (color-theme-initialize)
-           (setq color-theme-is-global t)
-           (require 'color-theme-solarized)
-           (color-theme-solarized-dark))))
-  (progn
-    (load-theme 'solarized-light t t)
-    (load-theme 'solarized-dark t nil)))
+(when (not (package-installed-p 'solarized-theme))
+  (package-install 'solarized-theme))
+
+(load-theme 'solarized-dark t nil)
 
 ;;}}}
 
@@ -239,20 +223,37 @@ save the pointer marker if tag is found"
 
 ;;}}}
 
-;;{{{ nyan-mode
-
-(when (not (package-installed-p 'nyan-mode))
-  (package-install 'nyan-mode))
-(when (ignore-errors (nyan-mode 1))
-  (nyan-start-animation)
-  (setq nyan-wavy-trail t))
-
-;;}}}
-
 ;;{{{ pkgbuild
 
 (autoload 'pkgbuild-mode "pkgbuild-mode.el" "PKGBUILD mode." t)
 (setq auto-mode-alist (append '(("/PKGBUILD$" . pkgbuild-mode)) auto-mode-alist))
+
+;;}}}
+
+;;{{{ new packages
+
+(mapc (lambda (pkg)
+        (when (not (package-installed-p pkg))
+          (package-install pkg)))
+      '(cmake-mode
+        dockerfile-mode
+        git-commit-mode
+        git-rebase-mode
+        markdown-mode
+        parenface
+        pkgbuild-mode))
+
+(mapc (lambda (pkg)
+        (when (not (package-installed-p pkg))
+          (package-install pkg)))
+      '(c-eldoc
+        erlang
+        magit
+        magit-filenotify
+        magit-tramp
+        tuareg
+        xcscope
+        xterm-color))
 
 ;;}}}
 
@@ -265,7 +266,28 @@ save the pointer marker if tag is found"
 
 ;;}}}
 
+;;{{{ ggtags
+
+(when (not (package-installed-p 'ggtags))
+  (package-install 'ggtags))
+
+(autoload 'ggtags-mode "ggtags.el" "ggtags mode" t nil)
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
+              (ggtags-mode 1))))
+
+;;}}}
+
 ;;{{{ auto-complete
+
+(mapc (lambda (pkg)
+        (when (not (package-installed-p pkg))
+          (package-install pkg)))
+      '(auto-complete
+        auto-complete-c-headers
+        auto-complete-clang
+        auto-complete-clang-async))
 
 (require 'auto-complete-config)
 (require 'auto-complete-clang)
@@ -275,8 +297,7 @@ save the pointer marker if tag is found"
 (add-hook 'emacs-lisp-mode-hook 'ac-emacs-lisp-mode-setup)
 (add-hook 'auto-complete-mode-hook 'ac-common-setup)
 (global-set-key [(control return)] 'auto-complete)
-(setq-default ac-sources '(ac-source-clang
-                           ac-source-yasnippet))
+(setq-default ac-sources '(ac-source-clang))
 (setq ac-auto-start nil)
 
 ;;}}}
@@ -511,20 +532,6 @@ header"
 
 ;;}}}
 
-;;{{{ flyspell-mode
-
-(autoload 'flyspell-mode "flyspell" "Flyspell mode." t)
-(add-hook 'LaTeX-mode-hook 'flyspell-mode)
-(add-hook 'TeX-mode-hook 'flyspell-mode)
-(eval-after-load 'noweb-mode
-  '(add-hook 'noweb-mode-hook 'flyspell-mode))
-(add-hook 'message-mode-hook 'flyspell-mode)
-(add-hook 'text-mode-hook 'flyspell-mode)
-(add-hook 'outline-mode-hook 'flyspell-mode)
-(add-hook 'org-mode-hook 'flyspell-mode)
-
-;;}}}
-
 ;;{{{ asciidoc
 
 (when (not (package-installed-p 'asciidoc))
@@ -535,34 +542,6 @@ header"
           '(lambda ()
              (turn-on-auto-fill)
              (require 'asciidoc)))
-
-;;}}}
-
-;;{{{ workgroups
-
-(require 'workgroups)
-(setq wg-prefix-key (kbd "C-c w")
-      wg-morph-on nil
-      leif/workgroups/save-file (expand-file-name "~/.emacs.d/saved-workgroups"))
-(workgroups-mode 1)
-(when (file-exists-p leif/workgroups/save-file)
-  (wg-load leif/workgroups/save-file))
-
-;;}}}
-
-;;{{{ flymake-mode
-
-;(require 'flymake)
-;; (eval-after-load "flymake"
-;;   '(progn
-;;      (add-hook 'find-file-hook 'flymake-find-file-hook)
-;;      (defun my-flymake-show-help ()
-;;        (when (get-char-property (point)
-;;                                 'flymake-overlay)
-;;          (let ((help (get-char-property (point)
-;;                                         'help-echo)))
-;;            (if help
-;;                (message "%s" help)))))))
 
 ;;}}}
 
@@ -606,20 +585,20 @@ header"
                  (set (make-local-variable 'beginning-of-defun-function)
                       'py-beginning-of-def-or-class)
                  (setq outline-regexp "def\\|class ")
-                 (flymake-mode 1)))
+                 (when nil (flymake-mode 1))))
 
-     (eval-after-load "flymake"
-       '(progn
-          (defun flymake-pylint-init ()
-            (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                               'flymake-create-temp-inplace))
-                   (local-file (file-relative-name
-                                temp-file
-                                (file-name-directory buffer-file-name))))
-              (list "epylint" (list local-file))))
+     (when nil (eval-after-load "flymake"
+                 '(progn
+                    (defun flymake-pylint-init ()
+                      (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                                         'flymake-create-temp-inplace))
+                             (local-file (file-relative-name
+                                          temp-file
+                                          (file-name-directory buffer-file-name))))
+                        (list "epylint" (list local-file))))
 
-          (add-to-list 'flymake-allowed-file-name-masks
-                       '("\\.py\\'" flymake-pylint-init))))))
+                    (add-to-list 'flymake-allowed-file-name-masks
+                                 '("\\.py\\'" flymake-pylint-init)))))))
 
 ;;}}}
 
@@ -1323,7 +1302,7 @@ PWD is not in a git repo (or the git command is not found)."
  '(column-number-mode t)
  '(compilation-scroll-output (quote first-error))
  '(compilation-window-height 12)
- '(custom-safe-themes (quote ("fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" default)))
+ '(custom-safe-themes (quote ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" default)))
  '(display-time-mode t)
  '(ede-project-directories (quote ("/Users/leif/git/mongo/src/mongo" "/Users/leif/src/mongodb-src-r2.0.5")))
  '(fill-column 74)
