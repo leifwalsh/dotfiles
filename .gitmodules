@@ -16,12 +16,3 @@
 [submodule ".emacs.d/vendor/tuareg"]
 	path = .emacs.d/vendor/tuareg
 	url = git://github.com/emacsmirror/tuareg.git
-[submodule ".emacs.d/vendor/emacs-color-theme-solarized"]
-	path = .emacs.d/vendor/emacs-color-theme-solarized
-	url = git@github.com:leifwalsh/emacs-color-theme-solarized.git
-[submodule ".emacs.d/vendor/workgroups"]
-	path = .emacs.d/vendor/workgroups
-	url = git://github.com/tlh/workgroups.el
-[submodule ".emacs.d/vendor/auto-complete-clang"]
-	path = .emacs.d/vendor/auto-complete-clang
-	url = git://github.com/YorkZ/auto-complete-clang.git
