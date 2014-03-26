@@ -882,7 +882,7 @@ that can occur between two notifications.  The default is
        (when (executable-find "bitlbee")
          (erc :server "localhost" :port 6667 :nick "leif"))
        (setq erc-autojoin-channels-alist
-             '(("freenode.net" "#clojure" "#emacs" "##workingset" "#haskell" "#tokutek" "#maria" "#mongodb")
+             '(("freenode.net" "#clojure" "#erlang" "#emacs" "##workingset" "#haskell" "#tokutek" "#maria" "#mongodb")
                ("foonetic.net" "#xkcd")
                ("tokutek.irc.grove.io" "#tokutek"))))
      (defun stop-irc ()
