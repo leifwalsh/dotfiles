@@ -104,6 +104,7 @@ URxvt.secondaryScroll: true
 URxvt*scrollTtyOutput: false
 URxvt*scrollWithBuffer: true
 URxvt*scrollTtyKeypress: true
+URxvt*intensityStyles: false
 
 emacs.font: terminus-8
 
