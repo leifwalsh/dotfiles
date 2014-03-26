@@ -100,43 +100,43 @@
 
 ;;{{{ plugins
 
-;;{{{ cedet
+;; ;;{{{ cedet
 
 (require 'semantic)
 (semantic-default-c-setup)
-(semantic-gcc-setup)
-(require 'semantic/tag)
-(require 'semantic/analyze/complete)
-(require 'semantic/analyze/fcn)
-(require 'semantic/analyze/refs)
-(require 'semantic/complete)
-(require 'semantic/symref/global)
+;; (semantic-gcc-setup)
+;; (require 'semantic/tag)
+;; (require 'semantic/analyze/complete)
+;; (require 'semantic/analyze/fcn)
+;; (require 'semantic/analyze/refs)
+;; (require 'semantic/complete)
+;; (require 'semantic/symref/global)
 (semanticdb-enable-gnu-global-databases 'c-mode)
 (semanticdb-enable-gnu-global-databases 'c++-mode)
 
-(setq semantic-default-submodes
-      (append semantic-default-submodes
-              '(global-semanticdb-minor-mode
-                global-semantic-decoration-mode
-                ;; global-semantic-highlight-func-mode
-                global-semantic-idle-breadcrumbs-mode
-                ;; global-semantic-idle-completions-mode
-                global-semantic-idle-local-symbol-highlight-mode
-                global-semantic-idle-scheduler-mode
-                global-semantic-idle-summary-mode
-                global-semantic-mru-bookmark-mode
-                global-semantic-stickyfunc-mode
-                global-senator-minor-mode)))
+;; (setq semantic-default-submodes
+;;       (append semantic-default-submodes
+;;               '(global-semanticdb-minor-mode
+;;                 global-semantic-decoration-mode
+;;                 ;; global-semantic-highlight-func-mode
+;;                 global-semantic-idle-breadcrumbs-mode
+;;                 ;; global-semantic-idle-completions-mode
+;;                 global-semantic-idle-local-symbol-highlight-mode
+;;                 global-semantic-idle-scheduler-mode
+;;                 global-semantic-idle-summary-mode
+;;                 global-semantic-mru-bookmark-mode
+;;                 global-semantic-stickyfunc-mode
+;;                 global-senator-minor-mode)))
 (semantic-mode 1)
 
-(setq ;; semantic-complete-inline-analyzer-displayor-class 'semantic-displayor-traditional-with-focus-highlight
-      semantic-decoration-styles '(("semantic-decoration-on-includes" . t)
-                                   ("semantic-decoration-on-protected-members" . t)
-                                   ("semantic-decoration-on-private-members" . t))
-      semantic-idle-breadcrumbs-format-tag-function 'semantic-format-tag-uml-prototype
-      semantic-idle-work-parse-neighboring-files-flag t
-      semantic-idle-work-update-headers-flag t
-      semanticdb-find-default-throttle '(local project unloaded system recursive omniscient))
+;; (setq ;; semantic-complete-inline-analyzer-displayor-class 'semantic-displayor-traditional-with-focus-highlight
+;;       semantic-decoration-styles '(("semantic-decoration-on-includes" . t)
+;;                                    ("semantic-decoration-on-protected-members" . t)
+;;                                    ("semantic-decoration-on-private-members" . t))
+;;       semantic-idle-breadcrumbs-format-tag-function 'semantic-format-tag-uml-prototype
+;;       semantic-idle-work-parse-neighboring-files-flag t
+;;       semantic-idle-work-update-headers-flag t
+;;       semanticdb-find-default-throttle '(local project unloaded system recursive omniscient))
 
 (defvar semantic-tags-location-ring (make-ring 20))
 
@@ -152,18 +152,18 @@ save the pointer marker if tag is found"
      (set-marker (ring-remove semantic-tags-location-ring 0) nil nil)
      (signal (car err) (cdr err)))))
 
-(defun semantic-goto-definition (point)
-  "Goto definition using semantic-complete-jump
-save the pointer marker if tag is found"
-  (interactive "def")
-  (condition-case err
-      (progn
-        (ring-insert semantic-tags-location-ring (point-marker))
-        (call-interactively 'semantic-complete-jump))
-    (error
-     ;;if not found remove the tag saved in the ring
-     (set-marker (ring-remove semantic-tags-location-ring 0) nil nil)
-     (signal (car err) (cdr err)))))
+;; (defun semantic-goto-definition (point)
+;;   "Goto definition using semantic-complete-jump
+;; save the pointer marker if tag is found"
+;;   (interactive "def")
+;;   (condition-case err
+;;       (progn
+;;         (ring-insert semantic-tags-location-ring (point-marker))
+;;         (call-interactively 'semantic-complete-jump))
+;;     (error
+;;      ;;if not found remove the tag saved in the ring
+;;      (set-marker (ring-remove semantic-tags-location-ring 0) nil nil)
+;;      (signal (car err) (cdr err)))))
 
 (defun semantic-pop-tag-mark ()
   "popup the tag save by semantic-goto-definition"
@@ -179,40 +179,46 @@ save the pointer marker if tag is found"
         (goto-char pos))
       (set-marker marker nil nil))))
 
-(defun alexott/cedet-hook ()
-  (local-set-key "\C-c>" 'semantic-complete-analyze-inline)
-  (local-set-key "\C-c=" 'semantic-decoration-include-visit)
+(defun leif/cedet-hook ()
+  (local-set-key (kbd "C-c M-.") 'semantic-goto-definition-fast)
+  (local-set-key (kbd "C-c M-*") 'semantic-pop-tag-mark))
+(add-hook 'semantic-init-hook 'leif/cedet-hook)
+(add-hook 'c-mode-common-hook 'leif/cedet-hook)
+;; (defun alexott/cedet-hook ()
+;;   (local-set-key "\C-c>" 'semantic-complete-analyze-inline)
+;;   (local-set-key "\C-c=" 'semantic-decoration-include-visit)
 
-  (local-set-key (kbd "M-.") 'semantic-goto-definition-fast)
-  (local-set-key "\C-cj" 'semantic-goto-definition)
-  (local-set-key (kbd "M-*") 'semantic-pop-tag-mark)
-  (local-set-key "\C-cq" 'semantic-ia-show-doc)
-  (local-set-key "\C-cm" 'semantic-symref)
-  (local-set-key "\C-cp" 'semantic-analyze-proto-impl-toggle))
-(add-hook 'semantic-init-hook 'alexott/cedet-hook)
-(add-hook 'c-mode-common-hook 'alexott/cedet-hook)
-(add-hook 'lisp-mode-hook 'alexott/cedet-hook)
-(add-hook 'scheme-mode-hook 'alexott/cedet-hook)
-(add-hook 'emacs-lisp-mode-hook 'alexott/cedet-hook)
-(add-hook 'erlang-mode-hook 'alexott/cedet-hook)
+;;   (local-set-key (kbd "M-.") 'semantic-goto-definition-fast)
+;;   (local-set-key "\C-cj" 'semantic-goto-definition)
+;;   (local-set-key (kbd "M-*") 'semantic-pop-tag-mark)
+;;   (local-set-key "\C-cq" 'semantic-ia-show-doc)
+;;   (local-set-key "\C-cm" 'semantic-symref)
+;;   (local-set-key "\C-cp" 'semantic-analyze-proto-impl-toggle))
+;; (add-hook 'semantic-init-hook 'alexott/cedet-hook)
+;; (add-hook 'c-mode-common-hook 'alexott/cedet-hook)
+;; (add-hook 'lisp-mode-hook 'alexott/cedet-hook)
+;; (add-hook 'scheme-mode-hook 'alexott/cedet-hook)
+;; (add-hook 'emacs-lisp-mode-hook 'alexott/cedet-hook)
+;; (add-hook 'erlang-mode-hook 'alexott/cedet-hook)
 
-(defun alexott/c-mode-cedet-hook ()
-  ;; (local-set-key "\C-ct" 'eassist-switch-h-cpp)
-  ;; (local-set-key "\C-xt" 'eassist-switch-h-cpp)
-  ;; (local-set-key "\C-ce" 'eassist-list-methods)
-  (local-set-key "\C-c\C-r" 'semantic-symref)
-  )
-(add-hook 'c-mode-common-hook 'alexott/c-mode-cedet-hook)
+;; (defun alexott/c-mode-cedet-hook ()
+;;   ;; (local-set-key "\C-ct" 'eassist-switch-h-cpp)
+;;   ;; (local-set-key "\C-xt" 'eassist-switch-h-cpp)
+;;   ;; (local-set-key "\C-ce" 'eassist-list-methods)
+;;   (local-set-key "\C-c\C-r" 'semantic-symref)
+;;   )
+;; (add-hook 'c-mode-common-hook 'alexott/c-mode-cedet-hook)
 
-(require 'ede)
-(setq ede-locate-setup-options '(ede-locate-global
-                                 ede-locate-cscope
-                                 ede-locate-locate
-                                 ede-locate-base))
-(global-ede-mode 1)
-(ede-enable-generic-projects)
+;; (require 'ede)
+;; (setq ede-locate-setup-options '(ede-locate-global))
+;; ;; (setq ede-locate-setup-options '(ede-locate-global
+;; ;;                                  ede-locate-cscope
+;; ;;                                  ede-locate-locate
+;; ;;                                  ede-locate-base))
+;; (global-ede-mode 1)
+;; (ede-enable-generic-projects)
 
-;;}}}
+;; ;;}}}
 
 ;;{{{ yasnippet
 
@@ -326,49 +332,49 @@ header"
 
 ;;{{{ mongodb semantic stuff
 
-(defun leif/setup-semanticdb-mongo (mongodb-dir)
-  (when (and mongodb-dir
-             (file-directory-p mongodb-dir)
-             (file-exists-p (concat mongodb-dir "SConstruct")))
-    (add-to-list 'semanticdb-project-roots mongodb-dir)
-    (set 'tokumx-project
-         (ede-cpp-root-project "TokuMX"
-                               :name "TokuMX"
-                               :file (concat mongodb-dir "src/mongo/SConscript")
-                               :include-path '("."
-                                               "/"
-                                               "/.."
-                                               "/../third_party/pcre-8.30"
-                                               "/../third_party/boost"
-                                               "/../third_party/tokukv"
-                                               "/../third_party/tokubackup"
-                                               )
-                               :system-include-path (append (when-let (cpath (getenv "CPATH"))
-                                                              (split-string cpath ":" t))
-                                                            (mapcar (apply-partially #'concat mongodb-dir)
-                                                                    '("/src/"
-                                                                      "/src/third_party/pcre-8.30"
-                                                                      "/src/third_party/boost"
-                                                                      "/src/third_party/tokukv"
-                                                                      "/src/third_party/tokubackup"
-                                                                      "/src/mongo"
-                                                                      "/src/mongo/client"
-                                                                      "/src/mongo/db"
-                                                                      "/src/mongo/s"))
-                                                            '("/usr/local/include/"
-                                                              "/usr/include/"))
-                               :spp-table '(("_SCONS"                        . "1")
-                                            ("MONGO_EXPOSE_MACROS"           . "1")
-                                            ("SUPPORT_UTF8"                  . "1")
-                                            ("_FILE_OFFSET_BITS"             . "64")
-                                            ("_DEBUG"                        . "1")
-                                            ("BOOST_ALL_NO_LIB"              . "1")
-                                            ("MONGO_HAVE_HEADER_UNISTD_H"    . "1")
-                                            ("MONGO_HAVE_EXECINFO_BACKTRACE" . "1")
-                                            )))))
+;; (defun leif/setup-semanticdb-mongo (mongodb-dir)
+;;   (when (and mongodb-dir
+;;              (file-directory-p mongodb-dir)
+;;              (file-exists-p (concat mongodb-dir "SConstruct")))
+;;     (add-to-list 'semanticdb-project-roots mongodb-dir)
+;;     (set 'tokumx-project
+;;          (ede-cpp-root-project "TokuMX"
+;;                                :name "TokuMX"
+;;                                :file (concat mongodb-dir "src/mongo/SConscript")
+;;                                :include-path '("."
+;;                                                "/"
+;;                                                "/.."
+;;                                                "/../third_party/pcre-8.30"
+;;                                                "/../third_party/boost"
+;;                                                "/../third_party/tokukv"
+;;                                                "/../third_party/tokubackup"
+;;                                                )
+;;                                :system-include-path (append (when-let (cpath (getenv "CPATH"))
+;;                                                               (split-string cpath ":" t))
+;;                                                             (mapcar (apply-partially #'concat mongodb-dir)
+;;                                                                     '("/src/"
+;;                                                                       "/src/third_party/pcre-8.30"
+;;                                                                       "/src/third_party/boost"
+;;                                                                       "/src/third_party/tokukv"
+;;                                                                       "/src/third_party/tokubackup"
+;;                                                                       "/src/mongo"
+;;                                                                       "/src/mongo/client"
+;;                                                                       "/src/mongo/db"
+;;                                                                       "/src/mongo/s"))
+;;                                                             '("/usr/local/include/"
+;;                                                               "/usr/include/"))
+;;                                :spp-table '(("_SCONS"                        . "1")
+;;                                             ("MONGO_EXPOSE_MACROS"           . "1")
+;;                                             ("SUPPORT_UTF8"                  . "1")
+;;                                             ("_FILE_OFFSET_BITS"             . "64")
+;;                                             ("_DEBUG"                        . "1")
+;;                                             ("BOOST_ALL_NO_LIB"              . "1")
+;;                                             ("MONGO_HAVE_HEADER_UNISTD_H"    . "1")
+;;                                             ("MONGO_HAVE_EXECINFO_BACKTRACE" . "1")
+;;                                             )))))
 
-(dolist (d '("~/git/mongo/" "/ssd/leif/git/mongo/"))
-  (leif/setup-semanticdb-mongo (expand-file-name d)))
+;; (dolist (d '("~/git/mongo/" "/ssd/leif/git/mongo/"))
+;;   (leif/setup-semanticdb-mongo (expand-file-name d)))
 
 (when (not (package-installed-p 'inf-mongo))
   (package-install 'inf-mongo))
@@ -436,51 +442,52 @@ header"
                                     (c++-mode . ((ac-clang-flags . ,toku-cflags)))))
   (dir-locals-set-directory-class "~/git/ft-index" 'leif/tokudb-dir-class)
 
-  (defun leif/set-fractal-tree-directory (dir file name)
-    (add-to-list 'semanticdb-project-roots dir)
+;;   (defun leif/set-fractal-tree-directory (dir file name)
+;;     (add-to-list 'semanticdb-project-roots dir)
 
-    (let ((strname (format "Tokudb %s" name))
-          (symbol (intern (format "tokudb-%s-project" name))))
-      (set symbol
-           (ede-cpp-root-project strname
-                                 :name strname
-                                 :file (concat dir file)
-                                 :include-path toku-root-include-paths
-                                 :system-include-path (append (when-let (cpath (getenv "CPATH"))
-                                                                (split-string cpath ":" t))
-                                                              '("/usr/local/include"
-                                                                "/usr/include"))
-                                 :spp-table toku-preprocessor-symbols))))
-  (when (file-exists-p "~/svn/tokutek/mysql.branches/")
-    (mapc (lambda (file-and-attr)
-	    (let ((tag (car file-and-attr))
-		  (attr (cdr file-and-attr)))
-	      (when (car attr)
-		(mapc (lambda (file-and-attr-branch)
-			(let ((branch (car file-and-attr-branch))
-			      (attr-branch (cdr file-and-attr-branch)))
-			  (when (car attr-branch)
-			    (when (file-exists-p (concat "~/svn/tokutek/mysql.branches/" tag "/" branch "/Makefile"))
-			      (leif/set-fractal-tree-directory (concat "~/svn/tokutek/mysql.branches/" tag "/" branch)
-							       "/Makefile" (concat tag "-" branch)))
-			    (when (file-exists-p (concat "~/svn/tokutek/mysql.branches/" tag "/" branch "/CMakeLists.txt"))
-			      (leif/set-fractal-tree-directory (concat "~/svn/tokutek/mysql.branches/" tag "/" branch)
-							       "/CMakeLists.txt" (concat tag "-" branch))))))
-		      (directory-files-and-attributes (concat "~/svn/tokutek/mysql.branches/" tag "/") nil "tokudb\\..*")))))
-	  (directory-files-and-attributes "~/svn/tokutek/mysql.branches/")))
-  (when (file-exists-p "~/svn/tokutek/toku/")
-    (mapc (lambda (file-and-attr)
-	    (let ((dir (car file-and-attr))
-		  (attr (cdr file-and-attr)))
-	      (when (and (car attr)
-			 (file-exists-p (concat "~/svn/tokutek/toku/" dir "/CMakeLists.txt")))
-		(let ((branch (substring dir 7)))
-		  (leif/set-fractal-tree-directory (concat "~/svn/tokutek/toku/" dir)
-						   "/CMakeLists.txt" branch)))))
-	  (directory-files-and-attributes "~/svn/tokutek/toku/" nil "tokudb\\..*")))
-  (leif/set-fractal-tree-directory "~/git/ft-index" "/CMakeLists.txt" "main"))
+;;     (let ((strname (format "Tokudb %s" name))
+;;           (symbol (intern (format "tokudb-%s-project" name))))
+;;       (set symbol
+;;            (ede-cpp-root-project strname
+;;                                  :name strname
+;;                                  :file (concat dir file)
+;;                                  :include-path toku-root-include-paths
+;;                                  :system-include-path (append (when-let (cpath (getenv "CPATH"))
+;;                                                                 (split-string cpath ":" t))
+;;                                                               '("/usr/local/include"
+;;                                                                 "/usr/include"))
+;;                                  :spp-table toku-preprocessor-symbols))))
+;;   (when (file-exists-p "~/svn/tokutek/mysql.branches/")
+;;     (mapc (lambda (file-and-attr)
+;; 	    (let ((tag (car file-and-attr))
+;; 		  (attr (cdr file-and-attr)))
+;; 	      (when (car attr)
+;; 		(mapc (lambda (file-and-attr-branch)
+;; 			(let ((branch (car file-and-attr-branch))
+;; 			      (attr-branch (cdr file-and-attr-branch)))
+;; 			  (when (car attr-branch)
+;; 			    (when (file-exists-p (concat "~/svn/tokutek/mysql.branches/" tag "/" branch "/Makefile"))
+;; 			      (leif/set-fractal-tree-directory (concat "~/svn/tokutek/mysql.branches/" tag "/" branch)
+;; 							       "/Makefile" (concat tag "-" branch)))
+;; 			    (when (file-exists-p (concat "~/svn/tokutek/mysql.branches/" tag "/" branch "/CMakeLists.txt"))
+;; 			      (leif/set-fractal-tree-directory (concat "~/svn/tokutek/mysql.branches/" tag "/" branch)
+;; 							       "/CMakeLists.txt" (concat tag "-" branch))))))
+;; 		      (directory-files-and-attributes (concat "~/svn/tokutek/mysql.branches/" tag "/") nil "tokudb\\..*")))))
+;; 	  (directory-files-and-attributes "~/svn/tokutek/mysql.branches/")))
+;;   (when (file-exists-p "~/svn/tokutek/toku/")
+;;     (mapc (lambda (file-and-attr)
+;; 	    (let ((dir (car file-and-attr))
+;; 		  (attr (cdr file-and-attr)))
+;; 	      (when (and (car attr)
+;; 			 (file-exists-p (concat "~/svn/tokutek/toku/" dir "/CMakeLists.txt")))
+;; 		(let ((branch (substring dir 7)))
+;; 		  (leif/set-fractal-tree-directory (concat "~/svn/tokutek/toku/" dir)
+;; 						   "/CMakeLists.txt" branch)))))
+;; 	  (directory-files-and-attributes "~/svn/tokutek/toku/" nil "tokudb\\..*")))
+;;   (leif/set-fractal-tree-directory "~/git/ft-index" "/CMakeLists.txt" "main")
+)
 
-;;}}}
+;; ;;}}}
 
 ;;{{{ cmake-mode
 
@@ -660,71 +667,71 @@ header"
 
 ;;}}}
 
-;;{{{ eldoc
+;; ;;{{{ eldoc
 
-(autoload 'turn-on-eldoc-mode "eldoc" "Eldoc doc hints." t)
-(mapc (lambda (hook)
-        (add-hook hook 'turn-on-eldoc-mode))
-      '(clojure-mode-hook
-        scheme-mode-hook
-        lisp-mode-hook
-        emacs-lisp-mode-hook
-        lisp-interaction-mode-hook
-        slime-lisp-mode-hook
-        c-mode-hook
-        c++-mode-hook))
+;; (autoload 'turn-on-eldoc-mode "eldoc" "Eldoc doc hints." t)
+;; (mapc (lambda (hook)
+;;         (add-hook hook 'turn-on-eldoc-mode))
+;;       '(clojure-mode-hook
+;;         scheme-mode-hook
+;;         lisp-mode-hook
+;;         emacs-lisp-mode-hook
+;;         lisp-interaction-mode-hook
+;;         slime-lisp-mode-hook
+;;         c-mode-hook
+;;         c++-mode-hook))
 
-;;; C/C++ magic
-(eval-after-load "eldoc"
-  '(progn
-     (defun cleanup-function-synopsis (f)
-       ;; nuke newlines
-       (setq f (replace-regexp-in-string "\n" " " f))
-       ;; nuke comments (note non-greedy *? instead of *)
-       (setq f (replace-regexp-in-string "/\\*.*?\\*/" " " f))
-       ;; (just-one-space)
-       (setq f (replace-regexp-in-string "[ \t]+" " " f))
-       f)
+;; ;;; C/C++ magic
+;; (eval-after-load "eldoc"
+;;   '(progn
+;;      (defun cleanup-function-synopsis (f)
+;;        ;; nuke newlines
+;;        (setq f (replace-regexp-in-string "\n" " " f))
+;;        ;; nuke comments (note non-greedy *? instead of *)
+;;        (setq f (replace-regexp-in-string "/\\*.*?\\*/" " " f))
+;;        ;; (just-one-space)
+;;        (setq f (replace-regexp-in-string "[ \t]+" " " f))
+;;        f)
 
-     (put 'function-synopsis 'beginning-op
-          (lambda ()
-            (if (bolp) (forward-line -1) (beginning-of-line))
-            (skip-chars-forward "^{")
-            (dotimes (i 3) (backward-sexp))))
-     (put 'function-synopsis 'end-op
-          (lambda () (skip-chars-forward "^{")))
+;;      (put 'function-synopsis 'beginning-op
+;;           (lambda ()
+;;             (if (bolp) (forward-line -1) (beginning-of-line))
+;;             (skip-chars-forward "^{")
+;;             (dotimes (i 3) (backward-sexp))))
+;;      (put 'function-synopsis 'end-op
+;;           (lambda () (skip-chars-forward "^{")))
 
-     (defun show-tag-in-minibuffer ()
-       (when tags-table-list
-         (save-excursion
-           ;; shadow some etags globals so they won't be modified
-           (let ((deactivate-mark nil)
-                 (tags-location-ring (make-ring find-tag-marker-ring-length))
-                 (find-tag-marker-ring (make-ring find-tag-marker-ring-length))
-                 (last-tag nil))
-             (let* ((tag (funcall
-                          (or find-tag-default-function
-                              (get major-mode 'find-tag-default-function)
-                              'find-tag-default)))
-                    ;; we try to keep M-. from matching any old tag all the
-                    ;; time
-                    (tag-regex (format "\\(^\\|[ \t\n*]\\)%s\\($\\|(\\)"
-                                       (regexp-quote tag))))
-               (set-buffer (find-tag-noselect tag-regex nil t))
-               (let ((synopsis (or (thing-at-point 'function-synopsis)
-                                   (thing-at-point 'line))))
-                 (when synopsis
-                   (eldoc-message "%s"
-                                  (cleanup-function-synopsis synopsis)))))))))
+;;      (defun show-tag-in-minibuffer ()
+;;        (when tags-table-list
+;;          (save-excursion
+;;            ;; shadow some etags globals so they won't be modified
+;;            (let ((deactivate-mark nil)
+;;                  (tags-location-ring (make-ring find-tag-marker-ring-length))
+;;                  (find-tag-marker-ring (make-ring find-tag-marker-ring-length))
+;;                  (last-tag nil))
+;;              (let* ((tag (funcall
+;;                           (or find-tag-default-function
+;;                               (get major-mode 'find-tag-default-function)
+;;                               'find-tag-default)))
+;;                     ;; we try to keep M-. from matching any old tag all the
+;;                     ;; time
+;;                     (tag-regex (format "\\(^\\|[ \t\n*]\\)%s\\($\\|(\\)"
+;;                                        (regexp-quote tag))))
+;;                (set-buffer (find-tag-noselect tag-regex nil t))
+;;                (let ((synopsis (or (thing-at-point 'function-synopsis)
+;;                                    (thing-at-point 'line))))
+;;                  (when synopsis
+;;                    (eldoc-message "%s"
+;;                                   (cleanup-function-synopsis synopsis)))))))))
 
-     (defadvice eldoc-print-current-symbol-info
-       (around eldoc-show-c-tag activate)
-       (if (or (eq major-mode 'c-mode)
-               (eq major-mode 'c++-mode))
-           (show-tag-in-minibuffer)
-         ad-do-it))))
+;;      (defadvice eldoc-print-current-symbol-info
+;;        (around eldoc-show-c-tag activate)
+;;        (if (or (eq major-mode 'c-mode)
+;;                (eq major-mode 'c++-mode))
+;;            (show-tag-in-minibuffer)
+;;          ad-do-it))))
 
-;;}}}
+;; ;;}}}
 
 ;;{{{ parenface
 
@@ -1306,10 +1313,6 @@ PWD is not in a git repo (or the git command is not found)."
  '(display-time-mode t)
  '(ede-project-directories (quote ("/Users/leif/git/mongo/src/mongo" "/Users/leif/src/mongodb-src-r2.0.5")))
  '(fill-column 74)
- '(flymake-allowed-file-name-masks (quote (("\\.c\\'" flymake-simple-make-init flymake-simple-cleanup flymake-get-real-file-name) ("\\.cpp\\'" flymake-simple-make-init flymake-simple-cleanup flymake-get-real-file-name) ("\\.xml\\'" flymake-xml-init) ("\\.html?\\'" flymake-xml-init) ("\\.cs\\'" flymake-simple-make-init) ("\\.p[ml]\\'" flymake-perl-init) ("\\.php[345]?\\'" flymake-php-init) ("\\.h\\'" flymake-master-make-header-init flymake-master-cleanup) ("\\.java\\'" flymake-simple-make-java-init flymake-simple-java-cleanup) ("\\.idl\\'" flymake-simple-make-init))))
- '(flymake-gui-warnings-enabled nil)
- '(flyspell-issue-welcome-flag nil)
- '(flyspell-sort-corrections nil)
  '(font-lock-maximum-decoration t)
  '(font-use-system-font t)
  '(frame-title-format (concat invocation-name "@" system-name " %b [%IB]") t)
