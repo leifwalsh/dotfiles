@@ -22,5 +22,6 @@
 (depends-on "paredit")
 (depends-on "parenface")
 (depends-on "pkgbuild-mode")
+(depends-on "rust-mode")
 (depends-on "smex")
 (depends-on "solarized-theme")
