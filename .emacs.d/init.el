@@ -8,6 +8,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ack-and-a-half-executable "/usr/bin/ag")
+ '(ack-and-a-half-prompt-for-directory t)
+ '(ack-and-a-half-use-ido t)
  '(backup-directory-alist (quote (("." . "~/.emacs.d/backups"))))
  '(column-number-mode t)
  '(compilation-scroll-output (quote first-error))
@@ -47,18 +50,21 @@
 (global-set-key (kbd "M-x") (key-binding (kbd "M-q")))
 (global-set-key (kbd "M-q") 'smex)
 
-;;; paredit-mode
+;;; lisps
 
-(defun leif/enable-paredit ()
+(defun leif/lisp-mode-hook ()
   (let ((old-meta-q (key-binding (kbd "M-q")))
         (old-meta-x (key-binding (kbd "M-x"))))
     (paredit-mode 1)
+    (eldoc-mode 1)
     (if (not (eq old-meta-q 'smex))
         (progn
           (define-key paredit-mode-map (kbd "M-q") 'smex)
           (define-key paredit-mode-map (kbd "M-x") old-meta-q)))))
-(mapc (lambda (hook) (add-hook hook #'leif/enable-paredit))
-      '(clojure-mode-hook
+(mapc (lambda (hook) (add-hook hook #'leif/lisp-mode-hook))
+      '(cider-mode-hook
+        cider-repl-mode-hook
+        clojure-mode-hook
 	emacs-lisp-mode-hook
 	eval-expression-minibuffer-setup-hook
 	ielm-mode-hook
@@ -66,11 +72,24 @@
 	lisp-interaction-mode-hook
 	scheme-mode-hook))
 
+(with-eval-after-load 'eldoc-mode
+  (eldoc-add-command
+   'paredit-backward-delete
+   'paredit-close-round))
+
 ;;; clojure
 
 (add-hook 'clojure-mode-hook #'cider-mode)
-(add-hook 'cider-mode-hook #'eldoc-mode)
 (setq nrepl-hide-special-buffers t)
+
+;;; c/c++
+
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (when (derived-mode-p 'c-mode 'c++-mode)
+              (c-turn-on-eldoc-mode))
+            (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
+              (ggtags-mode 1))))
 
 ;;; misc keys
 

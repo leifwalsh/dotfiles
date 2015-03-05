@@ -2,10 +2,13 @@
 (source marmalade)
 (source melpa)
 
+(depends-on "ack-and-a-half")
 (depends-on "adoc-mode")
 (depends-on "auctex")
+(depends-on "c-eldoc")
 (depends-on "cask")
 (depends-on "cider")
+(depends-on "clojure-mode")
 (depends-on "cmake-mode")
 (depends-on "company")
 (depends-on "flx-ido")
