@@ -68,6 +68,10 @@ preexec () {
 # Completion
 ################################################################################
 
+if [[ -d "${HOME}/.zsh-completions/src" ]]; then
+    fpath=("${HOME}/.zsh-completions/src" ${fpath})
+fi
+
 # export proper variables for ls and completion
 if which dircolors >/dev/null ; then
     if [[ -f ${HOME}/.dircolors ]]
