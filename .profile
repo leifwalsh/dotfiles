@@ -1,8 +1,3 @@
-if [[ -f $HOME/.system_profile ]]
-then
-    . $HOME/.system_profile
-fi
-
 _addpath() {
     _varname=$1; shift
     for _dir in "$@"; do
@@ -11,7 +6,7 @@ _addpath() {
 if [[ -z "\${${_varname}}" ]]; then
     ${_varname}="${_dir}"
 elif [[ ! "\${${_varname}}" =~ "(^|:)${_dir}(:|$)" ]]; then
-    ${_varname}="\${${_varname}%%:*}:${_dir}"
+    ${_varname}="\${${_varname}%%:}:${_dir}"
 fi
 EOF
             eval "${_eval}"
@@ -35,6 +30,11 @@ EOF
         fi
     done
 }
+
+if [[ -f $HOME/.system_profile ]]
+then
+    . $HOME/.system_profile
+fi
 
 _prependpath PATH /usr/local/sbin /usr/local/bin
 
