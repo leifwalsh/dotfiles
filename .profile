@@ -110,8 +110,10 @@ if [[ -z $SSH_AUTH_SOCK ]]; then
     if which gpg-agent &>/dev/null; then
         gnupginf="${HOME}/.gpg-agent-info"
         if pgrep -u "${USER}" gpg-agent >/dev/null 2>&1; then
-            eval `cat ${gnupginf}`
-            eval `cut -d= -f1 ${gnupginf} | xargs echo export`
+            if [[ -r "${gnupginf}" ]]; then
+                eval `cat ${gnupginf}`
+                eval `cut -d= -f1 ${gnupginf} | xargs echo export`
+            fi
         else
             eval `gpg-agent -s --enable-ssh-support --daemon`
         fi
