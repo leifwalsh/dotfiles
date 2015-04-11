@@ -3,76 +3,72 @@ then
     . $HOME/.system_profile
 fi
 
-# add xcode 4.4 developer path
-tcpath=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr
-if [[ -d $tcpath ]]
-then
-    PATH=$PATH:$tcpath/bin
-    MANPATH=$MANPATH:$tcpath/share/man
+_addpath() {
+    _varname=$1; shift
+    for _dir in "$@"; do
+        if [[ -d "$_dir" ]]; then
+            read -r -d '' _eval <<EOF
+if [[ -z "\${${_varname}}" ]]; then
+    ${_varname}="${_dir}"
+elif [[ ! "\${${_varname}}" =~ "(^|:)${_dir}(:|$)" ]]; then
+    ${_varname}="\${${_varname}%%:*}:${_dir}"
 fi
-platpath=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/usr
-if [[ -d $platpath ]]
-then
-    #PATH=$PATH:$platpath/bin
-    CPATH=$CPATH:$platpath/include
-fi
-devpath=/Applications/Xcode.app/Contents/Developer/usr
-if [[ -d $devpath ]]
-then
-    PATH=$PATH:$devpath/bin
-    MANPATH=$MANPATH:$devpath/share/man
-fi
+EOF
+            eval "${_eval}"
+        fi
+    done
+}
 
-PATH=/usr/local/bin:/usr/local/sbin:$PATH
-
-if [[ -d /usr/lib/distcc/bin ]]; then
-    PATH=/usr/lib/distcc/bin:$PATH
-elif [[ -d /usr/lib64/distcc/bin ]]; then
-    PATH=/usr/lib64/distcc/bin:$PATH
+_prependpath() {
+    _varname=$1; shift
+    for _dir in "$@"; do
+        if [[ -d "$_dir" ]]; then
+            read -r -d '' _eval <<EOF
+if [[ -z "\${${_varname}}" ]]; then
+    ${_varname}="${_dir}"
+else
+    ${_varname}="\${${_varname}/":\${_dir}"/}"
+    ${_varname}="${_dir}:\${${_varname}/"\${_dir}:"/}"
 fi
+EOF
+            eval "${_eval}"
+        fi
+    done
+}
+
+_prependpath PATH /usr/local/sbin /usr/local/bin
+
+_prependpath PATH /usr/lib/distcc/bin /usr/lib64/distcc/bin
+
 if [[ -d /usr/lib/ccache/bin ]]; then
-    PATH=/usr/lib/ccache/bin:$PATH
+    _prependpath PATH /usr/lib/ccache/bin
 elif [[ -d /usr/lib/ccache ]]; then
-    PATH=/usr/lib/ccache:$PATH
+    _prependpath PATH /usr/lib/ccache
 elif [[ -d /usr/lib64/ccache/bin ]]; then
-    PATH=/usr/lib64/ccache/bin:$PATH
+    _prependpath PATH /usr/lib64/ccache/bin
 elif [[ -d /usr/lib64/ccache ]]; then
-    PATH=/usr/lib64/ccache:$PATH
+    _prependpath PATH /usr/lib64/ccache
 fi
 if which distcc >/dev/null 2>/dev/null; then
     CCACHE_PREFIX="distcc"
 fi
-if [[ -d $HOME/.rvm/bin ]]; then
-    PATH=$HOME/.rvm/bin:$PATH
-fi
-if [ -d /Library/Frameworks/Python.Framework/Versions/Current/bin ]; then
-    PATH=/Library/Frameworks/Python.Framework/Versions/Current/bin:$PATH
-fi
-
-# add coreutils
-if which brew >/dev/null 2>/dev/null && [ -d $(brew --prefix coreutils)/libexec/gnubin ]; then
-    PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
-fi
+_prependpath PATH $HOME/.rvm/bin
 
 if [ -d $HOME/local/plan9 ]
 then
     PLAN9=$HOME/local/plan9
     export PLAN9
-    PATH=$PATH:$PLAN9/bin
-    MANPATH=$MANPATH:$PLAN9/man
+    _addpath PATH $PLAN9/bin
+    _addpath MANPATH $PLAN9/man
 fi
 
-PATH=$HOME/local/bin:$HOME/local/sbin:$PATH
-PKG_CONFIG_PATH=$HOME/local/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
-INFOPATH=$HOME/local/share/info:/usr/local/share/info:$INFOPATH
-MANPATH=$HOME/local/share/man:/usr/local/share/man:$MANPATH
+_prependpath PATH $HOME/local/sbin $HOME/local/bin
+_prependpath INFOPATH /usr/local/share/info $HOME/local/share/info
+_prependpath MANPATH /usr/local/share/man $HOME/local/share/man
+_prependpath PKG_CONFIG_PATH /usr/local/lib/pkgconfig $HOME/local/lib/pkgconfig
 
-if [ -d $HOME/local/lib64/python ]; then
-    PYTHONPATH=$HOME/local/lib64/python:$PYTHONPATH
-fi
-if [ -d $HOME/local/lib/python2.7/site-packages ]; then
-    PYTHONPATH=$HOME/local/lib/python2.7/site-packages:$PYTHONPATH
-fi
+_prependpath PYTHONPATH $HOME/local/lib64/python
+_prependpath PYTHONPATH $HOME/local/lib/python2.7/site-packages
 
 if [ -f $HOME/local/.profile ]
 then
@@ -86,7 +82,7 @@ then
     . $HOME/.local/.profile
 fi
 
-PATH=$HOME/bin:$PATH
+_prependpath PATH $HOME/bin
 
 EDITOR=emacsclient
 ALTERNATE_EDITOR="vim"
