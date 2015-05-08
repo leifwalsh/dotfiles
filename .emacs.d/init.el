@@ -88,6 +88,11 @@
 
 (global-company-mode 1)
 
+;;; scala
+
+(require 'ensime)
+(add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
+
 ;;; c/c++
 
 (add-hook 'c-mode-common-hook

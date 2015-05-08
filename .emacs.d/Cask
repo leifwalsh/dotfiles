@@ -12,6 +12,7 @@
 (depends-on "cmake-mode")
 (depends-on "company")
 (depends-on "dash")
+(depends-on "ensime")
 (depends-on "epl")
 (depends-on "f")
 (depends-on "flx-ido")
