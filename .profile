@@ -4,7 +4,7 @@ _addpath() {
         if [[ -d "$_dir" ]]; then
             read -r -d '' _eval <<EOF
 if [[ -z "\${${_varname}}" ]]; then
-    ${_varname}="${_dir}"
+    ${_varname}="${_dir}:"
 elif [[ ! "\${${_varname}}" =~ "(^|:)${_dir}(:|$)" ]]; then
     ${_varname}="\${${_varname}%%:}:${_dir}"
 fi
@@ -20,7 +20,7 @@ _prependpath() {
         if [[ -d "$_dir" ]]; then
             read -r -d '' _eval <<EOF
 if [[ -z "\${${_varname}}" ]]; then
-    ${_varname}="${_dir}"
+    ${_varname}="${_dir}:"
 else
     ${_varname}="\${${_varname}/":\${_dir}"/}"
     ${_varname}="${_dir}:\${${_varname}/"\${_dir}:"/}"
