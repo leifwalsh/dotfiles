@@ -43,6 +43,7 @@ if [ "$TERM"x != dumbx ]
 then
     alias ls='ls -FG'
 fi
+alias ls='ls --color=auto'
 alias lsd='ls -d'
 alias ll='ls -l'
 alias la='ls -a'

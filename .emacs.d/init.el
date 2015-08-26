@@ -88,6 +88,17 @@
 
 (global-company-mode 1)
 
+(with-eval-after-load 'clojure-mode
+  (define-clojure-indent
+    (defroutes 'defun)
+    (GET 2)
+    (POST 2)
+    (PUT 2)
+    (DELETE 2)
+    (HEAD 2)
+    (ANY 2)
+    (context 2)))
+
 ;;; scala
 
 (require 'ensime)
@@ -101,6 +112,10 @@
               (c-turn-on-eldoc-mode))
             (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
               (ggtags-mode 1))))
+
+;;; adoc-mode
+
+(add-hook 'adoc-mode-hook (lambda() (buffer-face-mode t)))
 
 ;;; misc keys
 
