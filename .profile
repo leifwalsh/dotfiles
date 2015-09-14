@@ -42,6 +42,9 @@ fi
 if which distcc >/dev/null 2>/dev/null; then
     CCACHE_PREFIX="distcc"
 fi
+if [[ -d /ssd/.ccache ]]; then
+    CCACHE_DIR=/ssd/.ccache
+fi
 if [[ -d $HOME/.rvm/bin ]]; then
     PATH=$HOME/.rvm/bin:$PATH
 fi
@@ -66,6 +69,9 @@ PATH=$HOME/local/bin:$HOME/local/sbin:$PATH
 PKG_CONFIG_PATH=$HOME/local/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 INFOPATH=$HOME/local/share/info:/usr/local/share/info:$INFOPATH
 MANPATH=$HOME/local/share/man:/usr/local/share/man:$MANPATH
+
+GOPATH=$HOME/go
+PATH=$GOPATH/bin:$PATH
 
 if [ -d $HOME/local/lib64/python ]; then
     PYTHONPATH=$HOME/local/lib64/python:$PYTHONPATH
@@ -92,6 +98,8 @@ EDITOR=emacsclient
 ALTERNATE_EDITOR="vim"
 
 export PATH CPATH PKG_CONFIG_PATH INFOPATH MANPATH PYTHONPATH EDITOR ALTERNATE_EDITOR
+export GOPATH
+export CCACHE_PREFIX CCACHE_DIR
 
 # colorize ls, less, grep
 CLICOLOR=on
