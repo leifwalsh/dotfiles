@@ -43,6 +43,8 @@
 
 URxvt*background: S_base03
 URxvt*foreground: S_base0
+xterm*background: S_base03
+xterm*foreground: S_base0
 URxvt*cursorColor: S_base1
 URxvt*pointerColorBackground:S_base01
 URxvt*pointerColorForeground:S_base1
@@ -50,34 +52,50 @@ URxvt*pointerColorForeground:S_base1
 !! black dark/light
 URxvt*color0: S_base02
 URxvt*color8: S_base03
+xterm*color0: S_base02
+xterm*color8: S_base03
 
 !! red dark/light
 URxvt*color1: S_red
 URxvt*color9: S_orange
+xterm*color1: S_red
+xterm*color9: S_orange
 
 !! green dark/light
 URxvt*color2: S_green
 URxvt*color10: S_base01
+xterm*color2: S_green
+xterm*color10: S_base01
 
 !! yellow dark/light
 URxvt*color3: S_yellow
 URxvt*color11: S_base00
+xterm*color3: S_yellow
+xterm*color11: S_base00
 
 !! blue dark/light
 URxvt*color4: S_blue
 URxvt*color12: S_base0
+xterm*color4: S_blue
+xterm*color12: S_base0
 
 !! magenta dark/light
 URxvt*color5: S_magenta
 URxvt*color13: S_violet
+xterm*color5: S_magenta
+xterm*color13: S_violet
 
 !! cyan dark/light
 URxvt*color6: S_cyan
 URxvt*color14: S_base1
+xterm*color6: S_cyan
+xterm*color14: S_base1
 
 !! white dark/light
 URxvt*color7: S_base2
 URxvt*color15: S_base3
+xterm*color7: S_base2
+xterm*color15: S_base3
 
 xpdf*enableFreetype:    yes
 xpdf*antialias:         yes
@@ -92,10 +110,14 @@ xpdf*background:        white
 !Xft.rgba: rgb
 
 URxvt.termName: rxvt-unicode-256color
-URxvt.font: xft:terminus-8
-URxvt.boldFont: xft:terminus-8:bold
-URxvt.italicFont: xft:terminus-8:italic
-URxvt.boldItalicFont: xft:terminus-8:bold:italic
+URxvt.font: -*-fixed-medium-r-semicondensed-*-*-120-*-*-*-*-iso8859-1
+URxvt.boldFont: -*-fixed-bold-r-semicondensed-*-*-120-*-*-*-*-iso8859-1
+URxvt.italicFont: -*-fixed-medium-r-semicondensed-*-*-120-*-*-*-*-iso8859-1
+URxvt.boldItalicFont: -*-fixed-bold-o-semicondensed-*-*-120-*-*-*-*-iso8859-1
+!URxvt.font: xft:terminus-8
+!URxvt.boldFont: xft:terminus-8:bold
+!URxvt.italicFont: xft:terminus-8:italic
+!URxvt.boldItalicFont: xft:terminus-8:bold:italic
 
 URxvt.scrollBar: false
 URxvt.saveLines: 8192
@@ -106,7 +128,7 @@ URxvt*scrollWithBuffer: true
 URxvt*scrollTtyKeypress: true
 URxvt*intensityStyles: false
 
-emacs.font: terminus-8
+emacs.font: -*-fixed-medium-r-semicondensed-*-*-120-*-*-*-*-iso8859-1
 
 Fig.latexfonts: true
 Fig.specialtext: true

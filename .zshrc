@@ -43,6 +43,7 @@ if [ "$TERM"x != dumbx ]
 then
     alias ls='ls -FG'
 fi
+alias ls='ls --color=auto'
 alias lsd='ls -d'
 alias ll='ls -l'
 alias la='ls -a'
@@ -67,6 +68,10 @@ preexec () {
 ################################################################################
 # Completion
 ################################################################################
+
+if [[ -d "${HOME}/.zsh-completions/src" ]]; then
+    fpath=("${HOME}/.zsh-completions/src" ${fpath})
+fi
 
 # export proper variables for ls and completion
 if which dircolors >/dev/null ; then
