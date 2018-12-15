@@ -1,3 +1,10 @@
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
 (require 'cask "/usr/share/cask/cask.el")
 (cask-initialize)
 (require 'pallet)
@@ -17,7 +24,9 @@
  '(cider-repl-use-pretty-printing t)
  '(column-number-mode t)
  '(compilation-scroll-output (quote first-error))
- '(custom-safe-themes (quote ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+ '(custom-safe-themes
+   (quote
+    ("d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(display-time-mode t)
  '(explicit-shell-file-name "/bin/zsh")
  '(flx-ido-mode t)
@@ -33,6 +42,9 @@
  '(large-file-warning-threshold nil)
  '(magit-use-overlays nil)
  '(menu-bar-mode nil)
+ '(package-selected-packages
+   (quote
+    (fill-column-indicator pyvenv htmlize use-package pipenv projectile yaml-mode wsd-mode solarized-theme smex rust-mode pylint py-autopep8 pkgbuild-mode paredit pallet nyan-prompt nyan-mode markdown-mode magit lua-mode jinja2-mode ido-ubiquitous haskell-mode gnuplot-mode gnuplot ggtags flx-ido ensime elpy editorconfig cmake-mode cider c-eldoc auto-complete auctex ag adoc-mode)))
  '(scroll-bar-mode nil)
  '(show-paren-mode t)
  '(tool-bar-mode nil)
@@ -123,3 +135,13 @@
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "C-c C-c") 'recompile)
 (defalias 'yes-or-no-p 'y-or-n-p)
+
+;;; pipenv
+
+(require 'pipenv)
+(use-package pipenv
+  :hook (python-mode . pipenv-mode)
+  :init
+  (setq
+   pipenv-projectile-after-switch-function
+   #'pipenv-projectile-after-switch-extended))

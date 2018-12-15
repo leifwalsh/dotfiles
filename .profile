@@ -115,18 +115,18 @@ if [ -f $HOME/.shell_utils ]; then
     . $HOME/.shell_utils
 fi
 
-if [[ -z $SSH_AUTH_SOCK ]]; then
-    if which gpg-agent &>/dev/null; then
-        gnupginf="${HOME}/.gpg-agent-info"
-        if pgrep -u "${USER}" gpg-agent >/dev/null 2>&1; then
-            if [[ -r "${gnupginf}" ]]; then
-                eval `cat ${gnupginf}`
-                eval `cut -d= -f1 ${gnupginf} | xargs echo export`
-            fi
-        else
-            eval `gpg-agent -s --enable-ssh-support --daemon`
-        fi
-    fi
+# Enable gpg-agent if it is not running
+GPG_AGENT_SOCKET="${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh"
+if [ ! -S $GPG_AGENT_SOCKET ]; then
+    gpg-agent --daemon >/dev/null 2>&1
+    export GPG_TTY=$(tty)
+fi
+
+# Set SSH to use gpg-agent if it is configured to do so
+GNUPGCONFIG=${GNUPGHOME:-"$HOME/.gnupg/gpg-agent.conf"}
+if grep -q enable-ssh-support "$GNUPGCONFIG"; then
+    unset SSH_AGENT_PID
+    export SSH_AUTH_SOCK=$GPG_AGENT_SOCKET
 fi
 
 if which ssh-add >/dev/null 2>/dev/null && [ ! -z "$SSH_AGENT_PID" ] && ps ax | grep "$SSH_AGENT_PID" | grep -q -v grep; then
@@ -138,3 +138,5 @@ fi
 if [[ -f "$HOME/perl5/perlbrew/etc/bashrc" ]]; then
     . "$HOME/perl5/perlbrew/etc/bashrc"
 fi
+
+export PATH="$HOME/.cargo/bin:$PATH"
