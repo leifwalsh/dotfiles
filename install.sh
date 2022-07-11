@@ -37,24 +37,16 @@ if ! nix_env="$(command -v nix-env)"; then
   fi
   sudo install -d -m755 -o $(id -u) -g $(id -g) /nix
 
-  nix_url="https://nixos.org/nix/install"
-  install_nix="/tmp/install-nix.sh"
-
+  export NIX_INSTALLER_NO_MODIFY_PROFILE=1
   if command -v curl >/dev/null; then
-    curl -L "${nix_url}" -o "${install_nix}"
+    curl -L "https://nixos.org/nix/install" | sh
   elif command -v wget >/dev/null; then
-    wget -qO "${install_nix}" "${nix_url}"
+    wget -qO- "https://nixos.org/nix/install" | sh
   else
     echo "To install nix, you must have curl or wget installed." >&2
     exit 1
   fi
 
-  export NIX_INSTALLER_NO_MODIFY_PROFILE=1
-  if [ "$(id -un)" = "root" ]; then
-    sh "${install_nix}" --daemon
-  else
-    sh "${install_nix}"
-  fi
   nix_env="${HOME}/.nix-profile/bin/nix-env"
 fi
 
