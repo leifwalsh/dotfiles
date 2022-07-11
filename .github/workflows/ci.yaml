@@ -20,10 +20,6 @@ jobs:
         run: '"$HOME/.local/bin/chezmoi" data'
       - name: test nix-installed commands
         run: |
-          source "${HOME}/.zshenv"
-          source "${HOME}/.zshrc"
-          command cat "${HOME}/.nix-profile/etc/profile.d/nix.sh"
-          env | sort
           fzf --version
           tldr --version
           tldr gh
