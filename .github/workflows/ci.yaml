@@ -13,6 +13,8 @@ jobs:
       env:
         CODESPACES: true
     steps:
+      - run: env | sort
+      - run: pwd
       - uses: actions/checkout@v2
       - run: ./install.sh
       - name: chezmoi data
