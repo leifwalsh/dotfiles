@@ -20,8 +20,9 @@ jobs:
         run: '"$HOME/.local/bin/chezmoi" data'
       - name: test nix-installed commands
         run: |
+          source "${HOME}/.zshrc"
           env | sort
           fzf --version
           tldr --version
           tldr gh
-        shell: zsh --login {0}
+        shell: zsh {0}
