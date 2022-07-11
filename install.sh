@@ -50,7 +50,7 @@ if ! nix_env="$(command -v nix-env)"; then
   fi
 
   export NIX_INSTALLER_NO_MODIFY_PROFILE=1
-  if [[ "$(id -un)" == "root" ]]; then
+  if [ "$(id -un)" = "root" ]; then
     sh "${install_nix}" --daemon
   else
     sh "${install_nix}"
