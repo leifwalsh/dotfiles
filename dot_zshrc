@@ -112,10 +112,11 @@ export LANG=en_US.UTF-8
 #   export EDITOR='mvim'
 # fi
 if [[ -n $VSCODE_IPC_HOOK_CLI ]]; then
-  export EDITOR='code-insiders'
+  export VISUAL='code-insiders --wait'
 else
-  export EDITOR='vim'
+  export VISUAL='vim'
 fi
+export EDITOR='vim'
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
