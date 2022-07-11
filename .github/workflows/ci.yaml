@@ -22,10 +22,7 @@ jobs:
         run: |
           source "${HOME}/.zshenv"
           source "${HOME}/.zshrc"
-          command ls "${HOME}/.nix-profile"
-          command ls "${HOME}/.nix-profile/bin"
-          command ls "${HOME}/.nix-profile/etc"
-          command ls "${HOME}/.nix-profile/etc/profile.d"
+          command cat "${HOME}/.nix-profile/etc/profile.d/nix.sh"
           env | sort
           fzf --version
           tldr --version
