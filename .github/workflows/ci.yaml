@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/vscode/devcontainers/base:ubuntu
-      options: --user 1000
+      options: --user vscode
       env:
         CODESPACES: true
     steps:
