@@ -90,6 +90,7 @@ plugins=(
   pip
   ripgrep
   rust
+  zsh-autosuggestions
   zsh-syntax-highlighting
 )
 
