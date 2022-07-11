@@ -37,7 +37,11 @@ if ! nix_env="$(command -v nix-env)"; then
   fi
   sudo install -d -m755 -o $(id -u) -g $(id -g) /nix
   export NIX_INSTALLER_NO_MODIFY_PROFILE=1
-  curl -L https://nixos.org/nix/install | sh
+  if [[ "$(id -un)" == "root" ]]; then
+    sh <(curl -L https://nixos.org/nix/install) --daemon
+  else
+    sh <(curl -L https://nixos.org/nix/install)
+  fi
   nix_env="${HOME}/.nix-profile/bin/nix-env"
 fi
 
