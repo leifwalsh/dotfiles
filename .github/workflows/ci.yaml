@@ -20,6 +20,7 @@ jobs:
         run: '"$HOME/.local/bin/chezmoi" data'
       - name: test nix-installed commands
         run: |
+          env | sort
           fzf --version
           tldr --version
           tldr gh
