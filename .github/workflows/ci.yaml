@@ -27,4 +27,4 @@ jobs:
           fzf --version
           tldr --version
           tldr gh
-        shell: zsh {0}
+        shell: zsh +f {0}
