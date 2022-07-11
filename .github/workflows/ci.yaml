@@ -18,3 +18,13 @@ jobs:
       - run: ./install.sh
       - name: chezmoi data
         run: '"$HOME/.local/bin/chezmoi" data'
+      - name: install zsh
+        run: sudo apt-get --no-install-recommends -y zsh
+        env:
+          DEBIAN_FRONTEND: noninteractive
+      - name: test nix-installed commands
+        run: |
+          fzf --version
+          tldr --version
+          tldr gh
+        shell: zsh {0}
