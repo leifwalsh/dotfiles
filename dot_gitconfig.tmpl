@@ -1,0 +1,40 @@
+[user]
+    name = Leif Walsh
+    email = leif.walsh@gmail.com
+
+[core]
+    pager = delta
+    whitespace = trailing-space,space-before-tab,cr-at-eol
+
+[delta]
+    side-by-side = true
+    navigate = true    # use n and N to move between diff sections
+    light = false      # set to true if you're in a terminal w/ a light background color (e.g. the default macOS terminal)
+
+[interactive]
+    diffFilter = delta --color-only
+
+[add.interactive]
+    useBuiltin = false
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+    algorithm = patience
+
+[color]
+    branch = auto
+    diff = auto
+    interactive = auto
+    status = auto
+    ui = auto
+    pager = true
+
+[push]
+    default = matching
+
+[alias]
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+    empty-branch = !sh -c 'git symbolic-ref HEAD refs/heads/$1 && rm .git/index && git clean -fdx' -

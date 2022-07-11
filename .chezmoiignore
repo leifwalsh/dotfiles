@@ -1,0 +1,6 @@
+.github/
+LICENSE
+README.md
+install.sh
+.oh-my-zsh/cache
+.oh-my-zsh/**/*.zwc

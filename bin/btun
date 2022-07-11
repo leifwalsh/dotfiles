@@ -1,8 +1,0 @@
-#!/bin/bash
-
-if [[ $# != 1 ]]; then
-    echo "Usage: $(basename $0) <server>" 1>&2
-    exit 2
-fi
-
-exec nohup ssh -Y -C -o ServerAliveInterval=30 -fN "$1" &>/dev/null

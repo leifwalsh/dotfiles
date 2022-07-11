@@ -1,8 +1,0 @@
-"hg6901
-
-loadplugins '\.(js|penta)$'
-group user
-highlight FontFixed font-family: "DejaVu Sans Mono";
-set hintkeys=euthoanspgyfid
-
-" vim: set ft=pentadactyl:
