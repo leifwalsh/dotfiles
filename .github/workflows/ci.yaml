@@ -15,6 +15,7 @@ jobs:
     steps:
       - run: env | sort
       - run: pwd
+      - run: id -un
       - uses: actions/checkout@v2
       - run: ./install.sh
       - name: chezmoi data
