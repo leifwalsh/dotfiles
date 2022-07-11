@@ -28,3 +28,5 @@ jobs:
           tldr --version
           tldr gh
         shell: zsh {0}
+        env:
+          USER: vscode
