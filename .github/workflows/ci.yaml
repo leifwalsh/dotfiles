@@ -13,7 +13,6 @@ jobs:
       env:
         CODESPACES: true
     steps:
-      - run: env | sort
       - run: sudo chmod -R a+rwX ${RUNNER_TEMP} ${RUNNER_WORKSPACE}
       - uses: actions/checkout@v3
       - run: ./install.sh
