@@ -13,7 +13,7 @@ jobs:
         CODESPACES: true
     steps:
       - uses: actions/checkout@v2
-      - uses: nixbuild/nix-quick-install-action@v14
+      - uses: nixbuild/nix-quick-install-action@v16
       - run: ./install.sh
       - name: chezmoi data
         run: '"$HOME/.local/bin/chezmoi" data'

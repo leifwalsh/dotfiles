@@ -51,3 +51,5 @@ if ! nix_env="$(command -v nix-env)"; then
 fi
 
 "${nix_env}" -if "${HOME}/.devenv.nix"
+
+"${HOME}/.nix-profile/bin/tldr" --update
