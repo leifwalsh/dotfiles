@@ -13,6 +13,7 @@ jobs:
       env:
         CODESPACES: true
     steps:
+      - run: env | sort
       - run: sudo chown -R vscode:vscode ${RUNNER_TEMP} ${RUNNER_WORKSPACE}
       - uses: actions/checkout@v2
       - run: ./install.sh
