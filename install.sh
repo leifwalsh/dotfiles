@@ -4,6 +4,22 @@
 # -u: exit on unset variables
 set -eu
 
+if ! nix_env="$(command -v nix-env)"; then
+  if ! command -v xz; then
+    if ! apt_get="$(command -v apt-get)"; then
+      echo "Don't know how to install xz without apt-get" >&2
+      exit 1
+    fi
+    sudo apt-get update
+    export DEBIAN_FRONTEND=noninteractive
+    sudo apt-get -y install --no-install-recommends xz-utils
+  fi
+  sudo install -d -m755 -o $(id -u) -g $(id -g) /nix
+  export NIX_INSTALLER_NO_MODIFY_PROFILE=1
+  curl -L https://nixos.org/nix/install | sh
+  nix_env="${HOME}/.nix-profile/bin/nix-env"
+fi
+
 if ! chezmoi="$(command -v chezmoi)"; then
   bin_dir="${HOME}/.local/bin"
   chezmoi="${bin_dir}/chezmoi"
